@@ -77,43 +77,50 @@
       align-items:center;
       justify-content:space-between;
       gap:14px;
+      min-width:0;
     }
 
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
-      min-width: 220px;
+      min-width: 0;
+      flex: 1 1 auto;
     }
 
     .brand img{
       width:138px;
       height:auto;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+      flex: 0 0 auto;
     }
 
+    /* ✅ aqui tava cortando: agora pode quebrar linha e não some */
     .greet{
       display:flex;
       flex-direction:column;
       gap:2px;
+      min-width:0;
+      flex: 1 1 auto;
     }
     .hello{
       font-weight:1000;
       font-size:14.5px;
       color:#0f4b45;
-      line-height:1.1;
-      max-width: 34ch;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      line-height:1.2;
+      white-space:normal;         /* ✅ deixa quebrar */
+      overflow:visible;           /* ✅ não corta */
+      text-overflow:unset;        /* ✅ não coloca ... */
+      word-break:break-word;
     }
     .subtitle{
       font-weight:850;
       font-size:12.8px;
       color:rgba(16,49,44,.70);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      white-space:normal;         /* ✅ deixa quebrar */
+      overflow:visible;
+      text-overflow:unset;
+      word-break:break-word;
     }
 
     .actions{
@@ -122,6 +129,7 @@
       gap:10px;
       flex-wrap:wrap;
       justify-content:flex-end;
+      flex: 0 0 auto;
     }
 
     .btn{
@@ -137,36 +145,20 @@
       gap:10px;
       white-space:nowrap;
       user-select:none;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
     }
+    .btn:hover{transform: translateY(-1px); background:#f7fbf9;}
     .btn i{opacity:.95;}
 
     .btn-soft{
       background: rgba(58,168,107,.10);
       color:#0f4b45;
       border:1px solid rgba(58,168,107,.18);
+      box-shadow:none;
     }
-    .btn-soft:hover{transform: translateY(-1px); background: rgba(58,168,107,.14);}
-
-    .btn-outline{
-      background:#fff;
-      color:#0f4b45;
-      border:1px solid rgba(0,0,0,.10);
-      box-shadow: 0 10px 18px rgba(0,0,0,.04);
-    }
-    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
-
-    .btn-primary{
-      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
-      color:#fff;
-      box-shadow: 0 12px 24px rgba(58,168,107,.22);
-    }
-    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
-    .btn-danger{
-      background: rgba(0,0,0,.08);
-      color:#0f2f2b;
-      border:1px solid rgba(0,0,0,.10);
-    }
-    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+    .btn-soft:hover{background: rgba(58,168,107,.14);}
 
     button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
 
@@ -188,21 +180,27 @@
     .page-title{
       display:flex;
       flex-direction:column;
-      gap:6px;
+      gap:8px;
+      min-width:0;
+      flex: 1 1 auto;
     }
     .page-title h1{
       font-size:28px;
       font-weight:1100;
       letter-spacing:-.2px;
       color:#102d2a;
-      line-height:1.1;
+      line-height:1.15;
+      white-space:normal;       /* ✅ não corta */
+      word-break:break-word;
     }
     .page-title p{
       color:rgba(16,49,44,.72);
       font-weight:850;
-      max-width: 70ch;
+      max-width: 80ch;          /* ✅ um pouco mais confortável */
       line-height:1.6;
       font-size:14.4px;
+      white-space:normal;       /* ✅ não corta */
+      word-break:break-word;
     }
 
     /* ===== TOOLBAR ===== */
@@ -226,6 +224,7 @@
       outline:none;
       box-shadow: var(--shadow-soft);
       transition: .18s;
+      min-width:0;
     }
     .input:focus, select:focus{ box-shadow: var(--shadow-soft), var(--ring); }
 
@@ -235,24 +234,23 @@
       border-radius:16px;
       padding:12px 14px;
       font-size:14.6px;
+      border:0;
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
     }
+    .toolbar .btn-primary:hover{filter:brightness(1.02);}
 
     @media (max-width: 900px){
-      .toolbar{
-        grid-template-columns: 1fr 1fr;
-      }
-      .toolbar .btn-primary{
-        grid-column: 1 / -1;
-      }
-      .brand{min-width: unset;}
-      .greet{display:none;}
+      .toolbar{ grid-template-columns: 1fr 1fr; }
+      .toolbar .btn-primary{ grid-column: 1 / -1; }
     }
-    @media (max-width: 520px){
+
+    @media (max-width: 600px){
       :root{ --header-h: 72px; }
       .toolbar{grid-template-columns: 1fr;}
       .actions .btn span{display:none;}
       .actions .btn{gap:0;}
-      .actions .btn i{margin:0;}
       .brand img{width:124px;}
     }
 
@@ -271,18 +269,13 @@
       font-weight:850;
       font-size:13.2px;
       line-height:1.35;
+      word-break:break-word;
     }
     .alert.show{display:flex;}
     .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
 
-    .alert.err{
-      border-color:#f0b7b7;
-      background:#ffe9e9;
-    }
-    .alert.ok{
-      border-color:#b7f0b7;
-      background:#e9ffe9;
-    }
+    .alert.err{ border-color:#f0b7b7; background:#ffe9e9; }
+    .alert.ok { border-color:#b7f0b7; background:#e9ffe9; }
 
     /* ===== GRID PRODUTOS ===== */
     .grid{
@@ -326,12 +319,13 @@
       font-weight:1100;
       font-size:16px;
       color:#10312c;
-      line-height:1.2;
+      line-height:1.25;
       margin-top:2px;
       overflow:hidden;
       display:-webkit-box;
       -webkit-line-clamp:2;
       -webkit-box-orient:vertical;
+      word-break:break-word;
     }
     .vendor{
       margin-top:6px;
@@ -378,6 +372,7 @@
       display:-webkit-box;
       -webkit-line-clamp:3;
       -webkit-box-orient:vertical;
+      word-break:break-word;
     }
 
     .priceRow{
@@ -385,6 +380,7 @@
       align-items:baseline;
       justify-content:space-between;
       gap:10px;
+      flex-wrap:wrap; /* ✅ evita cortar */
     }
     .price{
       font-weight:1200;
@@ -398,10 +394,7 @@
       white-space:nowrap;
     }
 
-    audio{
-      width:100%;
-      border-radius:12px;
-    }
+    audio{ width:100%; border-radius:12px; }
 
     .card-bottom{
       padding:14px;
@@ -416,10 +409,16 @@
       border-radius:16px;
       padding:12px 14px;
       font-size:14.2px;
+      border:0;
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
     }
+    .card-bottom .btn:hover{filter:brightness(1.02);}
     .btn-reserve{
       flex:1;
       justify-content:center;
+      min-width: 160px;
     }
 
     /* ===== MODAL ===== */
@@ -453,13 +452,15 @@
       font-weight:1200;
       font-size:16px;
       color:#10312c;
-      line-height:1.2;
+      line-height:1.25;
+      word-break:break-word;
     }
     .dlgSub{
       margin-top:6px;
       font-weight:900;
       font-size:12.8px;
       color:rgba(16,49,44,.72);
+      word-break:break-word;
     }
 
     .dlgBody{
@@ -476,6 +477,7 @@
       border:1px solid rgba(58,168,107,.14);
       border-radius:16px;
       padding:12px;
+      word-break:break-word;
     }
 
     .dlgGrid{
@@ -483,9 +485,7 @@
       grid-template-columns: 1fr 1fr;
       gap:12px;
     }
-    @media (max-width:520px){
-      .dlgGrid{grid-template-columns: 1fr;}
-    }
+    @media (max-width:520px){ .dlgGrid{grid-template-columns: 1fr;} }
 
     .field{display:grid;gap:8px;}
     .field label{
@@ -508,7 +508,19 @@
       border-radius:16px;
       padding:12px 14px;
       font-size:14.2px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      color:#0f4b45;
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
     }
+    .dlgActions .btn:hover{background:#f7fbf9;}
+    .dlgActions .btn-primary{
+      border:0;
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .dlgActions .btn-primary:hover{filter:brightness(1.02);}
 
     .small-note{
       color:rgba(16,49,44,.64);
@@ -516,6 +528,7 @@
       font-size:12.8px;
       line-height:1.5;
       margin-top:4px;
+      word-break:break-word;
     }
   </style>
 </head>
@@ -527,19 +540,17 @@
         <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
         <div class="greet">
           <div id="hello" class="hello">Olá!</div>
-          <div id="subtitle" class="subtitle">Feed do comprador</div>
+          <div id="subtitle" class="subtitle">Produtos disponíveis</div>
         </div>
       </div>
 
+      <!-- ✅ SOMENTE PERFIL E RESERVAS -->
       <div class="actions">
         <button class="btn btn-outline" id="profile" type="button" title="Meu perfil">
           <i class="fa-solid fa-user"></i> <span>Meu perfil</span>
         </button>
         <button class="btn btn-soft" id="myRes" type="button" title="Minhas reservas">
           <i class="fa-solid fa-receipt"></i> <span>Minhas reservas</span>
-        </button>
-        <button class="btn btn-danger" id="logout" type="button" title="Sair">
-          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
         </button>
       </div>
     </div>
@@ -549,7 +560,7 @@
     <div class="page-head">
       <div class="page-title">
         <h1>Produtos disponíveis</h1>
-        <p>Busque por nome, filtre por categoria e reserve em poucos cliques. O vendedor confirma depois.</p>
+        <p>Busque por nome, filtre por categoria e reserve. O vendedor confirma depois.</p>
       </div>
     </div>
 
@@ -597,10 +608,10 @@
       </div>
 
       <div class="dlgActions">
-        <button class="btn btn-primary" id="dlgConfirm" type="button" style="flex:1;justify-content:center;border-radius:16px;">
+        <button class="btn btn-primary" id="dlgConfirm" type="button" style="flex:1;justify-content:center;">
           <i class="fa-solid fa-check"></i> Confirmar reserva
         </button>
-        <button class="btn btn-outline" id="dlgCancel" type="button" style="border-radius:16px;">
+        <button class="btn" id="dlgCancel" type="button">
           Cancelar
         </button>
       </div>
@@ -639,7 +650,7 @@
         .replaceAll("'","&#039;");
     }
 
-    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
+    function onlyDigits(s){ return (s||"").replace(/\\D/g,""); }
     function toIntStrict(v){
       const d = onlyDigits(v);
       if (!d) return null;
@@ -667,7 +678,7 @@
 
       const full = (user.user_metadata?.full_name || user.user_metadata?.first_name || "").trim();
       el("hello").textContent = full ? ("Olá, " + full + "!") : "Olá!";
-      el("subtitle").textContent = "Feed do comprador";
+      el("subtitle").textContent = "Produtos disponíveis";
       return user;
     }
 
@@ -785,7 +796,7 @@
             </div>
 
             <div class="card-bottom">
-              <button class="btn btn-primary btn-reserve" type="button"
+              <button class="btn btn-reserve" type="button"
                 onclick="window.__openReserve('${p.id}')"
                 ${canReserve ? "" : "disabled"}>
                 <i class="fa-solid fa-basket-shopping"></i>
@@ -899,12 +910,9 @@
       }
     };
 
+    /* ✅ SOMENTE PERFIL E RESERVAS */
     el("profile").onclick = ()=> location.href = "perfil-comp.html";
     el("myRes").onclick = ()=> location.href = "reservas-comp.html";
-    el("logout").onclick = async ()=>{
-      await sb.auth.signOut();
-      location.href="login.html";
-    };
 
     (async ()=>{
       try{
