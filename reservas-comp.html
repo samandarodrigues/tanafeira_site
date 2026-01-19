@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TaNaFeira • Comprador</title>
+  <title>TaNaFeira • Minhas reservas</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
@@ -11,44 +11,36 @@
     :root{
       --verde:#3aa86b;
       --verde-hover:#2f8a59;
-      --verde-escuro:#1e5c3a;
-
       --text:#0f2f2b;
       --bg:#f5fbf8;
+
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.10);
+      --shadow:0 10px 26px rgba(0,0,0,.08);
 
       --header-h: 78px;
     }
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-    }
-
+    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
     body{
       background:var(--bg);
       color:var(--text);
       line-height:1.45;
       min-height:100vh;
-
-      /* 🔴 ISSO RESOLVE O PROBLEMA */
       padding-top: var(--header-h);
+      overflow-x:hidden;
     }
-
     a{text-decoration:none;color:inherit;}
 
-    /* ===== HEADER ===== */
+    /* ===== HEADER FIXO ===== */
     header{
       position:fixed;
-      top:0;
-      left:0;
-      right:0;
+      top:0; left:0; right:0;
       height:var(--header-h);
       z-index:9999;
-
       background:rgba(255,255,255,.9);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(0,0,0,.08);
     }
 
@@ -57,43 +49,55 @@
       height:100%;
       margin:auto;
       padding:0 20px;
-
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:16px;
+      min-width:0;
     }
 
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
+      min-width:0;
     }
 
     .brand img{
       width:130px;
       height:auto;
+      flex:0 0 auto;
     }
 
     .greet{
       display:flex;
       flex-direction:column;
-      line-height:1.1;
+      line-height:1.15;
+      min-width:0;
     }
-
     .hello{
       font-weight:900;
       font-size:14.5px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 44ch;
     }
-
     .subtitle{
       font-size:12.5px;
-      opacity:.75;
+      opacity:.78;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 46ch;
     }
 
     .actions{
       display:flex;
       gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      flex:0 0 auto;
     }
 
     .btn{
@@ -106,45 +110,107 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
+      user-select:none;
     }
-
-    .btn-profile{
-      background:#e9f6ef;
-      color:#0f4b45;
-    }
-
-    .btn-res{
-      background:#dff3ea;
-      color:#0f4b45;
-    }
-
-    .btn-logout{
-      background:#eee;
-      color:#333;
-    }
+    .btn-profile{background:#e9f6ef;color:#0f4b45;}
+    .btn-res{background:#dff3ea;color:#0f4b45;}
+    .btn-logout{background:#eee;color:#333;}
+    .btn:hover{filter:brightness(.98); transform: translateY(-1px); transition:.15s;}
 
     /* ===== MAIN ===== */
     main{
       max-width:1200px;
       margin:auto;
-      padding:24px 20px 40px;
+      padding:24px 20px 44px;
     }
 
-    h1{
-      font-size:26px;
-      margin-bottom:8px;
+    .head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
     }
 
-    p{
-      opacity:.8;
-      margin-bottom:20px;
+    .head h1{font-size:26px;}
+    .head p{opacity:.8;margin-top:6px;max-width:70ch;}
+
+    #msg{
+      display:none;
+      margin:12px 0 14px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      font-weight:850;
+      font-size:13.2px;
     }
 
     .box{
+      background: var(--surface);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:14px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .list{
+      display:grid;
+      gap:12px;
+    }
+
+    .card{
+      border:1px solid rgba(0,0,0,.08);
       background:#fff;
       border-radius:16px;
-      padding:20px;
-      box-shadow:0 10px 26px rgba(0,0,0,.08);
+      padding:14px;
+      display:grid;
+      gap:8px;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .title{
+      font-weight:1000;
+      font-size:15px;
+    }
+
+    .muted{opacity:.74;}
+    .small{font-size:12.5px;}
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      font-weight:1000;
+      font-size:12px;
+      background:#f6fbf8;
+      white-space:nowrap;
+    }
+
+    .pill.pending{ background:#fff7e6; border-color:#ffe2a8; }
+    .pill.confirmed{ background:#e9ffe9; border-color:#b7f0b7; }
+    .pill.cancelled{ background:#ffe9e9; border-color:#f0b7b7; }
+
+    @media (max-width:560px){
+      :root{ --header-h: 72px; }
+      .brand img{width:120px;}
+      .btn span{display:none;}
+      .btn{gap:0;}
+      .hello{max-width:26ch;}
+      .subtitle{max-width:28ch;}
     }
   </style>
 </head>
@@ -157,19 +223,17 @@
       <div class="brand">
         <img src="LogoTaNaFeira.png" alt="TaNaFeira">
         <div class="greet">
-          <div class="hello">Olá!</div>
+          <div class="hello" id="hello">Olá!</div>
           <div class="subtitle">Minhas reservas</div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn btn-profile" onclick="location.href='perfil-comp.html'">
-          <i class="fa-solid fa-user"></i> Perfil
+        <button class="btn btn-profile" id="goProfile" type="button" title="Perfil">
+          <i class="fa-solid fa-user"></i> <span>Perfil</span>
         </button>
-        <button class="btn btn-res" onclick="location.href='reservas-comp.html'">
-          <i class="fa-solid fa-receipt"></i> Reservas
-        </button>
-        <button class="btn btn-logout" onclick="location.href='login.html'">
+
+        <button class="btn btn-logout" id="logout" type="button" title="Sair">
           <i class="fa-solid fa-right-from-bracket"></i>
         </button>
       </div>
@@ -178,13 +242,187 @@
 
   <!-- ===== MAIN ===== -->
   <main>
-    <h1>Minhas reservas</h1>
-    <p>Acompanhe aqui todas as reservas feitas com os vendedores.</p>
+    <div class="head">
+      <div>
+        <h1>Minhas reservas</h1>
+        <p>Acompanhe aqui somente as reservas feitas pela sua conta.</p>
+      </div>
+    </div>
+
+    <div id="msg"></div>
 
     <div class="box">
-      <p style="opacity:.7">Nenhuma reserva carregada ainda.</p>
+      <div id="list" class="list">
+        <div class="muted" style="padding:6px 2px">Carregando...</div>
+      </div>
     </div>
   </main>
 
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const sb = supabase.createClient(
+      "https://addedjckqdzwgdstgqfz.supabase.co",
+      "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
+    );
+
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
+    const listEl = el("list");
+
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function getQty(row){
+      const keys = ["qty","quantity","qtd","amount","units","count"];
+      for (const k of keys){
+        if (row && row[k] != null) return Number(row[k]);
+      }
+      return null;
+    }
+
+    function statusPT(s){
+      const v = String(s || "").toLowerCase().trim();
+      const map = {
+        pending: "Pendente",
+        confirmed: "Confirmada",
+        cancelled: "Cancelada",
+        canceled: "Cancelada",
+        rejected: "Recusada",
+        done: "Concluída",
+        completed: "Concluída"
+      };
+      return map[v] || (v ? (v[0].toUpperCase()+v.slice(1)) : "—");
+    }
+    function statusClass(s){
+      const v = String(s || "").toLowerCase().trim();
+      if (v === "confirmed") return "confirmed";
+      if (v === "cancelled" || v === "canceled") return "cancelled";
+      return "pending";
+    }
+
+    function getProductIdField(sample){
+      if (!sample) return null;
+      if ("product_id" in sample) return "product_id";
+      if ("produto_id" in sample) return "produto_id";
+      if ("products_id" in sample) return "products_id";
+      return null;
+    }
+
+    async function requireAuth(){
+      const { data:{ user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+
+      // saudação com nome (se tiver)
+      const full =
+        (user.user_metadata?.full_name || "").trim() ||
+        [user.user_metadata?.first_name, user.user_metadata?.last_name].filter(Boolean).join(" ").trim();
+      el("hello").textContent = full ? ("Olá, " + full + "!") : "Olá!";
+      return user;
+    }
+
+    async function loadMyReservations(user){
+      clearMsg();
+      listEl.innerHTML = `<div class="muted" style="padding:6px 2px">Carregando...</div>`;
+
+      // ✅ somente reservas do comprador logado
+      const { data: resv, error: rerr } = await sb
+        .from("reservations")
+        .select("*")
+        .eq("buyer_id", user.id)
+        .order("created_at", { ascending:false });
+
+      if (rerr) throw rerr;
+
+      if (!resv || resv.length === 0){
+        listEl.innerHTML = `<div class="muted" style="padding:6px 2px">Você ainda não fez reservas.</div>`;
+        return;
+      }
+
+      // tenta buscar info dos produtos (nome/unidade)
+      const productIdField = getProductIdField(resv[0]);
+      const productIds = productIdField
+        ? Array.from(new Set(resv.map(r => r[productIdField]).filter(Boolean).map(String)))
+        : [];
+
+      const productsMap = new Map();
+
+      if (productIds.length){
+        // ✅ tenta pegar name OU title (o que existir)
+        const { data: prods, error: perr } = await sb
+          .from("products")
+          .select("id,name,title,unit")
+          .in("id", productIds);
+
+        if (!perr){
+          (prods || []).forEach(p => productsMap.set(String(p.id), p));
+        }
+      }
+
+      listEl.innerHTML = resv.map(r=>{
+        const pid = productIdField ? r[productIdField] : null;
+        const p = pid ? productsMap.get(String(pid)) : null;
+
+        const prodName = (p?.name || p?.title || "").trim() || "Produto";
+        const unit = (p?.unit || "").trim();
+
+        const qty = getQty(r);
+        const qtyText = (qty != null ? String(qty) : "—");
+
+        const st = statusPT(r.status);
+        const stClass = statusClass(r.status);
+
+        const when = r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : "";
+
+        return `
+          <div class="card">
+            <div class="row">
+              <div class="title">${escapeHtml(prodName)}</div>
+              <span class="pill ${stClass}">${escapeHtml(st)}</span>
+            </div>
+
+            <div class="row">
+              <div class="muted">Quantidade: <b>${escapeHtml(qtyText)}</b>${unit ? " • " + escapeHtml(unit) : ""}</div>
+            </div>
+
+            <div class="muted small">${escapeHtml(when)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // nav + logout
+    el("goProfile").onclick = ()=> location.href="perfil-comp.html";
+    el("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+
+    (async ()=>{
+      try{
+        const user = await requireAuth();
+        if (!user) return;
+        await loadMyReservations(user);
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar suas reservas.", true);
+        listEl.innerHTML = `<div class="muted" style="padding:6px 2px">Não consegui carregar agora.</div>`;
+      }
+    })();
+  </script>
 </body>
 </html>
