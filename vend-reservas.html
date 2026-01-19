@@ -3,109 +3,320 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vendedor - Reservas recebidas</title>
+  <title>TaNaFeira • Vendedor • Reservas</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
   <style>
-    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
 
-    .header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
+
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
     }
-    .brand{font-weight:900;font-size:18px}
-    .muted{opacity:.75}
-    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+    .container{width:min(1240px,100%);margin:0 auto;padding:0 var(--page-pad);}
+
+    /* header fixo (não tampa) */
+    header{
+      position:fixed; top:0; left:0; right:0;
+      z-index:9999;
+      height:var(--header-h);
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .brand img{width:138px;height:auto;filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));}
+    .headtext{display:flex;flex-direction:column;gap:2px;min-width:0;}
+    .titleline{
+      font-weight:1100;font-size:14.5px;color:#0f4b45;line-height:1.1;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:36ch;
+    }
+    .subtitle{
+      font-weight:850;font-size:12.8px;color:rgba(16,49,44,.70);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60ch;
+    }
+
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
     .btn{
-      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
-      font-weight:800;
+      border:none;cursor:pointer;border-radius:999px;
+      padding:10px 14px;font-weight:1000;font-size:13.8px;
+      transition:.18s;display:inline-flex;align-items:center;gap:10px;white-space:nowrap;
     }
-    .btn:hover{background:#f6f6f6}
-    .btn-primary{background:#111;color:#fff;border:0}
-    .btn-primary:hover{filter:brightness(.95)}
-    .btn-danger{border:1px solid #f0b7b7;background:#ffe9e9}
-    .btn-danger:hover{filter:brightness(.98)}
-    button:disabled{opacity:.6;cursor:not-allowed}
+    .btn-outline{
+      background:#fff;color:#0f4b45;border:1px solid rgba(0,0,0,.10);
+      box-shadow:0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform:translateY(-1px);background:#f7fbf9;}
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff; box-shadow:0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform:translateY(-1px);filter:brightness(1.02);}
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10);transform:translateY(-1px);}
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
 
-    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+    @media (max-width:520px){
+      :root{--header-h:72px;}
+      .brand img{width:124px;}
+      .headtext{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
 
+    main{padding-top:calc(var(--header-h) + 20px);padding-bottom:40px;}
+
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:10px;}
+    .page-title{display:flex;flex-direction:column;gap:6px;}
+    .page-title h1{font-size:28px;font-weight:1100;letter-spacing:-.2px;color:#102d2a;line-height:1.1;}
+    .page-title p{color:rgba(16,49,44,.72);font-weight:850;max-width:90ch;line-height:1.6;font-size:14.4px;}
+
+    /* alert */
+    .alert{
+      display:none;align-items:flex-start;gap:10px;margin-top:14px;padding:12px 12px;border-radius:16px;
+      background: rgba(255,255,255,.92); border:1px solid rgba(0,0,0,.10); box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84); font-weight:850; font-size:13.2px; line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
+    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+
+    /* toolbar */
     .toolbar{
-      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-      margin:10px 0 14px;
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr 220px auto;
+      gap:12px;
+      align-items:center;
     }
-    .search{
-      flex:1;min-width:220px;
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    @media (max-width:900px){
+      .toolbar{grid-template-columns:1fr 1fr;}
+      .toolbar .btn-primary{grid-column:1 / -1;}
     }
-    select{
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;background:#fff;
-    }
+    @media (max-width:520px){ .toolbar{grid-template-columns:1fr;} }
 
-    .tablewrap{border:1px solid #ddd;border-radius:16px;overflow:hidden}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:12px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
-    th{background:#fafafa;font-size:13px;text-transform:uppercase;letter-spacing:.03em;opacity:.85}
-    tr:last-child td{border-bottom:0}
+    .input, select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.92);
+      color:#0f2f2b;
+      font-weight:850;
+      font-size:15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition:.18s;
+    }
+    .input:focus, select:focus{ box-shadow: var(--shadow-soft), var(--ring); }
+
+    /* table */
+    .tablewrap{
+      margin-top:14px;
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:22px;
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:12px 14px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left;vertical-align:top;}
+    th{
+      background: rgba(255,255,255,.65);
+      font-size:12px;text-transform:uppercase;letter-spacing:.05em;
+      opacity:.85;font-weight:1000;color:#10312c;
+    }
+    tr:last-child td{border-bottom:0;}
+
+    .muted{color:var(--muted);font-weight:850;}
+    .strong{font-weight:1100;color:#10312c;}
+    .small{font-size:12px;}
 
     .pill{
-      display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #ddd;
-      font-size:12px;font-weight:900
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,.10);
+      font-size:12px;font-weight:1000;white-space:nowrap;
     }
-    .pill.pending{background:#fff7e6;border-color:#ffe2a8}
-    .pill.confirmed{background:#e9ffe9;border-color:#b7f0b7}
-    .pill.cancelled{background:#ffe9e9;border-color:#f0b7b7}
+    .pill.pending{background:#fff7e6;border-color:#ffe2a8;color:#5a3b00;}
+    .pill.confirmed{background:#e9ffe9;border-color:#b7f0b7;color:#164a2a;}
+    .pill.cancelled{background:#ffe9e9;border-color:#f0b7b7;color:#5a1b1b;}
 
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .strong{font-weight:900}
-    .small{font-size:12px}
-    .hide-sm{display:table-cell}
-    @media (max-width:860px){ .hide-sm{display:none} }
+    .actions-td{display:flex;gap:10px;flex-wrap:wrap;}
+    .btn-sm{
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:13.2px;
+      font-weight:1000;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      cursor:pointer;
+      transition:.18s;
+      box-shadow:0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-sm:hover{transform:translateY(-1px);background:#f7fbf9;}
+    .btn-sm.ok{
+      border:0;
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow:0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-sm.ok:hover{filter:brightness(1.02);}
+    .btn-sm.bad{
+      background: rgba(240,183,183,.25);
+      border-color: rgba(240,183,183,.55);
+      color:#5a1b1b;
+    }
+    .btn-sm.bad:hover{background: rgba(240,183,183,.32);}
+
+    .hide-sm{display:table-cell;}
+    @media (max-width:860px){ .hide-sm{display:none;} }
+
+    /* mobile cards (melhora muito) */
+    .cards{display:none;margin-top:14px;gap:12px;}
+    .card{
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:22px;
+      box-shadow: var(--shadow-soft);
+      padding:14px;
+      display:grid;
+      gap:10px;
+    }
+    .card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+    .card-meta{display:flex;flex-wrap:wrap;gap:8px;}
+    .tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,.10);
+      background: rgba(0,90,99,.05);
+      color:#0f4b45;
+      font-weight:1000;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .card-actions{display:flex;gap:10px;flex-wrap:wrap;}
+
+    @media (max-width:860px){
+      .tablewrap{display:none;}
+      .cards{display:grid;}
+    }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <div>
-      <div class="brand">TaNaFeira</div>
-      <div id="subtitle" class="muted">Reservas recebidas</div>
-    </div>
-    <div class="right">
-      <button class="btn" id="back" type="button">Voltar</button>
-      <button class="btn" id="logout" type="button">Sair</button>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="headtext">
+          <div class="titleline" id="titleline">Reservas</div>
+          <div class="subtitle" id="subtitle">Reservas recebidas</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline" id="back" type="button" title="Voltar">
+          <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
+        </button>
+        <button class="btn btn-danger" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div id="msg"></div>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Reservas recebidas</h1>
+        <p>Confirme para baixar o estoque automaticamente. Cancelar só muda o status (não mexe no estoque).</p>
+      </div>
+    </div>
 
-  <div class="toolbar">
-    <input id="q" class="search" placeholder="Buscar por produto..." />
-    <select id="filterStatus" title="Filtrar status">
-      <option value="pending">Pendentes</option>
-      <option value="all">Todas</option>
-      <option value="confirmed">Confirmadas</option>
-      <option value="cancelled">Canceladas</option>
-    </select>
-    <button class="btn btn-primary" id="refresh" type="button">Atualizar</button>
-  </div>
+    <div id="msg" class="alert"></div>
 
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th class="hide-sm">Comprador</th>
-          <th>Qtd</th>
-          <th class="hide-sm">Estoque atual</th>
-          <th>Status</th>
-          <th>Data</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr><td colspan="7" class="muted">Carregando...</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="toolbar">
+      <input id="q" class="input" placeholder="Buscar por produto..." autocomplete="off" />
+      <select id="filterStatus" title="Filtrar status">
+        <option value="pending">Pendentes</option>
+        <option value="all">Todas</option>
+        <option value="confirmed">Confirmadas</option>
+        <option value="cancelled">Canceladas</option>
+      </select>
+      <button class="btn btn-primary" id="refresh" type="button">
+        <i class="fa-solid fa-rotate"></i> Atualizar
+      </button>
+    </div>
+
+    <!-- tabela desktop -->
+    <section class="tablewrap" aria-label="Tabela de reservas">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th class="hide-sm">Comprador</th>
+            <th>Qtd</th>
+            <th class="hide-sm">Estoque atual</th>
+            <th>Status</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="7" class="muted">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- cards mobile -->
+    <section id="cards" class="cards" aria-label="Reservas (mobile)">
+      <div class="muted">Carregando...</div>
+    </section>
+  </main>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
@@ -117,14 +328,6 @@
     const el = (id)=>document.getElementById(id);
     const msgEl = el("msg");
 
-    function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
-      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.textContent = text;
-    }
-    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
-
     function escapeHtml(s){
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -132,6 +335,17 @@
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
+    }
+
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML =
+        `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>` +
+        `<div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
     }
 
     function statusPT(s){
@@ -155,7 +369,7 @@
       return "pending";
     }
 
-    // coluna de quantidade pode ter nomes diferentes
+    // quantidade pode ter nomes diferentes
     function getQty(row){
       const keys = ["quantity","qty","qtd","amount","units","count"];
       for (const k of keys){
@@ -164,7 +378,6 @@
       return null;
     }
 
-    // product_id pode variar (caso você tenha criado diferente)
     function getProductId(row){
       if (!row) return null;
       if ("product_id" in row) return row.product_id;
@@ -201,14 +414,22 @@
       if (prof.role !== "vendor"){ location.href="telainicial-comp.html"; return null; }
 
       ME_PROFILE = prof;
-      el("subtitle").textContent = "Reservas recebidas — " + (prof.full_name || "");
+
+      const displayName =
+        (prof.full_name || "").trim() ||
+        (user.user_metadata?.full_name || "").trim() ||
+        (user.email || "Vendedor");
+
+      el("titleline").textContent = displayName;
+      el("subtitle").textContent = "Reservas recebidas";
+
       return prof;
     }
 
     // ===== state =====
-    let PRODUCTS = [];          // produtos do vendedor
-    let PROD_MAP = new Map();   // product_id -> produto
-    let BUYER_MAP = new Map();  // buyer_id -> nome (se der)
+    let PRODUCTS = [];
+    let PROD_MAP = new Map();
+    let BUYER_MAP = new Map();
     let RESERVATIONS = [];
 
     async function loadMyProducts(){
@@ -226,14 +447,12 @@
       BUYER_MAP = new Map();
       if (!buyerIds.length) return;
 
-      // tenta ler profiles dos compradores (pode dar RLS)
       const { data, error } = await sb
         .from("profiles")
         .select("id, full_name")
         .in("id", buyerIds);
 
       if (error) {
-        // fallback: não mostra id inteiro feio
         buyerIds.forEach(id => BUYER_MAP.set(String(id), "Comprador"));
         return;
       }
@@ -243,7 +462,7 @@
     }
 
     async function loadReservationsReceived(){
-      // 1) tenta pelo vendor_id (se existir)
+      // 1) tenta por vendor_id
       try{
         const { data, error } = await sb
           .from("reservations")
@@ -255,7 +474,7 @@
         RESERVATIONS = data || [];
         return;
       }catch(_e){
-        // 2) fallback: pega por product_id IN (meus produtos)
+        // 2) fallback: por product_id IN
         const ids = PRODUCTS.map(p => p.id);
         if (!ids.length){ RESERVATIONS = []; return; }
 
@@ -270,18 +489,16 @@
       }
     }
 
-    function render(){
+    function filteredReservations(){
       const q = (el("q").value || "").trim().toLowerCase();
       const f = el("filterStatus").value;
 
       let rows = RESERVATIONS.slice();
 
-      // filtro status
       if (f !== "all"){
         rows = rows.filter(r => String(r.status||"").toLowerCase() === f);
       }
 
-      // filtro busca por nome do produto
       if (q){
         rows = rows.filter(r => {
           const pid = getProductId(r);
@@ -291,63 +508,122 @@
         });
       }
 
-      const tbody = el("tbody");
+      return rows;
+    }
 
+    function render(){
+      const rows = filteredReservations();
+
+      // desktop table
+      const tbody = el("tbody");
       if (!rows.length){
         tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhuma reserva encontrada.</td></tr>`;
+      } else {
+        tbody.innerHTML = rows.map(r=>{
+          const pid = getProductId(r);
+          const p = pid ? PROD_MAP.get(String(pid)) : null;
+
+          const prodName = (p?.name || p?.title || "").trim() || "Produto";
+          const buyerId = getBuyerId(r);
+          const buyerName = buyerId ? (BUYER_MAP.get(String(buyerId)) || "Comprador") : "Comprador";
+
+          const qty = getQty(r);
+          const qtyText = (qty != null ? qty : "—");
+
+          const stock = Number(p?.stock ?? 0);
+
+          const st = statusPT(r.status);
+          const stClass = statusClass(r.status);
+
+          const canAct = String(r.status||"").toLowerCase() === "pending";
+
+          return `
+            <tr>
+              <td>
+                <div class="strong">${escapeHtml(prodName)}</div>
+                <div class="muted small">${p?.unit ? ("Unidade: " + escapeHtml(p.unit)) : ""}</div>
+              </td>
+
+              <td class="hide-sm">
+                <div>${escapeHtml(buyerName)}</div>
+                <div class="muted small">${buyerId ? "ID: " + String(buyerId).slice(0,6) + "…" : ""}</div>
+              </td>
+
+              <td class="strong">${qtyText}</td>
+              <td class="hide-sm"><b>${stock}</b></td>
+
+              <td><span class="pill ${stClass}">${escapeHtml(st)}</span></td>
+
+              <td class="muted small">${r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : ""}</td>
+
+              <td>
+                <div class="actions-td">
+                  <button class="btn-sm ok" type="button"
+                    onclick="window.__confirm('${r.id}')" ${canAct ? "" : "disabled"}>
+                    <i class="fa-solid fa-circle-check"></i> Confirmar
+                  </button>
+                  <button class="btn-sm bad" type="button"
+                    onclick="window.__cancel('${r.id}')" ${canAct ? "" : "disabled"}>
+                    <i class="fa-solid fa-circle-xmark"></i> Cancelar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // mobile cards
+      const cards = el("cards");
+      if (!rows.length){
+        cards.innerHTML = `<div class="muted">Nenhuma reserva encontrada.</div>`;
         return;
       }
 
-      tbody.innerHTML = rows.map(r=>{
+      cards.innerHTML = rows.map(r=>{
         const pid = getProductId(r);
         const p = pid ? PROD_MAP.get(String(pid)) : null;
 
         const prodName = (p?.name || p?.title || "").trim() || "Produto";
         const buyerId = getBuyerId(r);
         const buyerName = buyerId ? (BUYER_MAP.get(String(buyerId)) || "Comprador") : "Comprador";
-
         const qty = getQty(r);
         const qtyText = (qty != null ? qty : "—");
-
         const stock = Number(p?.stock ?? 0);
 
         const st = statusPT(r.status);
         const stClass = statusClass(r.status);
-
         const canAct = String(r.status||"").toLowerCase() === "pending";
 
         return `
-          <tr>
-            <td>
-              <div class="strong">${escapeHtml(prodName)}</div>
-              <div class="muted small">${p?.unit ? ("Unidade: " + escapeHtml(p.unit)) : ""}</div>
-            </td>
-
-            <td class="hide-sm">
-              <div>${escapeHtml(buyerName)}</div>
-              <div class="muted small">${buyerId ? "ID: " + String(buyerId).slice(0,6) + "…" : ""}</div>
-            </td>
-
-            <td class="strong">${qtyText}</td>
-            <td class="hide-sm">${stock}</td>
-
-            <td><span class="pill ${stClass}">${escapeHtml(st)}</span></td>
-
-            <td class="muted small">${r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : ""}</td>
-
-            <td>
-              <div class="actions">
-                <button class="btn btn-primary" type="button"
-                  onclick="window.__confirm('${r.id}')" ${canAct ? "" : "disabled"}>
-                  Confirmar
-                </button>
-                <button class="btn btn-danger" type="button"
-                  onclick="window.__cancel('${r.id}')" ${canAct ? "" : "disabled"}>
-                  Cancelar
-                </button>
+          <div class="card">
+            <div class="card-top">
+              <div style="min-width:0">
+                <div class="strong" style="font-size:15.5px;line-height:1.2">${escapeHtml(prodName)}</div>
+                <div class="muted small" style="margin-top:4px">${escapeHtml(buyerName)}</div>
               </div>
-            </td>
-          </tr>
+              <span class="pill ${stClass}">${escapeHtml(st)}</span>
+            </div>
+
+            <div class="card-meta">
+              <span class="tag"><i class="fa-solid fa-hashtag"></i> Qtd: <b>${qtyText}</b></span>
+              <span class="tag"><i class="fa-solid fa-box"></i> Estoque: <b>${stock}</b></span>
+              ${p?.unit ? `<span class="tag"><i class="fa-solid fa-scale-balanced"></i> ${escapeHtml(p.unit)}</span>` : ``}
+            </div>
+
+            <div class="muted small">
+              ${r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : ""}
+            </div>
+
+            <div class="card-actions">
+              <button class="btn-sm ok" type="button" onclick="window.__confirm('${r.id}')" ${canAct ? "" : "disabled"}>
+                <i class="fa-solid fa-circle-check"></i> Confirmar
+              </button>
+              <button class="btn-sm bad" type="button" onclick="window.__cancel('${r.id}')" ${canAct ? "" : "disabled"}>
+                <i class="fa-solid fa-circle-xmark"></i> Cancelar
+              </button>
+            </div>
+          </div>
         `;
       }).join("");
     }
@@ -367,7 +643,7 @@
           return showMsg("Quantidade inválida nesta reserva (<= 0).", true);
         }
 
-        // recarrega estoque atual do produto (pra não usar cache)
+        // estoque atual (fresh)
         const { data: fresh, error: fErr } = await sb
           .from("products")
           .select("id,stock")
@@ -381,7 +657,7 @@
           return showMsg(`Sem estoque suficiente. Estoque atual: ${stockNow}.`, true);
         }
 
-        // 1) marca reserva como confirmada
+        // 1) confirma reserva
         const { error: uErr } = await sb
           .from("reservations")
           .update({ status: "confirmed" })
@@ -397,7 +673,6 @@
           .eq("id", p.id);
 
         if (sErr){
-          // reserva confirmada já foi, então avisamos (MVP)
           showMsg("Reserva confirmada ✅ mas não consegui baixar o estoque (RLS).", true);
         } else {
           showMsg("Reserva confirmada ✅ Estoque atualizado.", false);
@@ -428,7 +703,7 @@
 
         if (error) throw error;
 
-        showMsg("Reserva cancelada.", false);
+        showMsg("Reserva cancelada ✅", false);
         await refreshAll();
       }catch(e){
         console.error(e);
@@ -444,7 +719,6 @@
       await loadMyProducts();
       await loadReservationsReceived();
 
-      // tenta carregar nomes dos compradores
       const buyerIds = Array.from(new Set(RESERVATIONS.map(getBuyerId).filter(Boolean).map(String)));
       await loadBuyerNames(buyerIds);
 
@@ -469,10 +743,7 @@
     };
 
     el("back").onclick = ()=> location.href="vend-home.html";
-    el("logout").onclick = async ()=>{
-      await sb.auth.signOut();
-      location.href="login.html";
-    };
+    el("logout").onclick = async ()=>{ await sb.auth.signOut(); location.href="login.html"; };
 
     (async ()=>{
       try{
