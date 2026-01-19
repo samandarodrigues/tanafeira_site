@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TaNaFeira • Início do Comprador</title>
+  <title>TaNaFeira • Área do Comprador</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
@@ -20,9 +20,6 @@
       --muted:rgba(16,49,44,.72);
 
       --bg:#ffffff;
-      --surface:#ffffff;
-      --border:rgba(0,0,0,.08);
-
       --shadow:0 14px 36px rgba(0,0,0,.14);
       --shadow-soft:0 10px 26px rgba(0,0,0,.10);
 
@@ -31,7 +28,6 @@
       --ring: 0 0 0 4px rgba(58,168,107,.14);
 
       --header-h: 78px;
-      --page-pad: clamp(16px, 2.6vh, 28px);
 
       --glass: rgba(255,255,255,.10);
       --glass-border: rgba(255,255,255,.18);
@@ -63,10 +59,14 @@
       justify-content:space-between;
       gap:14px;
     }
+    .header-logo{
+      display:flex;align-items:center;gap:10px;flex-shrink:0;
+    }
     .header-logo img{
       width:132px;height:auto;display:block;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
     }
+
     nav{flex:1;display:flex;justify-content:center;}
     nav ul{list-style:none;display:flex;gap:38px;align-items:center;}
     nav a{
@@ -81,14 +81,17 @@
     }
     nav a:hover{color:var(--verde);}
     nav a:hover::after{width:100%;}
+
     .header-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
     .login-btn{
       display:inline-flex;align-items:center;gap:8px;
       font-weight:900;font-size:14.5px;color:rgba(16,49,44,.78);
       padding:10px 12px;border-radius:999px;transition:.22s;
+      white-space:nowrap;
     }
     .login-btn i{font-size:18px;}
     .login-btn:hover{color:var(--verde); background: rgba(58,168,107,.10);}
+
     .btn-green{
       display:inline-flex;align-items:center;gap:10px;
       background: linear-gradient(180deg, var(--verde), var(--verde-hover));
@@ -104,6 +107,7 @@
     .menu-mobile-icon button{
       background:#ddf5e6;border:none;padding:10px 12px;border-radius:12px;
     }
+    .top-mobile-wrapper{display:none;align-items:center;gap:10px;}
     .mobile-menu{
       width:100%;
       background:#fff;
@@ -121,7 +125,7 @@
     .mobile-scroll-area a{
       display:flex;align-items:center;gap:10px;
       padding:16px 0;
-      font-size:15px;font-weight:900;text-decoration:none;
+      font-size:15px;font-weight:900;
       color:rgba(16,49,44,.78);
       border-bottom:1px solid rgba(0,0,0,.07);
     }
@@ -132,13 +136,10 @@
 
     @media (max-width:980px){
       nav,.header-right{display:none;}
+      .top-mobile-wrapper{display:flex;}
       .menu-mobile-icon{display:block;}
-      .top-mobile-wrapper{display:flex;align-items:center;gap:10px;}
       .top-mobile-wrapper .btn-green{padding:11px 16px;font-size:14.8px;}
       .header-logo img{width:122px;}
-    }
-    @media (min-width:981px){
-      .top-mobile-wrapper .btn-green{display:none;}
     }
 
     /* ===== HERO ===== */
@@ -176,7 +177,7 @@
       line-height:1.05;
       margin-bottom:14px;
       color:#dcfce9;
-      max-width:24ch;
+      max-width:26ch;
       letter-spacing:-.3px;
     }
     .hero h1 strong{color:#afffe0;}
@@ -184,11 +185,11 @@
       font-size:18px;
       opacity:.92;
       color:#e7fff7;
-      max-width:62ch;
-      font-weight:800;
+      max-width:64ch;
+      font-weight:850;
+      line-height:1.65;
     }
 
-    /* ✅ botões “arrumados” (sem cortar/estourar) */
     .hero-actions{
       display:flex;
       gap:12px;
@@ -204,7 +205,6 @@
       padding:14px 18px;
       border-radius:999px;
       font-weight:1000;
-      text-decoration:none;
       transition:.22s ease;
       min-height:52px;
       white-space:nowrap;
@@ -243,7 +243,6 @@
       position:absolute; inset:0;
       background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.38));
     }
-
     .hero-chip{
       position:absolute;
       background: rgba(255,255,255,.92);
@@ -284,7 +283,8 @@
     }
     .section-head h2 span{color:var(--verde);}
     .section-head p{
-      max-width:70ch;color:#40545f;font-weight:800;opacity:.95;margin-top:10px;font-size:15.5px;
+      max-width:70ch;color:#40545f;font-weight:850;opacity:.95;margin-top:10px;font-size:15.5px;
+      line-height:1.65;
     }
 
     /* ===== GRID CARDS ===== */
@@ -369,7 +369,7 @@
     }
     .split-text h3{font-size:34px;line-height:1.08;font-weight:1000;color:#102d2a;letter-spacing:-.2px;}
     .split-text h3 span{color:var(--verde);}
-    .split-text p{margin-top:12px;color:#40545f;font-weight:800;line-height:1.7;max-width:70ch;}
+    .split-text p{margin-top:12px;color:#40545f;font-weight:850;line-height:1.7;max-width:70ch;}
     .bullets{margin-top:16px;display:grid;gap:10px;}
     .bullets li{
       list-style:none;
@@ -383,7 +383,6 @@
       border:2px solid rgba(16,49,44,.25);
       color:#0f4b45;
       background:transparent;
-      text-decoration:none;
       padding:13px 18px;
       border-radius:999px;
       font-weight:1000;
@@ -396,8 +395,7 @@
     @media (max-width:980px){
       .section-head h2{font-size:32px;}
       .split{grid-template-columns:1fr;}
-      .split-text{order:1}
-      .split-media{order:2;min-height:260px;}
+      .split-media{min-height:260px;}
     }
 
     /* ===== CTA FINAL ===== */
@@ -492,9 +490,9 @@
 
 <header>
   <div class="header-inner">
-    <!-- ✅ Troque por caminho relativo: img/LogoTaNaFeira.png -->
-    <a class="header-logo" href="#">
-      <img src="C:\Users\Serafim\OneDrive\Desktop\vsf\img\LogoTaNaFeira.png" alt="TaNaFeira">
+    <!-- ✅ Logo com caminho relativo -->
+    <a class="header-logo" href="index.html">
+      <img src="LogoTaNaFeira.png" alt="TaNaFeira">
     </a>
 
     <nav>
@@ -507,15 +505,13 @@
     </nav>
 
     <div class="header-right">
-      <!-- ✅ entrar na conta -->
-      <a class="login-btn" href="teste2.html"><i class="fa-solid fa-circle-user"></i> Entrar</a>
-      <!-- ✅ criar conta comprador -->
-      <a class="btn-green" href="comprador.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
+      <a class="login-btn" href="login.html"><i class="fa-solid fa-circle-user"></i> Entrar</a>
+      <a class="btn-green" href="criarconta-c.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
     </div>
 
     <!-- MOBILE TOPO -->
     <div class="top-mobile-wrapper">
-      <a class="btn-green" href="comprador.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
+      <a class="btn-green" href="criarconta-c.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
 
       <div class="menu-mobile-icon" id="menuBtn">
         <button id="iconBtn" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Abrir menu">
@@ -525,7 +521,6 @@
     </div>
   </div>
 
-  <!-- MENU MOBILE -->
   <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Menu">
     <div class="mobile-scroll-area">
       <a href="#como-funciona"><i class="fa-solid fa-circle-info"></i> Como funciona</a>
@@ -535,15 +530,14 @@
     </div>
 
     <div class="mobile-center">
-      <a class="login-btn" href="teste2.html"><i class="fa-solid fa-circle-user"></i> Entrar</a>
+      <a class="login-btn" href="login.html"><i class="fa-solid fa-circle-user"></i> Entrar</a>
     </div>
 
-    <a class="btn-green mobile-vertical-btn" href="comprador.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
+    <a class="btn-green mobile-vertical-btn" href="criarconta-c.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="hero" aria-label="Tela inicial do comprador">
+<section class="hero" aria-label="Área do comprador">
   <div class="container">
 
     <div class="hero-text">
@@ -558,23 +552,20 @@
       </h1>
 
       <p>
-        Explore bancas da sua região, veja detalhes por texto ou áudio e fale direto com o vendedor
-        — sem enrolação e sem perder tempo.
+        Explore bancas da sua região, veja detalhes por texto ou áudio e combine a retirada
+        sem perder tempo.
       </p>
 
       <div class="hero-actions">
-        <!-- ✅ botão “Explorar produtos” (arrumado) -->
         <a class="btn-hero btn-primary" href="#produtos">
           Explorar produtos <i class="fa-solid fa-arrow-right"></i>
         </a>
 
-        <!-- ✅ botão “Sou vendedor” (arrumado) -->
         <a class="btn-hero btn-outline" href="vendedor.html">
           Sou vendedor <i class="fa-solid fa-store"></i>
         </a>
 
-        <!-- ✅ atalhos extras -->
-        <a class="btn-hero btn-soft-white" href="teste2.html">
+        <a class="btn-hero btn-soft-white" href="login.html">
           Já tenho conta <i class="fa-solid fa-right-to-bracket"></i>
         </a>
       </div>
@@ -585,21 +576,20 @@
         src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80"
         alt="Feira com alimentos frescos" />
 
-      <div class="hero-chip c1"><i class="fa-solid fa-microphone"></i> Áudio do produto</div>
+      <div class="hero-chip c1"><i class="fa-solid fa-microphone"></i> Detalhe por áudio</div>
       <div class="hero-chip c2"><i class="fa-solid fa-bolt"></i> Reserva em minutos</div>
-      <div class="hero-chip c3"><i class="fa-solid fa-location-dot"></i> Bancas da sua região</div>
+      <div class="hero-chip c3"><i class="fa-solid fa-location-dot"></i> Bancas locais</div>
     </div>
 
   </div>
 </section>
 
-<!-- COMO FUNCIONA -->
 <section class="section alt" id="como-funciona">
   <div class="container">
     <div class="section-head">
       <div>
         <h2>Comprar no <span>TaNaFeira</span> é simples</h2>
-        <p>Você escolhe, reserva, conversa com o vendedor e só passa pra retirar. Tudo bem prático.</p>
+        <p>Você escolhe, reserva e combina a retirada. Tudo feito pra economizar tempo no dia da feira.</p>
       </div>
     </div>
 
@@ -607,56 +597,54 @@
       <div class="card">
         <div class="card-ico"><i class="fa-solid fa-magnifying-glass"></i></div>
         <h3>Encontre produtos</h3>
-        <p>Veja itens por categoria e descubra bancas perto de você com detalhes claros.</p>
+        <p>Pesquise por categoria e descubra opções perto de você com descrição clara.</p>
         <a href="#categorias">Ver categorias <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
       <div class="card">
         <div class="card-ico"><i class="fa-solid fa-bolt"></i></div>
         <h3>Reserve rapidinho</h3>
-        <p>Monte sua lista e reserve em minutos — sem ficar procurando na feira depois.</p>
+        <p>Monte sua lista e reserve em minutos, sem ficar rodando na feira depois.</p>
         <a href="#produtos">Ir para produtos <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
       <div class="card">
-        <div class="card-ico"><i class="fa-solid fa-comments"></i></div>
-        <h3>Fale com o vendedor</h3>
-        <p>Tire dúvidas e confirme disponibilidade pelo chat antes de sair de casa.</p>
-        <a href="teste2.html">Entrar na conta <i class="fa-solid fa-right-to-bracket"></i></a>
+        <div class="card-ico"><i class="fa-solid fa-message"></i></div>
+        <h3>Combine a retirada</h3>
+        <p>Envie uma mensagem e confirme disponibilidade e horário com o feirante.</p>
+        <a href="login.html">Entrar na conta <i class="fa-solid fa-right-to-bracket"></i></a>
       </div>
 
       <div class="card">
         <div class="card-ico"><i class="fa-solid fa-clock"></i></div>
         <h3>Retire no combinado</h3>
-        <p>Combine local e horário com o feirante e vá direto pra retirada, sem fila.</p>
-        <a href="comprador.html">Criar conta <i class="fa-solid fa-user-plus"></i></a>
+        <p>Chegue e retire com rapidez, sem fila — com tudo já separado pra você.</p>
+        <a href="criarconta-c.html">Criar conta <i class="fa-solid fa-user-plus"></i></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CATEGORIAS -->
 <section class="section" id="categorias">
   <div class="container">
     <div class="section-head">
       <div>
         <h2>Categorias mais <span>buscadas</span></h2>
-        <p>Um atalho pra você chegar mais rápido no que precisa.</p>
+        <p>Um atalho pra você encontrar mais rápido o que precisa.</p>
       </div>
     </div>
 
     <div class="cats" aria-label="Categorias">
       <span class="cat"><i class="fa-solid fa-carrot"></i> Hortifruti</span>
-      <span class="cat"><i class="fa-solid fa-cheese"></i> Derivados (queijos, etc.)</span>
-      <span class="cat"><i class="fa-solid fa-bread-slice"></i> Alimentos típicos</span>
+      <span class="cat"><i class="fa-solid fa-cheese"></i> Derivados</span>
+      <span class="cat"><i class="fa-solid fa-bread-slice"></i> Típicos</span>
       <span class="cat"><i class="fa-solid fa-egg"></i> Ovos & aves</span>
       <span class="cat"><i class="fa-solid fa-fish-fins"></i> Peixes</span>
-      <span class="cat"><i class="fa-solid fa-seedling"></i> Produtos da roça</span>
+      <span class="cat"><i class="fa-solid fa-seedling"></i> Roça</span>
     </div>
   </div>
 </section>
 
-<!-- PRODUTOS (BLOCO EXEMPLO / CHAMADA) -->
 <section class="section alt" id="produtos">
   <div class="container">
     <div class="split">
@@ -667,27 +655,25 @@
       <div class="split-text">
         <h3>Explore produtos e <span>reserve</span> antes de sair</h3>
         <p>
-          Aqui você pode mostrar uma lista real de produtos (quando conectar no backend).
-          Por enquanto, este bloco é a “vitrine” do comprador e pode virar uma página de catálogo.
+          Este espaço pode virar o catálogo real quando você conectar no backend.
+          Por enquanto, serve como vitrine e explicação do fluxo do comprador.
         </p>
 
         <ul class="bullets">
           <li><i class="fa-solid fa-check"></i> Detalhes por texto ou áudio</li>
-          <li><i class="fa-solid fa-check"></i> Vendedores da sua região</li>
-          <li><i class="fa-solid fa-check"></i> Retirada combinada no chat</li>
+          <li><i class="fa-solid fa-check"></i> Bancas e produtores locais</li>
+          <li><i class="fa-solid fa-check"></i> Retirada combinada com antecedência</li>
         </ul>
 
         <div class="split-cta">
-          <a class="btn-green" href="#produtos"><i class="fa-solid fa-basket-shopping"></i> Explorar produtos</a>
-          <a class="btn-dark-outline" href="comprador.html"><i class="fa-solid fa-user-plus"></i> Criar conta comprador</a>
-          <a class="btn-dark-outline" href="criarconta.html"><i class="fa-solid fa-layer-group"></i> Ver opções de conta</a>
+          <a class="btn-green" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Entrar</a>
+          <a class="btn-dark-outline" href="criarconta-c.html"><i class="fa-solid fa-user-plus"></i> Criar conta comprador</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA FINAL -->
 <section class="final-cta">
   <div class="container">
     <div class="final-card">
@@ -696,20 +682,19 @@
         <p>Crie sua conta de comprador ou entre pra continuar suas reservas.</p>
       </div>
       <div class="final-actions">
-        <a class="btn-hero btn-primary" href="comprador.html">Criar conta <i class="fa-solid fa-user-plus"></i></a>
-        <a class="btn-hero btn-outline" href="teste2.html">Entrar <i class="fa-solid fa-right-to-bracket"></i></a>
+        <a class="btn-hero btn-primary" href="criarconta-c.html">Criar conta <i class="fa-solid fa-user-plus"></i></a>
+        <a class="btn-hero btn-outline" href="login.html">Entrar <i class="fa-solid fa-right-to-bracket"></i></a>
         <a class="btn-hero btn-soft-white" href="vendedor.html">Sou vendedor <i class="fa-solid fa-store"></i></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
+<footer class="footer" id="contato">
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="C:\Users\Serafim\OneDrive\Desktop\vsf\img\LogoTaNaFeira.png" alt="TaNaFeira">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira">
         <p>O app que conecta feirantes e compradores — da feira direto pra você.</p>
       </div>
 
@@ -718,15 +703,14 @@
         <a href="#como-funciona">Como funciona</a>
         <a href="#categorias">Categorias</a>
         <a href="#produtos">Explorar produtos</a>
-        <a href="teste2.html">Entrar</a>
+        <a href="login.html">Entrar</a>
       </div>
 
       <div class="footer-col">
         <h4>Conta</h4>
-        <a href="comprador.html">Criar conta comprador</a>
-        <a href="criarconta.html">Criar conta (opções)</a>
-        <a href="teste2.html">Entrar na conta</a>
-        <a href="vendedor.html">Criar conta vendedor</a>
+        <a href="criarconta-c.html">Criar conta comprador</a>
+        <a href="login.html">Entrar</a>
+        <a href="vendedor.html">Sou vendedor</a>
       </div>
 
       <div class="footer-col">
