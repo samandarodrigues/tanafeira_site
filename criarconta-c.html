@@ -3,154 +3,442 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Criar conta - Comprador</title>
-  <style>
-    body{font-family:system-ui;max-width:760px;margin:24px auto;padding:0 16px}
-    .card{border:1px solid #ddd;border-radius:16px;padding:16px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    label{display:block;font-size:14px;opacity:.85;margin-bottom:6px}
-    input,button,select{width:100%;padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px}
-    input:focus,select:focus{outline:2px solid #1112}
-    button{cursor:pointer;border:0}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    .btn{background:#111;color:#fff}
-    .btn2{background:#f2f2f2}
-    .muted{opacity:.75;font-size:13px}
-    #msg{display:none;margin-top:12px;padding:10px;border-radius:12px}
-    .span2{grid-column:1/-1}
+  <title>Criar conta • Comprador — TaNaFeira</title>
 
-    /* ===== senha com botão alinhado (sem emoji) ===== */
-    .pwfield{display:flex;flex-direction:column;gap:6px}
-    .pwrow{position:relative}
-    .pwrow input{padding-right:110px;}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <style>
+    :root{
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --glass: rgba(255,255,255,.12);
+      --glass2: rgba(255,255,255,.08);
+      --glass-border: rgba(255,255,255,.22);
+
+      --shadow: 0 18px 55px rgba(0,0,0,.20);
+      --shadow-soft: 0 10px 26px rgba(0,0,0,.12);
+
+      --radius-xl: 30px;
+      --radius-lg: 20px;
+
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --ok-bg:#e9ffe9;
+      --ok-br:#b7f0b7;
+      --err-bg:#ffe9e9;
+      --err-br:#f0b7b7;
+
+      --txt:#0f2f2b;
+      --white: rgba(255,255,255,.92);
+
+      --page-pad: clamp(14px, 2.6vh, 28px);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input,select{font-family:inherit;}
+    html,body{height:100%;}
+
+    /* ✅ FIX: não centraliza verticalmente no desktop (evita cortar conteúdo) */
+    body{
+      min-height:100svh;
+      min-height:100dvh;
+      overflow-x:hidden;
+      overflow-y:auto; /* ✅ rola se precisar */
+
+      background:
+        radial-gradient(1100px 520px at 15% 10%, rgba(255,255,255,.16), rgba(255,255,255,0) 56%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,0,0,.12), rgba(0,0,0,0) 62%),
+        linear-gradient(145deg, var(--teal-1), var(--teal-2));
+
+      padding:
+        calc(var(--page-pad) + env(safe-area-inset-top))
+        calc(var(--page-pad) + env(safe-area-inset-right))
+        calc(var(--page-pad) + env(safe-area-inset-bottom))
+        calc(var(--page-pad) + env(safe-area-inset-left));
+
+      display:flex;
+      align-items:flex-start;   /* ✅ topo */
+      justify-content:center;
+      color: var(--txt);
+    }
+
+    .shell{
+      width: min(1040px, 100%);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:16px;
+
+      /* ✅ espaço pra não “colar” no topo */
+      margin: 16px 0 24px;
+    }
+
+    .card{
+      border-radius: var(--radius-xl);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow:hidden;
+    }
+
+    .head{
+      padding: 18px 22px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(255,255,255,.18), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border-bottom: 1px solid rgba(255,255,255,.16);
+      color:#eafff3;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo img{
+      height:34px;
+      width:auto;
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,.18));
+    }
+
+    .head h1{
+      font-size: 26px;
+      font-weight: 1000;
+      letter-spacing:-.2px;
+      line-height:1.08;
+    }
+
+    .head p{
+      margin-top:6px;
+      color: rgba(255,255,255,.86);
+      font-weight: 850;
+      font-size: 14.6px;
+      line-height:1.55;
+      max-width: 70ch;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .pill-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      color: rgba(255,255,255,.92);
+      font-weight: 950;
+      font-size: 13.6px;
+      transition:.18s;
+      user-select:none;
+    }
+    .pill-link:hover{transform: translateY(-1px); background: rgba(255,255,255,.14);}
+    .pill-link i{color:#7bffcf;}
+
+    .body{
+      padding: 18px 22px 22px;
+      background: var(--glass2);
+    }
+
+    .msg{
+      display:none;
+      margin-bottom:12px;
+      padding:12px 12px;
+      border-radius:16px;
+      box-shadow: var(--shadow-soft);
+      font-weight:850;
+      font-size:13px;
+      line-height:1.35;
+      background: var(--ok-bg);
+      border:1px solid var(--ok-br);
+      color: rgba(16,49,44,.86);
+    }
+    .msg.show{display:block;}
+    .msg.err{background:var(--err-bg); border-color: var(--err-br); color:#5a0000;}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .span2{grid-column: 1 / -1;}
+
+    .section{
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.10);
+      border:1px solid rgba(255,255,255,.12);
+      color:#eafff3;
+      box-shadow: 0 16px 26px rgba(0,0,0,.10);
+    }
+    .section .stitle{
+      font-weight:1000;
+      display:flex;align-items:center;gap:10px;
+      margin-bottom:8px;
+    }
+    .section .stitle i{color:#7bffcf;}
+    .section .sdesc{
+      font-size:13.2px;font-weight:850;opacity:.90;line-height:1.55;
+    }
+
+    label{
+      display:flex;align-items:center;gap:8px;
+      font-size: 13.3px;
+      font-weight: 950;
+      color: rgba(255,255,255,.90);
+      margin-top: 2px;
+    }
+    label i{color:#7bffcf;}
+
+    .input, select{
+      width:100%;
+      margin-top:6px;
+      padding:12px 14px;
+      border-radius:16px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: var(--white);
+      color: var(--txt);
+      font-weight: 850;
+      font-size: 15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition:.18s;
+    }
+
+    .input:focus, select:focus{
+      box-shadow: var(--shadow-soft), var(--ring);
+    }
+
+    .muted{
+      margin-top:6px;
+      font-size: 12.8px;
+      font-weight: 850;
+      opacity:.86;
+      color: rgba(255,255,255,.86);
+    }
+
+    .pwrow{position:relative;}
+    .pwrow .input{padding-right:54px;}
     .pwbtn{
       position:absolute;
       right:10px;
       top:50%;
-      transform:translateY(-50%);
-      width:auto;
-      min-width:92px;
-      height:42px;
-      padding:0 12px;
-      border-radius:12px;
-      border:1px solid #ccc;
+      transform:translateY(calc(-50% + 2px));
+      width:40px;height:40px;border-radius:12px;
+      border: 2px solid transparent;
       background:#fff;
       cursor:pointer;
-      display:flex;
+      display:flex;align-items:center;justify-content:center;
+      color:#2b3f3a;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      transition:.16s;
+    }
+    .pwbtn:hover{filter:brightness(1.02); transform:translateY(calc(-50% + 2px)) translateY(-1px);}
+    .pwbtn:focus{outline:none; box-shadow: 0 10px 18px rgba(0,0,0,.08), var(--ring);}
+
+    .btn-row{
+      grid-column: 1 / -1;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top: 8px;
+    }
+
+    .btn{
+      width:100%;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding: 14px 16px;
+      font-weight:1000;
+      font-size:14.5px;
+      transition:.18s;
+      user-select:none;
+      display:inline-flex;
       align-items:center;
       justify-content:center;
-      color:#2b2b2b;
-      font-weight:800;
-      font-size:13px;
+      gap:10px;
+      white-space:nowrap;
+      min-height:52px;
     }
 
-    @media (max-width:640px){
-      .grid{grid-template-columns:1fr}
-      .pwbtn{display:none;}
-      .pwrow input{padding-right:12px;}
+    .btn-primary{
+      background:#00f0af;
+      color:#003b36;
+      box-shadow: 0 14px 26px rgba(0,240,175,.18);
     }
-    input::-ms-reveal, input::-ms-clear{display:none;}
+    .btn-primary:hover{background:#00c892; transform: translateY(-1px);}
+
+    .btn-soft{
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.92);
+    }
+    .btn-soft:hover{background: rgba(255,255,255,.16); transform: translateY(-1px);}
+
+    @media (max-width: 760px){
+      .grid{grid-template-columns: 1fr;}
+      .span2{grid-column:auto;}
+      .body{padding:16px;}
+      .head{padding:16px;}
+    }
   </style>
 </head>
+
 <body>
-  <h1>Criar conta (Comprador)</h1>
-
-  <div class="card">
-    <form id="form" class="grid" novalidate>
-      <div>
-        <label for="first_name">Nome</label>
-        <input id="first_name" name="first_name" required autocomplete="given-name" maxlength="30" />
-        <div class="muted">Máx 30 caracteres.</div>
-      </div>
-
-      <div>
-        <label for="last_name">Sobrenome</label>
-        <input id="last_name" name="last_name" required autocomplete="family-name" maxlength="30" />
-        <div class="muted">Máx 30 caracteres.</div>
-      </div>
-
-      <div>
-        <label for="phone">Celular</label>
-        <input id="phone" name="phone" required inputmode="tel" autocomplete="tel-national"
-               placeholder="(89) 91234-5678" />
-      </div>
-
-      <div>
-        <label for="email">Email</label>
-        <input
-          id="email"
-          name="email"
-          required
-          type="email"
-          autocomplete="email"
-          placeholder="voce@email.com"
-          maxlength="254"
-        />
-      </div>
-
-      <div>
-        <label for="cep">CEP</label>
-        <input id="cep" name="postal_code" required inputmode="numeric" autocomplete="postal-code"
-               placeholder="00000-000" maxlength="9" />
-        <div class="muted">Aceito apenas Vale do Itaim (PI/PE).</div>
-      </div>
-
-      <div>
-        <label for="numero">Número</label>
-        <input id="numero" name="street_number" required placeholder="Ex: 123" autocomplete="address-line2" />
-      </div>
-
-      <div class="span2">
-        <label for="rua">Rua</label>
-        <input id="rua" name="address_line1" required autocomplete="address-line1" placeholder="Preenchido pelo CEP" />
-      </div>
-
-      <div>
-        <label for="bairro">Bairro</label>
-        <input id="bairro" name="neighborhood" required autocomplete="address-level3" placeholder="Preenchido pelo CEP" />
-      </div>
-
-      <div>
-        <label for="cidade">Cidade</label>
-        <input id="cidade" name="address_level2" required autocomplete="address-level2" placeholder="Preenchido pelo CEP" />
-      </div>
-
-      <div>
-        <label for="uf">UF (somente PI/PE)</label>
-        <select id="uf" name="address_level1" autocomplete="address-level1" required>
-          <option value="">Selecione...</option>
-          <option value="PI">PI</option>
-          <option value="PE">PE</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="complemento">Complemento (opcional)</label>
-        <input id="complemento" name="address_line2" autocomplete="address-line2"
-               placeholder="Apto, bloco, referência..." />
-      </div>
-
-      <div class="span2 pwfield">
-        <label for="password">Senha</label>
-        <div class="pwrow">
-          <input id="password" name="password" type="password" minlength="6" required autocomplete="new-password" />
-          <button class="pwbtn" type="button" data-toggle="password" aria-label="Mostrar senha">Mostrar</button>
+  <div class="shell">
+    <div class="card">
+      <div class="head">
+        <div class="topbar">
+          <div class="logo">
+            <img src="LogoTaNaFeira.png" alt="TaNaFeira">
+          </div>
+          <div class="actions">
+            <a class="pill-link" href="login.html"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+            <a class="pill-link" href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+          </div>
         </div>
+
+        <h1>Criar conta — Comprador</h1>
+        <p>Preencha seus dados. Se o e-mail não exigir confirmação no Supabase, você entra e já vai direto pro seu perfil.</p>
       </div>
 
-      <div class="span2 pwfield">
-        <label for="password2">Confirmar senha</label>
-        <div class="pwrow">
-          <input id="password2" name="password2" type="password" minlength="6" required autocomplete="new-password" />
-          <button class="pwbtn" type="button" data-toggle="password2" aria-label="Mostrar confirmação">Mostrar</button>
-        </div>
+      <div class="body">
+        <div id="msg" class="msg"></div>
+
+        <form id="form" class="grid" novalidate autocomplete="on">
+          <div class="section">
+            <div class="stitle"><i class="fa-solid fa-user"></i> Dados pessoais</div>
+            <div class="sdesc">Esses dados aparecem no seu perfil e ajudam na retirada.</div>
+          </div>
+
+          <div>
+            <label for="first_name"><i class="fa-solid fa-id-card"></i> Nome</label>
+            <input class="input" id="first_name" required maxlength="30" autocomplete="given-name"/>
+            <div class="muted">Máx 30 caracteres.</div>
+          </div>
+
+          <div>
+            <label for="last_name"><i class="fa-solid fa-id-card-clip"></i> Sobrenome</label>
+            <input class="input" id="last_name" required maxlength="30" autocomplete="family-name"/>
+            <div class="muted">Máx 30 caracteres.</div>
+          </div>
+
+          <div>
+            <label for="phone"><i class="fa-solid fa-phone"></i> Celular</label>
+            <input class="input" id="phone" required inputmode="tel" placeholder="(89) 91234-5678"/>
+          </div>
+
+          <div>
+            <label for="email"><i class="fa-solid fa-envelope"></i> Email</label>
+            <input class="input" id="email" required type="email" placeholder="voce@email.com" maxlength="254"/>
+          </div>
+
+          <div class="section">
+            <div class="stitle"><i class="fa-solid fa-location-dot"></i> Endereço</div>
+            <div class="sdesc">O CEP preenche rua/bairro/cidade. Aceito somente PI/PE (Vale do Itaim).</div>
+          </div>
+
+          <div>
+            <label for="cep"><i class="fa-solid fa-map-pin"></i> CEP</label>
+            <input class="input" id="cep" required inputmode="numeric" placeholder="00000-000" maxlength="9"/>
+            <div class="muted">Somente PI/PE.</div>
+          </div>
+
+          <div>
+            <label for="numero"><i class="fa-solid fa-hashtag"></i> Número</label>
+            <input class="input" id="numero" required placeholder="Ex: 123"/>
+          </div>
+
+          <div class="span2">
+            <label for="rua"><i class="fa-solid fa-road"></i> Rua</label>
+            <input class="input" id="rua" required placeholder="Preenchido pelo CEP"/>
+          </div>
+
+          <div>
+            <label for="bairro"><i class="fa-solid fa-signs-post"></i> Bairro</label>
+            <input class="input" id="bairro" required placeholder="Preenchido pelo CEP"/>
+          </div>
+
+          <div>
+            <label for="cidade"><i class="fa-solid fa-city"></i> Cidade</label>
+            <input class="input" id="cidade" required placeholder="Preenchido pelo CEP"/>
+          </div>
+
+          <div>
+            <label for="uf"><i class="fa-solid fa-flag"></i> UF (PI/PE)</label>
+            <select id="uf" required>
+              <option value="">Selecione...</option>
+              <option value="PI">PI</option>
+              <option value="PE">PE</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="complemento"><i class="fa-solid fa-circle-plus"></i> Complemento (opcional)</label>
+            <input class="input" id="complemento" placeholder="Apto, bloco, referência..."/>
+          </div>
+
+          <div class="section">
+            <div class="stitle"><i class="fa-solid fa-lock"></i> Segurança</div>
+            <div class="sdesc">Use no mínimo 6 caracteres. Confirme a senha para evitar erro.</div>
+          </div>
+
+          <div class="span2">
+            <label for="password"><i class="fa-solid fa-key"></i> Senha</label>
+            <div class="pwrow">
+              <input class="input" id="password" type="password" minlength="6" required autocomplete="new-password"/>
+              <button class="pwbtn" type="button" data-toggle="password" aria-label="Mostrar senha">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="span2">
+            <label for="password2"><i class="fa-solid fa-key"></i> Confirmar senha</label>
+            <div class="pwrow">
+              <input class="input" id="password2" type="password" minlength="6" required autocomplete="new-password"/>
+              <button class="pwbtn" type="button" data-toggle="password2" aria-label="Mostrar confirmação">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button id="submitBtn" class="btn btn-primary" type="submit">
+              <i class="fa-solid fa-user-plus"></i> Criar conta
+            </button>
+            <button class="btn btn-soft" type="button" id="back">
+              <i class="fa-solid fa-arrow-left"></i> Voltar
+            </button>
+          </div>
+        </form>
+
       </div>
-
-      <button id="submitBtn" class="btn span2" type="submit">Criar conta</button>
-      <button class="btn2 span2" type="button" id="back">Voltar</button>
-    </form>
-
-    <div id="msg"></div>
+    </div>
   </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -160,64 +448,33 @@
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const UF_ALLOWED = new Set(["PI","PE"]);
-
     const qs = (id)=>document.getElementById(id);
     const msgEl = qs("msg");
     const submitBtn = qs("submitBtn");
 
     function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.background = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.style.border = "1px solid " + (isErr ? "#f0b7b7" : "#b7f0b7");
+      msgEl.classList.add("show");
+      msgEl.classList.toggle("err", !!isErr);
       msgEl.textContent = text;
     }
     function clearMsg(){
-      msgEl.style.display="none";
+      msgEl.classList.remove("show","err");
       msgEl.textContent = "";
     }
-
     function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
 
-    // email forte
     function isValidEmail(email){
       const e = (email || "").trim();
       if (!e) return false;
       if (e.includes(" ")) return false;
       if ((e.match(/@/g) || []).length !== 1) return false;
       if (e.includes("..")) return false;
-      if (e.startsWith(".") || e.endsWith(".")) return false;
-
       const [local, domain] = e.split("@");
       if (!local || !domain) return false;
-      if (local.length > 64) return false;
-      if (e.length > 254) return false;
-
-      if (!/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+$/.test(local)) return false;
-
       if (!domain.includes(".")) return false;
-      const parts = domain.split(".");
-      if (parts.some(p => !p || p.length > 63)) return false;
-      if (parts.some(p => p.startsWith("-") || p.endsWith("-"))) return false;
-      if (parts.some(p => !/^[A-Za-z0-9-]+$/.test(p))) return false;
-
-      const tld = parts[parts.length - 1];
-      if (!/^[A-Za-z]{2,}$/.test(tld)) return false;
-
       return true;
     }
 
-    // trava extra de 30 chars
-    function clampLen(id, max){
-      const el = qs(id);
-      if (!el) return;
-      el.addEventListener("input", ()=>{
-        if (el.value.length > max) el.value = el.value.slice(0, max);
-      });
-    }
-    clampLen("first_name", 30);
-    clampLen("last_name", 30);
-
-    // máscaras
     function maskPhone(v){
       const d = onlyDigits(v).slice(0,11);
       if (d.length <= 2) return d ? `(${d}` : "";
@@ -233,19 +490,21 @@
     qs("phone").addEventListener("input", e=> e.target.value = maskPhone(e.target.value));
     qs("cep").addEventListener("input", e=> e.target.value = maskCEP(e.target.value));
 
-    // mostrar/ocultar (desktop)
     document.querySelectorAll("button[data-toggle]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const id = btn.getAttribute("data-toggle");
         const input = document.getElementById(id);
+        const icon = btn.querySelector("i");
         if (!input) return;
-        const isPw = input.type === "password";
-        input.type = isPw ? "text" : "password";
-        btn.textContent = isPw ? "Ocultar" : "Mostrar";
+
+        const visible = input.type === "text";
+        input.type = visible ? "password" : "text";
+        icon.classList.toggle("fa-eye", visible);
+        icon.classList.toggle("fa-eye-slash", !visible);
+        input.focus();
       });
     });
 
-    // ViaCEP + UF limitada
     async function fetchCEP(cep){
       const c = onlyDigits(cep);
       if (c.length !== 8) return null;
@@ -254,7 +513,6 @@
       if (data.erro) return null;
       return data;
     }
-
     async function fillAddressByCEP(){
       const data = await fetchCEP(qs("cep").value);
       if (!data) return;
@@ -272,18 +530,22 @@
       qs("cidade").value = data.localidade || "";
       qs("uf").value = uf;
     }
-
     qs("cep").addEventListener("blur", async ()=>{
       try { await fillAddressByCEP(); }
       catch(e){ showMsg("Não consegui buscar o CEP.", true); }
     });
 
+    function setLoading(on){
+      submitBtn.disabled = on;
+      submitBtn.innerHTML = on
+        ? '<i class="fa-solid fa-spinner fa-spin"></i> Criando...'
+        : '<i class="fa-solid fa-user-plus"></i> Criar conta';
+    }
+
     qs("form").addEventListener("submit", async (ev)=>{
       ev.preventDefault();
       clearMsg();
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Criando...";
+      setLoading(true);
 
       const first_name = qs("first_name").value.trim();
       const last_name  = qs("last_name").value.trim();
@@ -293,8 +555,7 @@
       const email = qs("email").value.trim().toLowerCase();
 
       if (!isValidEmail(email)) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Criar conta";
+        setLoading(false);
         return showMsg("Digite um e-mail válido (ex: nome@email.com).", true);
       }
 
@@ -304,25 +565,21 @@
       const bairro = qs("bairro").value.trim();
       const cidade = qs("cidade").value.trim();
       const uf = qs("uf").value.trim().toUpperCase();
-      const complemento = qs("complemento").value.trim(); // opcional
+      const complemento = qs("complemento").value.trim();
 
       if (!cep || !rua || !numero || !bairro || !cidade) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Criar conta";
+        setLoading(false);
         return showMsg("Preencha CEP, rua, número, bairro e cidade. (Somente complemento é opcional)", true);
       }
-
       if (!UF_ALLOWED.has(uf)) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Criar conta";
+        setLoading(false);
         return showMsg("UF inválida. Somente PI ou PE.", true);
       }
 
       const password = qs("password").value;
       const password2 = qs("password2").value;
       if (password !== password2) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Criar conta";
+        setLoading(false);
         return showMsg("As senhas não conferem.", true);
       }
 
@@ -335,29 +592,35 @@
       ].filter(Boolean).join(" • ");
 
       try{
-        const { error } = await sb.auth.signUp({
+        const { data, error } = await sb.auth.signUp({
           email,
           password,
-          options: { data: {
-            role: "buyer",
-            first_name,
-            last_name,
-            full_name,
-            phone,
-            city: cidade || address_text,
-            location_text: address_text,
-            address_text
-          }}
+          options: {
+            data: {
+              role: "buyer",
+              first_name,
+              last_name,
+              full_name,
+              phone,
+              city: cidade || null,
+              location_text: address_text,
+              address_text
+            }
+          }
         });
         if (error) throw error;
 
-        showMsg("Conta criada! Confirme seu e-mail e depois faça login.", false);
-        setTimeout(()=> location.href = "login.html", 1200);
+        if (data?.session?.user) {
+          location.replace("perfil-comp.html");
+          return;
+        }
+
+        showMsg("Conta criada! Agora confirme seu e-mail para entrar. Depois volte e faça login.", false);
+
       }catch(e){
         showMsg(e.message || "Erro ao criar conta.", true);
       }finally{
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Criar conta";
+        setLoading(false);
       }
     });
 
