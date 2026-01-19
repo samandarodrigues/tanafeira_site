@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TaNaFeira • Perfil do Comprador</title>
+  <title>TaNaFeira • Comprador</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
@@ -21,7 +21,6 @@
 
       --bg:#f5fbf8;
       --surface:rgba(255,255,255,.92);
-      --border:rgba(0,0,0,.08);
 
       --shadow:0 14px 36px rgba(0,0,0,.14);
       --shadow-soft:0 10px 26px rgba(0,0,0,.10);
@@ -35,7 +34,6 @@
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-    html{scroll-behavior:smooth;}
     body{
       background:
         radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
@@ -49,10 +47,10 @@
 
     a{color:inherit;text-decoration:none;}
     img{max-width:100%;display:block;}
-    button,input,select,textarea{font-family:inherit;}
+    button,input,select{font-family:inherit;}
 
     .container{
-      width:min(980px, 100%);
+      width:min(1240px, 100%);
       margin:0 auto;
       padding: 0 var(--page-pad);
     }
@@ -91,13 +89,14 @@
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
     }
 
-    .headtext{
+    .greet{
       display:flex;
       flex-direction:column;
       gap:2px;
-      min-width: 0;
+      min-width:0;
     }
-    .titleline{
+
+    .hello{
       font-weight:1100;
       font-size:14.5px;
       color:#0f4b45;
@@ -105,8 +104,9 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 36ch;
+      max-width: 34ch;
     }
+
     .subtitle{
       font-weight:850;
       font-size:12.8px;
@@ -114,7 +114,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 42ch;
+      max-width: 44ch;
     }
 
     .actions{
@@ -149,12 +149,12 @@
     }
     .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
 
-    .btn-primary{
-      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
-      color:#fff;
-      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    .btn-soft{
+      background: rgba(58,168,107,.10);
+      color:#0f4b45;
+      border:1px solid rgba(58,168,107,.18);
     }
-    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+    .btn-soft:hover{transform: translateY(-1px); background: rgba(58,168,107,.14);}
 
     .btn-danger{
       background: rgba(0,0,0,.08);
@@ -163,17 +163,7 @@
     }
     .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
 
-    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
-
-    @media (max-width: 520px){
-      :root{ --header-h: 72px; }
-      .brand img{width:124px;}
-      .headtext{display:none;}
-      .actions .btn span{display:none;}
-      .actions .btn{gap:0;}
-    }
-
-    /* ===== MAIN ===== */
+    /* ===== MAIN (não deixa header tampar) ===== */
     main{
       padding-top: calc(var(--header-h) + 18px);
       padding-bottom: 34px;
@@ -191,7 +181,7 @@
     .page-title{
       display:flex;
       flex-direction:column;
-      gap:6px;
+      gap:8px;
     }
     .page-title h1{
       font-size:28px;
@@ -208,141 +198,60 @@
       font-size:14.4px;
     }
 
-    /* ===== ALERT ===== */
-    .alert{
-      display:none;
-      align-items:flex-start;
-      gap:10px;
-      margin-top:14px;
-      padding:12px 12px;
-      border-radius:16px;
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(0,0,0,.10);
-      box-shadow: var(--shadow-soft);
-      color: rgba(16,49,44,.84);
-      font-weight:850;
-      font-size:13.2px;
-      line-height:1.35;
-    }
-    .alert.show{display:flex;}
-    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
-
-    .alert.err{
-      border-color:#f0b7b7;
-      background:#ffe9e9;
-    }
-    .alert.ok{
-      border-color:#b7f0b7;
-      background:#e9ffe9;
-    }
-
-    /* ===== CARD ===== */
-    .card{
+    /* ===== BLOCO AÇÕES (apenas perfil e reservas) ===== */
+    .quick{
       margin-top:16px;
-      background: var(--surface);
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .qcard{
+      background: rgba(255,255,255,.92);
       border:1px solid rgba(0,0,0,.08);
       border-radius: 22px;
       box-shadow: var(--shadow-soft);
-      overflow:hidden;
+      padding:16px;
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      transition:.18s;
     }
-
-    .card-head{
-      padding:16px 16px 12px;
-      background:
-        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
-        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
-      border-bottom:1px solid rgba(0,0,0,.06);
+    .qcard:hover{transform: translateY(-1px); box-shadow: var(--shadow);}
+    .qico{
+      width:46px;height:46px;border-radius:16px;
+      background: rgba(58,168,107,.14);
+      border:1px solid rgba(58,168,107,.18);
+      display:flex;align-items:center;justify-content:center;
+      color: var(--verde-escuro);
+      flex:0 0 auto;
     }
-    .card-head h2{
-      margin:0;
-      font-size:16px;
+    .qtext b{
+      display:block;
       font-weight:1200;
       color:#10312c;
+      margin-top:2px;
     }
-    .card-head p{
+    .qtext span{
+      display:block;
       margin-top:6px;
       color:rgba(16,49,44,.72);
       font-weight:850;
-      font-size:13.4px;
-      line-height:1.5;
-      max-width: 80ch;
+      font-size:13.6px;
+      line-height:1.4;
     }
 
-    .card-body{
-      padding:16px;
-      display:grid;
-      gap:14px;
+    @media (max-width: 900px){
+      .brand{min-width: unset;}
+      .greet{display:none;}
     }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
+    @media (max-width: 620px){
+      .quick{grid-template-columns:1fr;}
     }
-    @media (max-width: 760px){
-      .grid{grid-template-columns:1fr;}
-    }
-
-    .field{display:grid;gap:8px;}
-    .field label{
-      font-weight:1000;
-      font-size:13px;
-      color:rgba(16,49,44,.80);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .field label i{color:var(--verde);}
-
-    .input{
-      width:100%;
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.10);
-      background:#fff;
-      color:#0f2f2b;
-      font-weight:850;
-      font-size:15px;
-      outline:none;
-      box-shadow: var(--shadow-soft);
-      transition:.18s;
-    }
-    .input:focus{ box-shadow: var(--shadow-soft), var(--ring); }
-
-    .input[readonly]{
-      background:#f6fbf8;
-      color:#2c3f3a;
-    }
-
-    .hint{
-      color:rgba(16,49,44,.66);
-      font-weight:850;
-      font-size:12.8px;
-      line-height:1.45;
-    }
-
-    .actions-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:4px;
-    }
-    .actions-row .btn{
-      border-radius:16px;
-      padding:12px 14px;
-      font-size:14.2px;
-    }
-    .actions-row .btn-primary{flex:1;justify-content:center;}
-
-    .softbox{
-      border-radius:16px;
-      padding:12px;
-      background: rgba(58,168,107,.08);
-      border:1px solid rgba(58,168,107,.14);
-      color:rgba(16,49,44,.82);
-      font-weight:900;
-      font-size:13.2px;
-      line-height:1.5;
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+      .brand img{width:124px;}
     }
   </style>
 </head>
@@ -352,16 +261,22 @@
     <div class="container header-inner">
       <div class="brand">
         <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
-        <div class="headtext">
-          <div class="titleline" id="titleline">Meu perfil</div>
-          <div class="subtitle" id="subtitle">Comprador</div>
+        <div class="greet">
+          <div id="hello" class="hello">Olá!</div>
+          <div class="subtitle">Área do comprador</div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn btn-outline" id="back" type="button" title="Voltar">
-          <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
+        <!-- ✅ só esses 2 + sair -->
+        <button class="btn btn-outline" id="profile" type="button" title="Meu perfil">
+          <i class="fa-solid fa-user"></i> <span>Perfil</span>
         </button>
+
+        <button class="btn btn-soft" id="myRes" type="button" title="Minhas reservas">
+          <i class="fa-solid fa-receipt"></i> <span>Reservas</span>
+        </button>
+
         <button class="btn btn-danger" id="logout" type="button" title="Sair">
           <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
         </button>
@@ -372,66 +287,29 @@
   <main class="container">
     <div class="page-head">
       <div class="page-title">
-        <h1>Perfil do comprador</h1>
-        <p>Atualize seus dados para facilitar suas reservas e a retirada na feira.</p>
+        <h1>Bem-vindo(a) 👋</h1>
+        <p>
+          Aqui você acessa rapidamente seu perfil e as suas reservas.
+        </p>
       </div>
     </div>
 
-    <div id="msg" class="alert"></div>
-
-    <section class="card" aria-label="Dados do comprador">
-      <div class="card-head">
-        <h2>Dados pessoais</h2>
-        <p>Seu e-mail é o mesmo da conta. Você pode editar nome, celular e o endereço resumido.</p>
-      </div>
-
-      <div class="card-body">
-        <div class="softbox">
-          <i class="fa-solid fa-shield-halved" style="color:var(--verde);margin-right:8px;"></i>
-          Dica: mantenha o celular certo para o vendedor conseguir confirmar sua reserva.
+    <section class="quick" aria-label="Ações do comprador">
+      <a class="qcard" href="perfil-comp.html" id="goProfile">
+        <div class="qico"><i class="fa-solid fa-user-pen"></i></div>
+        <div class="qtext">
+          <b>Meu perfil</b>
+          <span>Atualize seu nome, celular e endereço para facilitar as retiradas.</span>
         </div>
+      </a>
 
-        <form id="form" class="grid" novalidate>
-          <div class="field">
-            <label for="first_name"><i class="fa-solid fa-user"></i> Nome</label>
-            <input class="input" id="first_name" maxlength="30" autocomplete="given-name" required />
-            <div class="hint">Máx 30 caracteres.</div>
-          </div>
-
-          <div class="field">
-            <label for="last_name"><i class="fa-solid fa-user"></i> Sobrenome</label>
-            <input class="input" id="last_name" maxlength="30" autocomplete="family-name" required />
-            <div class="hint">Máx 30 caracteres.</div>
-          </div>
-
-          <div class="field">
-            <label for="phone"><i class="fa-solid fa-phone"></i> Celular</label>
-            <input class="input" id="phone" inputmode="tel" autocomplete="tel-national" placeholder="(89) 91234-5678" required />
-            <div class="hint">DDD + número (10 ou 11 dígitos).</div>
-          </div>
-
-          <div class="field">
-            <label for="email"><i class="fa-solid fa-envelope"></i> E-mail</label>
-            <input class="input" id="email" type="email" readonly />
-            <div class="hint">O e-mail é da conta e não pode ser alterado aqui.</div>
-          </div>
-
-          <div class="field" style="grid-column:1/-1">
-            <label for="address_text"><i class="fa-solid fa-location-dot"></i> Endereço (linha única)</label>
-            <input class="input" id="address_text" placeholder="Rua, número • bairro • cidade - UF • CEP..." />
-            <div class="hint">Ex: Rua X, 123 • Centro • Picos - PI • CEP 64600-000</div>
-          </div>
-
-          <div class="actions-row" style="grid-column:1/-1">
-            <button id="saveBtn" class="btn btn-primary" type="submit">
-              <i class="fa-solid fa-floppy-disk"></i> Salvar
-            </button>
-            <button id="reloadBtn" class="btn btn-outline" type="button">
-              <i class="fa-solid fa-rotate"></i> Recarregar
-            </button>
-          </div>
-        </form>
-      </div>
+      <a class="qcard" href="reservas-comp.html" id="goRes">
+        <div class="qico"><i class="fa-solid fa-clipboard-check"></i></div>
+        <div class="qtext">
+          <b>Minhas reservas</b>
+          <span>Acompanhe o status (pendente, confirmada ou cancelada) e detalhes.</span>
+        </div>
+      </a>
     </section>
   </main>
 
@@ -443,135 +321,64 @@
     );
 
     const el = (id)=>document.getElementById(id);
-    const msgEl = el("msg");
 
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+    function bestNameFromUser(user){
+      const md = user?.user_metadata || {};
+      const full = String(md.full_name || "").trim();
+      if (full) return full;
 
-    function showMsg(text, isErr=false){
-      msgEl.className = "alert show " + (isErr ? "err" : "ok");
-      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
-    }
-    function clearMsg(){
-      msgEl.className = "alert";
-      msgEl.innerHTML = "";
-    }
+      const first = String(md.first_name || "").trim();
+      const last  = String(md.last_name || "").trim();
+      const join = (first + " " + last).trim();
+      if (join) return join;
 
-    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
-    function maskPhone(v){
-      const d = onlyDigits(v).slice(0,11);
-      if (d.length <= 2) return d ? `(${d}` : "";
-      if (d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`;
-      if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6,10)}`;
-      return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;
-    }
-    el("phone").addEventListener("input", (e)=> e.target.value = maskPhone(e.target.value));
-
-    function metaGet(user, key, fallback=""){
-      const v = user?.user_metadata?.[key];
-      return (typeof v === "string") ? v : fallback;
+      const email = String(user?.email || "");
+      const beforeAt = email.includes("@") ? email.split("@")[0] : email;
+      return beforeAt ? beforeAt : "Olá!";
     }
 
     async function requireAuth(){
       const { data:{ user }, error } = await sb.auth.getUser();
       if (error) throw error;
-      if (!user){ location.href="login.html"; return null; }
+      if (!user){
+        location.href="login.html";
+        return null;
+      }
 
-      el("email").value = user.email || "";
-
-      const full = (user.user_metadata?.full_name || "").trim();
-      el("titleline").textContent = full ? full : "Meu perfil";
-      el("subtitle").textContent = "Comprador";
+      const name = bestNameFromUser(user);
+      el("hello").textContent = "Olá, " + name + "!";
       return user;
     }
 
-    async function reloadAll(){
-      clearMsg();
-      const user = await requireAuth();
-      if (!user) return;
+    // Botões do header (somente perfil e reservas)
+    el("profile").onclick = ()=> location.href = "perfil-comp.html";
+    el("myRes").onclick = ()=> location.href = "reservas-comp.html";
 
-      el("first_name").value = metaGet(user, "first_name", "");
-      el("last_name").value  = metaGet(user, "last_name", "");
-      el("phone").value      = metaGet(user, "phone", "");
-      el("address_text").value = metaGet(user, "address_text", "");
-    }
-
-    async function saveMeta(payload){
-      const { error } = await sb.auth.updateUser({ data: payload });
-      if (error) throw error;
-    }
-
-    el("form").addEventListener("submit", async (ev)=>{
-      ev.preventDefault();
-      clearMsg();
-
-      const btn = el("saveBtn");
-      const reloadBtn = el("reloadBtn");
-      btn.disabled = true;
-      reloadBtn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
-
-      try{
-        const { data:{ user } } = await sb.auth.getUser();
-        if (!user) return location.href="login.html";
-
-        const first_name = el("first_name").value.trim().slice(0,30);
-        const last_name  = el("last_name").value.trim().slice(0,30);
-        const full_name  = (first_name + " " + last_name).trim();
-
-        const phone = el("phone").value.trim();
-        const address_text = el("address_text").value.trim();
-
-        if (!first_name) throw new Error("Informe seu nome.");
-        if (!last_name) throw new Error("Informe seu sobrenome.");
-        if (!onlyDigits(phone)) throw new Error("Informe seu celular.");
-        const digits = onlyDigits(phone);
-        if (!(digits.length === 10 || digits.length === 11)) throw new Error("Celular inválido. Use DDD + número.");
-
-        await saveMeta({
-          role: "buyer",
-          first_name,
-          last_name,
-          full_name,
-          phone,
-          address_text: address_text || null
-        });
-
-        // tenta também atualizar no profiles (se existir)
-        try{
-          await sb.from("profiles")
-            .update({ full_name, address_text: address_text || null })
-            .eq("id", user.id);
-        }catch(_e){}
-
-        showMsg("Perfil salvo ✅", false);
-        await reloadAll();
-      }catch(e){
-        showMsg(e.message || "Erro ao salvar.", true);
-      }finally{
-        btn.disabled = false;
-        reloadBtn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Salvar`;
-      }
-    });
-
-    el("reloadBtn").onclick = reloadAll;
-
-    el("back").onclick = ()=> location.href="telainicial-comp.html";
+    // ✅ sair
     el("logout").onclick = async ()=>{
-      await sb.auth.signOut();
-      location.href="login.html";
+      try{
+        await sb.auth.signOut();
+      }finally{
+        location.href="login.html";
+      }
     };
 
+    // ✅ se auth mudar, atualiza nome / redireciona se sair
+    sb.auth.onAuthStateChange((_event, session)=>{
+      if (!session?.user){
+        location.href="login.html";
+        return;
+      }
+      el("hello").textContent = "Olá, " + bestNameFromUser(session.user) + "!";
+    });
+
     (async ()=>{
-      try{ await reloadAll(); }
-      catch(e){ showMsg(e.message || "Erro ao carregar perfil.", true); }
+      try{
+        await requireAuth();
+      }catch(e){
+        console.error(e);
+        location.href="login.html";
+      }
     })();
   </script>
 </body>
