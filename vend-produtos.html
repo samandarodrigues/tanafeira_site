@@ -3,227 +3,604 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vendedor - Produtos</title>
-  <style>
-    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+  <title>TaNaFeira • Vendedor • Produtos</title>
 
-    .header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <style>
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
+
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
+
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
     }
-    .brand{font-weight:900;font-size:18px}
-    .muted{opacity:.75}
-    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input,select,textarea{font-family:inherit;}
+
+    .container{
+      width:min(1240px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+      min-width: 0;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .headtext{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width: 0;
+    }
+    .titleline{
+      font-weight:1100;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 36ch;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 52ch;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
 
     .btn{
-      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
-      font-weight:800;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
     }
-    .btn:hover{background:#f6f6f6}
-    .btn-primary{background:#111;color:#fff;border:0}
-    .btn-primary:hover{filter:brightness(.95)}
-    .btn-danger{border:1px solid #f0b7b7;background:#ffe9e9}
-    .btn-danger:hover{filter:brightness(.98)}
-    button:disabled{opacity:.6;cursor:not-allowed}
+    .btn i{opacity:.95;}
 
-    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+    .btn-outline{
+      background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
 
+    .btn-soft{
+      background: rgba(58,168,107,.10);
+      color:#0f4b45;
+      border:1px solid rgba(58,168,107,.18);
+    }
+    .btn-soft:hover{transform: translateY(-1px); background: rgba(58,168,107,.14);}
+
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
+
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .brand img{width:124px;}
+      .headtext{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 20px);
+      padding-bottom: 40px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 80ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
+    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+
+    /* ===== TOOLBAR ===== */
     .toolbar{
-      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-      margin:10px 0 14px;
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr 220px auto;
+      gap:12px;
+      align-items:center;
     }
-    .search{
-      flex:1;min-width:220px;
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    @media (max-width: 900px){
+      .toolbar{grid-template-columns: 1fr 1fr;}
+      .toolbar .btn-primary{grid-column:1 / -1;}
     }
-    select, input{
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    @media (max-width: 520px){
+      .toolbar{grid-template-columns: 1fr;}
     }
 
-    .tablewrap{border:1px solid #ddd;border-radius:16px;overflow:hidden}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:12px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
-    th{background:#fafafa;font-size:13px;text-transform:uppercase;letter-spacing:.03em;opacity:.85}
-    tr:last-child td{border-bottom:0}
-
-    .pill{
-      display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #ddd;font-size:12px;font-weight:900
+    .input, select, textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.92);
+      color:#0f2f2b;
+      font-weight:850;
+      font-size:15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition: .18s;
     }
-    .pill.on{background:#e9ffe9;border-color:#b7f0b7}
-    .pill.off{background:#ffe9e9;border-color:#f0b7b7}
+    .input:focus, select:focus, textarea:focus{ box-shadow: var(--shadow-soft), var(--ring); }
 
-    .price{font-weight:900}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    /* ===== TABLE ===== */
+    .tablewrap{
+      margin-top:14px;
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:12px 14px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left;vertical-align:top;}
+    th{
+      background: rgba(255,255,255,.65);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      opacity:.85;
+      font-weight:1000;
+      color:#10312c;
+    }
+    tr:last-child td{border-bottom:0;}
 
     .thumb{
-      width:44px;height:44px;border-radius:10px;border:1px solid #ddd;object-fit:cover;
-      background:#f6f6f6;display:inline-block;
+      width:44px;height:44px;border-radius:12px;border:1px solid rgba(0,0,0,.10);
+      object-fit:cover;background:#f0f5f3;display:inline-block;flex:0 0 auto;
     }
 
-    .card{border:1px solid #ddd;border-radius:16px;padding:16px;margin-top:14px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .span2{grid-column:1/-1}
-    label{display:block;font-size:14px;opacity:.85;margin:6px 0}
-    textarea{
-      width:100%;min-height:90px;resize:vertical;
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,.10);
+      background: rgba(58,168,107,.08);
+      color:#0f4b45;
+      font-size:12px;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+    .pill.off{background: rgba(240,183,183,.25); color:#5a1b1b; border-color: rgba(240,183,183,.55);}
+
+    .price{font-weight:1200;}
+    .muted{color:var(--muted);font-weight:850;}
+
+    .actions-td{display:flex;gap:10px;flex-wrap:wrap;}
+    .hide-sm{ }
+    @media (max-width: 860px){
+      .hide-sm{display:none;}
     }
 
-    .mediaRow{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
-    .mediaBox{flex:1;min-width:240px}
-    .previewBox{min-width:220px}
-
-    audio{width:100%}
-
-    @media (max-width:860px){
-      .grid{grid-template-columns:1fr}
-      .hide-sm{display:none}
+    /* ===== FORM CARD ===== */
+    .card{
+      margin-top:16px;
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
     }
+    .card-head{
+      padding:16px 16px 12px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .card-head h2{margin:0;font-size:16px;font-weight:1200;color:#10312c;}
+    .card-head p{margin-top:6px;color:rgba(16,49,44,.72);font-weight:850;font-size:13.4px;line-height:1.5;max-width: 90ch;}
+
+    .card-body{padding:16px;display:grid;gap:14px;}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .span2{grid-column:1/-1;}
+    @media (max-width: 860px){ .grid{grid-template-columns: 1fr;} }
+
+    .field{display:grid;gap:8px;}
+    .field label{
+      font-weight:1000;
+      font-size:13px;
+      color:rgba(16,49,44,.80);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .field label i{color:var(--verde);}
+
+    .hint{
+      color:rgba(16,49,44,.66);
+      font-weight:850;
+      font-size:12.8px;
+      line-height:1.45;
+    }
+
+    .mediaRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr 260px;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width: 980px){ .mediaRow{grid-template-columns:1fr 1fr;} }
+    @media (max-width: 680px){ .mediaRow{grid-template-columns:1fr;} }
+
+    .mediaBox{
+      background: rgba(58,168,107,.06);
+      border:1px solid rgba(58,168,107,.14);
+      border-radius:18px;
+      padding:12px;
+    }
+
+    .previewBox{
+      background: rgba(0,90,99,.05);
+      border:1px solid rgba(0,90,99,.10);
+      border-radius:18px;
+      padding:12px;
+    }
+
+    .previewImg{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      object-fit:cover;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#f0f5f3;
+      display:none;
+    }
+
+    audio{width:100%;border-radius:12px;}
+
+    .actions-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+    .actions-row .btn{
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14.2px;
+    }
+    .actions-row .btn-primary{flex:1;justify-content:center;}
+    .danger-right{margin-left:auto;}
+
+    .formHint{display:none;color:rgba(16,49,44,.74);font-weight:850;font-size:12.8px;line-height:1.45;}
+
   </style>
 </head>
-<body>
 
-  <header class="header">
-    <div>
-      <div class="brand">TaNaFeira</div>
-      <div id="subtitle" class="muted">Vitrine (Produtos)</div>
-    </div>
-    <div class="right">
-      <button class="btn" id="back" type="button">Voltar</button>
-      <button class="btn" id="logout" type="button">Sair</button>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="headtext">
+          <div class="titleline" id="titleline">Produtos</div>
+          <div class="subtitle" id="subtitle">Vitrine do vendedor</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline" id="back" type="button" title="Voltar">
+          <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
+        </button>
+        <button class="btn btn-danger" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div id="msg"></div>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Minha vitrine</h1>
+        <p>Crie, edite, ative/desative e organize o estoque. A mídia (imagem/áudio) é opcional.</p>
+      </div>
+    </div>
 
-  <div class="toolbar">
-    <input id="q" class="search" placeholder="Buscar por nome..." />
-    <select id="filterActive" title="Filtrar por status">
-      <option value="all">Todos</option>
-      <option value="active">Somente ativos</option>
-      <option value="inactive">Somente inativos</option>
-    </select>
-    <button id="btnNew" class="btn btn-primary" type="button">+ Novo produto</button>
-  </div>
+    <div id="msg" class="alert"></div>
 
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Produto</th>
-          <th class="hide-sm">Categoria</th>
-          <th>Preço</th>
-          <th>Unidade</th>
-          <th>Estoque</th>
-          <th>Status</th>
-          <th>Mídia</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="tbody">
-        <tr><td colspan="8" class="muted">Carregando...</td></tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="toolbar" role="search" aria-label="Ferramentas de busca e ações">
+      <input id="q" class="input" placeholder="Buscar por nome..." autocomplete="off" />
+      <select id="filterActive" aria-label="Filtrar por status">
+        <option value="all">Todos</option>
+        <option value="active">Somente ativos</option>
+        <option value="inactive">Somente inativos</option>
+      </select>
+      <button id="btnNew" class="btn btn-primary" type="button">
+        <i class="fa-solid fa-plus"></i> Novo produto
+      </button>
+    </div>
 
-  <div class="card" id="formCard" style="display:none;">
-    <h2 id="formTitle" style="margin:0 0 8px;">Novo produto</h2>
-    <div class="muted" style="margin-bottom:10px;">Preço no estilo banco: digite números → vira R$ automaticamente.</div>
+    <section class="tablewrap" aria-label="Tabela de produtos">
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th class="hide-sm">Categoria</th>
+            <th>Preço</th>
+            <th>Unidade</th>
+            <th>Estoque</th>
+            <th>Status</th>
+            <th>Mídia</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="8" class="muted">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </section>
 
-    <form id="form" class="grid" novalidate>
-      <div class="span2">
-        <label for="name">Nome do produto</label>
-        <input id="name" required maxlength="80" placeholder="Ex: Tomate cereja" />
-        <div class="muted">Máx 80 caracteres.</div>
+    <section class="card" id="formCard" style="display:none;" aria-label="Formulário de produto">
+      <div class="card-head">
+        <h2 id="formTitle">Novo produto</h2>
+        <p>Preço no estilo banco: digite números → vira “R$” automaticamente. Ex: <b>1234</b> → <b>R$ 12,34</b>.</p>
       </div>
 
-      <div class="span2">
-        <label for="description">Descrição (opcional)</label>
-        <textarea id="description" maxlength="500" placeholder="Ex: colhido no dia, sem agrotóxico..."></textarea>
-        <div class="muted">Máx 500 caracteres.</div>
-      </div>
-
-      <div>
-        <label for="category_id">Categoria</label>
-        <select id="category_id" required>
-          <option value="">Carregando...</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="unit">Unidade</label>
-        <select id="unit" required>
-          <option value="">Selecione...</option>
-          <option value="un">Unidade (un)</option>
-          <option value="kg">Quilo (kg)</option>
-          <option value="g">Grama (g)</option>
-          <option value="L">Litro (L)</option>
-          <option value="ml">Mililitro (ml)</option>
-          <option value="dz">Dúzia (dz)</option>
-          <option value="pct">Pacote (pct)</option>
-          <option value="cx">Caixa (cx)</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="price">Preço</label>
-        <input id="price" inputmode="numeric" autocomplete="off" />
-        <div class="muted">Digite só números. Ex: 1234 → R$ 12,34</div>
-      </div>
-
-      <div>
-        <label for="stock">Estoque disponível</label>
-        <input id="stock" required inputmode="numeric" placeholder="Ex: 20" />
-        <div class="muted">Somente números inteiros (mínimo 1).</div>
-      </div>
-
-      <div class="span2">
-        <label>Mídia do produto</label>
-        <div class="mediaRow">
-          <div class="mediaBox">
-            <div style="margin-bottom:8px">
-              <strong>Imagem (opcional)</strong>
-              <div class="muted">PNG/JPG. Para MVP, 1 imagem por produto.</div>
-            </div>
-            <input id="image" type="file" accept="image/*" />
+      <div class="card-body">
+        <form id="form" class="grid" novalidate>
+          <div class="field span2">
+            <label for="name"><i class="fa-solid fa-apple-whole"></i> Nome do produto</label>
+            <input class="input" id="name" required maxlength="80" placeholder="Ex: Tomate cereja" />
+            <div class="hint">Máx 80 caracteres.</div>
           </div>
 
-          <div class="mediaBox">
-            <div style="margin-bottom:8px">
-              <strong>Áudio (opcional)</strong>
-              <div class="muted">Grave uma descrição rápida do produto.</div>
-            </div>
-
-            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-              <button class="btn" id="recBtn" type="button">Gravar</button>
-              <button class="btn" id="stopBtn" type="button" disabled>Parar</button>
-              <span id="recStatus" class="muted"></span>
-            </div>
-
-            <audio id="audioPreview" controls style="margin-top:8px;display:none"></audio>
+          <div class="field span2">
+            <label for="description"><i class="fa-solid fa-align-left"></i> Descrição (opcional)</label>
+            <textarea id="description" maxlength="500" placeholder="Ex: colhido no dia, sem agrotóxico..."></textarea>
+            <div class="hint">Máx 500 caracteres.</div>
           </div>
 
-          <div class="previewBox">
-            <div class="muted" style="margin-bottom:8px">Preview imagem</div>
-            <img id="imgPreview" class="thumb" style="width:180px;height:180px;display:none" />
-            <div id="imgPreviewHint" class="muted">—</div>
+          <div class="field">
+            <label for="category_id"><i class="fa-solid fa-tag"></i> Categoria</label>
+            <select id="category_id" required>
+              <option value="">Carregando...</option>
+            </select>
           </div>
-        </div>
 
-        <div class="muted" style="margin-top:10px">
-          Obs: a mídia é salva no Storage. Se não quiser mídia, é só não anexar/gravar.
-        </div>
+          <div class="field">
+            <label for="unit"><i class="fa-solid fa-scale-balanced"></i> Unidade</label>
+            <select id="unit" required>
+              <option value="">Selecione...</option>
+              <option value="un">Unidade (un)</option>
+              <option value="kg">Quilo (kg)</option>
+              <option value="g">Grama (g)</option>
+              <option value="L">Litro (L)</option>
+              <option value="ml">Mililitro (ml)</option>
+              <option value="dz">Dúzia (dz)</option>
+              <option value="pct">Pacote (pct)</option>
+              <option value="cx">Caixa (cx)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="price"><i class="fa-solid fa-money-bill-wave"></i> Preço</label>
+            <input class="input" id="price" inputmode="numeric" autocomplete="off" />
+            <div class="hint">Digite só números. Ex: 1234 → R$ 12,34</div>
+          </div>
+
+          <div class="field">
+            <label for="stock"><i class="fa-solid fa-box"></i> Estoque disponível</label>
+            <input class="input" id="stock" required inputmode="numeric" placeholder="Ex: 20" />
+            <div class="hint">Somente inteiros. Mínimo 1.</div>
+          </div>
+
+          <div class="span2">
+            <div class="hint" style="margin-bottom:10px;font-weight:1000;color:rgba(16,49,44,.78)">
+              <i class="fa-solid fa-photo-film" style="color:var(--verde);margin-right:6px"></i>
+              Mídia do produto (opcional)
+            </div>
+
+            <div class="mediaRow">
+              <div class="mediaBox">
+                <div style="font-weight:1000;margin-bottom:6px;color:#10312c">
+                  <i class="fa-solid fa-image" style="color:var(--verde);margin-right:6px"></i>
+                  Imagem
+                </div>
+                <div class="hint" style="margin-bottom:10px">PNG/JPG. Para MVP, 1 imagem por produto.</div>
+                <input class="input" id="image" type="file" accept="image/*" />
+              </div>
+
+              <div class="mediaBox">
+                <div style="font-weight:1000;margin-bottom:6px;color:#10312c">
+                  <i class="fa-solid fa-microphone" style="color:var(--verde);margin-right:6px"></i>
+                  Áudio
+                </div>
+                <div class="hint" style="margin-bottom:10px">Grave uma descrição rápida do produto.</div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                  <button class="btn btn-outline" id="recBtn" type="button">
+                    <i class="fa-solid fa-circle"></i> Gravar
+                  </button>
+                  <button class="btn btn-outline" id="stopBtn" type="button" disabled>
+                    <i class="fa-solid fa-stop"></i> Parar
+                  </button>
+                  <span id="recStatus" class="muted"></span>
+                </div>
+
+                <audio id="audioPreview" controls style="margin-top:10px;display:none"></audio>
+              </div>
+
+              <div class="previewBox">
+                <div class="hint" style="margin-bottom:10px;font-weight:1000;color:rgba(16,49,44,.78)">
+                  Preview
+                </div>
+                <img id="imgPreview" class="previewImg" alt="Preview da imagem do produto" />
+                <div id="imgPreviewHint" class="muted">Nenhuma imagem selecionada.</div>
+              </div>
+            </div>
+
+            <div class="hint" style="margin-top:10px">
+              Obs: a mídia é salva no Storage. Se não quiser mídia, é só não anexar/gravar.
+            </div>
+          </div>
+
+          <div class="span2 actions-row">
+            <button id="saveBtn" class="btn btn-primary" type="submit">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar
+            </button>
+            <button id="cancelBtn" class="btn btn-outline" type="button">
+              Cancelar
+            </button>
+            <button id="deleteBtn" class="btn btn-danger danger-right" type="button" style="display:none;">
+              <i class="fa-solid fa-trash"></i> Excluir
+            </button>
+          </div>
+
+          <div class="span2 formHint" id="formHint"></div>
+        </form>
       </div>
-
-      <div class="span2" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-        <button id="saveBtn" class="btn btn-primary" type="submit">Salvar</button>
-        <button id="cancelBtn" class="btn" type="button">Cancelar</button>
-        <button id="deleteBtn" class="btn btn-danger" type="button" style="margin-left:auto;display:none;">Excluir</button>
-      </div>
-
-      <div class="span2 muted" id="formHint" style="display:none;"></div>
-    </form>
-  </div>
+    </section>
+  </main>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
@@ -234,13 +611,26 @@
     // ===== helpers UI =====
     const el = (id)=>document.getElementById(id);
     const msgEl = el("msg");
-    function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
-      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.textContent = text;
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML =
+        `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>` +
+        `<div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
+    }
 
     // ===== guards =====
     async function requireVendor(){
@@ -260,25 +650,25 @@
       if (prof.role !== "vendor"){ location.href="telainicial-comp.html"; return null; }
       if (prof.vendor_onboarding_done === false){ location.href="vend-onboarding.html"; return null; }
 
-      el("subtitle").textContent = "Vitrine (Produtos) — " + (prof.full_name || "");
-      return prof;
+      const displayName =
+        (prof.full_name || "").trim() ||
+        (user.user_metadata?.full_name || "").trim() ||
+        (user.user_metadata?.first_name || "").trim() ||
+        (user.email || "Vendedor");
+
+      el("titleline").textContent = displayName;
+      el("subtitle").textContent = "Vitrine (Produtos)";
+
+      return { user, prof, displayName };
     }
 
     // ===== state =====
-    let ME = null;
+    let ME = null; // auth user
     let CATEGORIES = [];
     let PRODUCTS = [];
     let editingId = null;
 
     // ===== util =====
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
     function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
 
     // ===== money (banco) =====
@@ -305,16 +695,12 @@
       return Number(inputEl.dataset.cents || "0");
     }
 
-    // ===== stock (AGORA: mínimo 1, nada de 0/negativo) =====
+    // ===== stock (mínimo 1) =====
     function normalizeStock(v){
       const d = onlyDigits(v);
       if (!d) return null;
-
       const n = Number(d);
-
-      // ❌ não aceita 0 nem negativo
       if (!Number.isInteger(n) || n <= 0) return null;
-
       return n;
     }
 
@@ -332,7 +718,7 @@
       const file = imageEl.files?.[0];
       if (!file){
         imgPreview.style.display="none";
-        imgPreviewHint.textContent = "—";
+        imgPreviewHint.textContent = "Nenhuma imagem selecionada.";
         return;
       }
       imgPreview.src = URL.createObjectURL(file);
@@ -402,7 +788,6 @@
 
     async function uploadProductAudio({ productId, vendorId }){
       if (!audioBlob) return null;
-
       const path = `${vendorId}/${productId}/audio.webm`;
 
       const { error } = await sb.storage
@@ -424,7 +809,6 @@
 
       CATEGORIES = data || [];
       const sel = el("category_id");
-
       sel.innerHTML = `<option value="">Selecione...</option>` + CATEGORIES
         .map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`)
         .join("");
@@ -453,7 +837,6 @@
       const f = el("filterActive").value;
 
       let rows = PRODUCTS.slice();
-
       if (q) rows = rows.filter(p => (p.title || "").toLowerCase().includes(q));
       if (f === "active") rows = rows.filter(p => p.active === true);
       if (f === "inactive") rows = rows.filter(p => p.active === false);
@@ -465,9 +848,11 @@
       }
 
       tbody.innerHTML = rows.map(p=>{
-        const status = p.active ? `<span class="pill on">ATIVO</span>` : `<span class="pill off">INATIVO</span>`;
-        const cat = getCategoryName(p.category_id);
+        const status = p.active
+          ? `<span class="pill"><i class="fa-solid fa-circle-check"></i> Ativo</span>`
+          : `<span class="pill off"><i class="fa-solid fa-circle-xmark"></i> Inativo</span>`;
 
+        const cat = getCategoryName(p.category_id);
         const imgUrl = publicUrlFor(p.image_path);
         const audioUrl = publicUrlFor(p.audio_path);
 
@@ -475,10 +860,10 @@
           <tr>
             <td>
               <div style="display:flex;gap:10px;align-items:flex-start">
-                ${imgUrl ? `<img class="thumb" src="${imgUrl}" alt="Imagem do produto">` : `<span class="thumb"></span>`}
-                <div>
-                  <div style="font-weight:900">${escapeHtml(p.title || "")}</div>
-                  ${p.description ? `<div class="muted" style="margin-top:4px">${escapeHtml(p.description)}</div>` : ``}
+                ${imgUrl ? `<img class="thumb" src="${imgUrl}" alt="Imagem do produto">` : `<span class="thumb" aria-hidden="true"></span>`}
+                <div style="min-width:0">
+                  <div style="font-weight:1100;color:#10312c;line-height:1.2">${escapeHtml(p.title || "")}</div>
+                  ${p.description ? `<div class="muted" style="margin-top:6px;max-width:60ch">${escapeHtml(p.description)}</div>` : ``}
                 </div>
               </div>
             </td>
@@ -486,7 +871,7 @@
             <td class="hide-sm">${escapeHtml(cat)}</td>
             <td class="price">${formatCentsToBRL(p.price_cents)}</td>
             <td>${escapeHtml(p.unit || "")}</td>
-            <td>${Number.isFinite(p.stock) ? p.stock : 0}</td>
+            <td><b>${Number.isFinite(p.stock) ? p.stock : 0}</b></td>
             <td>${status}</td>
 
             <td>
@@ -494,9 +879,12 @@
             </td>
 
             <td>
-              <div class="actions">
-                <button class="btn" type="button" onclick="window.__edit('${p.id}')">Editar</button>
-                <button class="btn" type="button" onclick="window.__toggle('${p.id}')">
+              <div class="actions-td">
+                <button class="btn btn-outline" type="button" onclick="window.__edit('${p.id}')">
+                  <i class="fa-solid fa-pen"></i> Editar
+                </button>
+                <button class="btn btn-soft" type="button" onclick="window.__toggle('${p.id}')">
+                  <i class="fa-solid fa-toggle-${p.active ? "on" : "off"}"></i>
                   ${p.active ? "Desativar" : "Ativar"}
                 </button>
               </div>
@@ -510,11 +898,15 @@
     function openForm(mode, product=null){
       clearMsg();
       el("formCard").style.display = "block";
-      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+      // scroll pro form sem ficar escondido no header
+      setTimeout(()=>{
+        el("formCard").scrollIntoView({ behavior:"smooth", block:"start" });
+      }, 50);
 
       imageEl.value = "";
       imgPreview.style.display = "none";
-      imgPreviewHint.textContent = "—";
+      imgPreviewHint.textContent = "Nenhuma imagem selecionada.";
 
       audioBlob = null;
       audioChunks = [];
@@ -538,7 +930,7 @@
       } else {
         editingId = product.id;
         el("formTitle").textContent = "Editar produto";
-        el("deleteBtn").style.display = "inline-block";
+        el("deleteBtn").style.display = "inline-flex";
         el("formHint").style.display = "block";
         el("formHint").textContent = "Dica: se você anexar uma nova imagem/áudio aqui, ele substitui o anterior.";
 
@@ -576,7 +968,7 @@
 
       const saveBtn = el("saveBtn");
       saveBtn.disabled = true;
-      saveBtn.textContent = "Salvando...";
+      saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
 
       try{
         const title = el("name").value.trim();
@@ -589,11 +981,7 @@
         if (!title) return showMsg("Informe o nome do produto.", true);
         if (!category_id) return showMsg("Selecione uma categoria.", true);
         if (!unit) return showMsg("Selecione a unidade.", true);
-
-        // preço precisa ser > 0
         if (!price_cents || price_cents <= 0) return showMsg("Preço precisa ser maior que zero.", true);
-
-        // estoque precisa ser > 0
         if (stock === null) return showMsg("Estoque precisa ser maior que zero.", true);
 
         let productId = editingId;
@@ -616,7 +1004,6 @@
 
           if (insErr) throw insErr;
           productId = created.id;
-          showMsg("Produto criado! Agora salvando mídia...", false);
         } else {
           const { error: upErr } = await sb
             .from("products")
@@ -632,9 +1019,9 @@
             .eq("vendor_id", ME.id);
 
           if (upErr) throw upErr;
-          showMsg("Produto atualizado! Agora salvando mídia...", false);
         }
 
+        // mídia (opcional)
         const image_path = await uploadProductImage({ productId, vendorId: ME.id });
         const audio_path = await uploadProductAudio({ productId, vendorId: ME.id });
 
@@ -661,7 +1048,7 @@
         showMsg(e.message || "Erro ao salvar produto.", true);
       }finally{
         saveBtn.disabled = false;
-        saveBtn.textContent = "Salvar";
+        saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Salvar`;
       }
     }
 
@@ -681,7 +1068,7 @@
         if (error) throw error;
 
         await loadProducts();
-        showMsg(next ? "Produto ativado!" : "Produto desativado!", false);
+        showMsg(next ? "Produto ativado ✅" : "Produto desativado ✅", false);
       }catch(e){
         showMsg(e.message || "Erro ao ativar/desativar.", true);
       }
@@ -695,7 +1082,7 @@
       clearMsg();
       const btn = el("deleteBtn");
       btn.disabled = true;
-      btn.textContent = "Excluindo...";
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...`;
 
       try{
         const { error } = await sb
@@ -706,26 +1093,27 @@
 
         if (error) throw error;
 
-        showMsg("Produto excluído.", false);
+        showMsg("Produto excluído ✅", false);
         await loadProducts();
         closeForm();
       }catch(e){
         showMsg(e.message || "Erro ao excluir.", true);
       }finally{
         btn.disabled = false;
-        btn.textContent = "Excluir";
+        btn.innerHTML = `<i class="fa-solid fa-trash"></i> Excluir`;
       }
     }
 
+    // hooks
     window.__edit = (id)=>{
       const p = PRODUCTS.find(x => String(x.id) === String(id));
       if (p) openForm("edit", p);
     };
     window.__toggle = (id)=> toggleActive(id);
 
+    // events
     el("q").addEventListener("input", renderTable);
     el("filterActive").addEventListener("change", renderTable);
-
     el("btnNew").onclick = ()=> openForm("new");
     el("cancelBtn").onclick = closeForm;
     el("deleteBtn").onclick = deleteCurrent;
@@ -739,11 +1127,12 @@
 
     (async ()=>{
       try{
-        ME = await requireVendor();
-        if (!ME) return;
+        const pack = await requireVendor();
+        if (!pack) return;
+
+        ME = pack.user; // auth user
 
         bindMoneyInput(el("price"));
-
         await loadCategories();
         await loadProducts();
       }catch(e){
