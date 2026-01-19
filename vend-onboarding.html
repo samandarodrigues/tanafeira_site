@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendedor - Completar perfil</title>
+  <style>
+    body{font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px}
+
+    /* header (igual vend-home) */
+    .vend-header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+    }
+    .brand{font-weight:900;font-size:18px}
+    .muted{opacity:.75}
+    .btn{padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer}
+    .btn:hover{background:#f6f6f6}
+    .btn-primary{background:#111;color:#fff;border:0}
+    .btn-primary:hover{filter:brightness(.95)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    .card{border:1px solid #ddd;border-radius:16px;padding:16px}
+    .section{margin-top:14px}
+    h1{margin:0 0 6px}
+    h2{margin:0 0 6px;font-size:16px}
+    textarea,input{width:100%;padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px}
+    textarea{min-height:100px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+    #msg{display:none;margin-top:12px;padding:10px;border-radius:12px;border:1px solid #ddd}
+
+    /* categorias */
+    .cats{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    .cat{
+      border:1px solid #ddd;border-radius:14px;padding:10px;
+      display:flex;gap:10px;align-items:flex-start;
+      background:#fff;
+    }
+    .cat input{width:auto;margin-top:2px}
+    .cat strong{display:block}
+    .hint{font-size:13px;opacity:.75;margin-top:6px}
+
+    @media (max-width:860px){
+      .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:560px){
+      .cats{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <header class="vend-header">
+    <div>
+      <div class="brand">TaNaFeira</div>
+      <div class="muted">Onboarding do vendedor</div>
+    </div>
+    <div class="row" style="margin:0">
+      <button id="logout" class="btn" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div class="card">
+    <h1>Complete seu perfil para começar a vender</h1>
+    <div class="muted">Isso é rápido: escolha suas categorias e escreva uma bio curta.</div>
+
+    <div id="msg"></div>
+
+    <div class="section">
+      <h2>1) Quais categorias você vende? <span class="muted">(obrigatório)</span></h2>
+      <div class="hint">Escolha pelo menos 1 categoria. Você pode mudar depois.</div>
+      <div id="cats" class="cats"></div>
+    </div>
+
+    <div class="section">
+      <h2>2) Sua bio <span class="muted">(obrigatório)</span></h2>
+      <div class="hint">Ex: “Vendo frutas frescas na feira aos sábados. Entrego no Vale do Itaim.”</div>
+      <textarea id="bio" maxlength="300" placeholder="Escreva uma bio curta (máx 300 caracteres)"></textarea>
+      <div class="hint"><span id="bioCount">0</span>/300</div>
+    </div>
+
+    <div class="row" style="margin-top:14px;justify-content:flex-end">
+      <button id="save" class="btn btn-primary" type="button">Concluir e ir para o painel</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://addedjckqdzwgdstgqfz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const msgEl = document.getElementById("msg");
+    const catsEl = document.getElementById("cats");
+    const bioEl = document.getElementById("bio");
+    const bioCountEl = document.getElementById("bioCount");
+    const saveBtn = document.getElementById("save");
+
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){
+      msgEl.style.display="none";
+      msgEl.textContent = "";
+    }
+
+    bioEl.addEventListener("input", ()=>{
+      bioCountEl.textContent = String(bioEl.value.length);
+    });
+
+    async function requireVendor(){
+      const { data: { user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user) { location.href = "login.html"; return null; }
+
+      const { data: prof, error: e2 } = await sb
+        .from("profiles")
+        .select("id, role, vendor_onboarding_done, bio")
+        .eq("id", user.id)
+        .single();
+
+      if (e2) throw e2;
+
+      if (prof.role !== "vendor") {
+        location.href = "telainicial-comp.html";
+        return null;
+      }
+
+      // se já fez onboarding, manda pro painel
+      if (prof.vendor_onboarding_done) {
+        location.href = "vend-home.html";
+        return null;
+      }
+
+      // preenche bio se já tinha algo
+      if (prof.bio) {
+        bioEl.value = prof.bio;
+        bioCountEl.textContent = String(bioEl.value.length);
+      }
+
+      return user;
+    }
+
+    function renderCategories(list){
+      catsEl.innerHTML = "";
+      for (const c of list){
+        const item = document.createElement("label");
+        item.className = "cat";
+        item.innerHTML = `
+          <input type="checkbox" value="${c.id}" />
+          <div>
+            <strong>${escapeHtml(c.name)}</strong>
+            <div class="muted">${escapeHtml(c.slug)}</div>
+          </div>
+        `;
+        catsEl.appendChild(item);
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function selectedCategoryIds(){
+      return Array.from(catsEl.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(i => Number(i.value))
+        .filter(n => Number.isFinite(n));
+    }
+
+    async function loadCategories(){
+      const { data, error } = await sb
+        .from("categories")
+        .select("id,name,slug")
+        .order("name", { ascending: true });
+
+      if (error) throw error;
+      renderCategories(data || []);
+    }
+
+    async function saveOnboarding(){
+      clearMsg();
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Salvando...";
+
+      try{
+        const { data: { user } } = await sb.auth.getUser();
+        if (!user) { location.href="login.html"; return; }
+
+        const cats = selectedCategoryIds();
+        const bio = bioEl.value.trim();
+
+        if (cats.length === 0) {
+          return showMsg("Selecione pelo menos 1 categoria.", true);
+        }
+        if (!bio || bio.length < 10) {
+          return showMsg("Escreva uma bio (mínimo 10 caracteres).", true);
+        }
+
+        // 1) Atualiza profile (bio + flag)
+        const { error: e1 } = await sb
+          .from("profiles")
+          .update({ bio, vendor_onboarding_done: true })
+          .eq("id", user.id);
+        if (e1) throw e1;
+
+        // 2) Substitui categorias (limpa e reinsere)
+        const { error: e2 } = await sb
+          .from("vendor_categories")
+          .delete()
+          .eq("vendor_id", user.id);
+        if (e2) throw e2;
+
+        const rows = cats.map(category_id => ({ vendor_id: user.id, category_id }));
+        const { error: e3 } = await sb
+          .from("vendor_categories")
+          .insert(rows);
+        if (e3) throw e3;
+
+        showMsg("Perfil completo! Indo para o painel...", false);
+        setTimeout(()=> location.href = "vend-home.html", 700);
+      }catch(e){
+        showMsg(e.message || "Erro ao salvar onboarding.", true);
+      }finally{
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Concluir e ir para o painel";
+      }
+    }
+
+    (async ()=>{
+      try{
+        await requireVendor();
+        await loadCategories();
+      }catch(e){
+        showMsg(e.message || "Erro ao carregar onboarding.", true);
+      }
+    })();
+
+    document.getElementById("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+
+    saveBtn.onclick = saveOnboarding;
+  </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendedor - Home</title>
+  <style>
+    body{font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+    a.card{display:block;border:1px solid #ddd;border-radius:14px;padding:14px;text-decoration:none;color:inherit}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .muted{opacity:.75}
+    button{padding:10px;cursor:pointer;border-radius:12px;border:1px solid #ddd;background:#fff}
+    button:hover{background:#f6f6f6}
+    #msg{display:none;margin-top:12px;padding:10px;border-radius:12px;border:1px solid #ddd}
+    @media (max-width:680px){ .grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1 id="title">Painel do vendedor</h1>
+    <button id="logout">Sair</button>
+  </div>
+
+  <div id="msg"></div>
+
+  <div class="grid">
+    <a class="card" href="vend-produtos.html">
+      <strong>🧺 Vitrine (Produtos)</strong>
+      <div class="muted">Criar, editar, ativar/desativar, upload de mídia</div>
+    </a>
+
+    <a class="card" href="vend-reservas.html">
+      <strong>📦 Reservas recebidas</strong>
+      <div class="muted">Confirmar/cancelar reservas dos seus produtos</div>
+    </a>
+
+    <a class="card" href="vend-nots.html">
+      <strong>🔔 Notificações</strong>
+      <div class="muted">Alertas de novas reservas e atualizações</div>
+    </a>
+
+    <a class="card" href="vend-perfil.html">
+      <strong>👤 Meu perfil (vendedor)</strong>
+      <div class="muted">Editar dados do vendedor</div>
+    </a>
+
+    <a class="card" href="vend-telainicial.html">
+      <strong>🛒 Comprar (como vendedor)</strong>
+      <div class="muted">Acessar feed e reservar sem misturar com telas de comprador</div>
+    </a>
+
+    <a class="card" href="vend-minhas-reservas.html">
+      <strong>🧾 Minhas reservas (vendedor)</strong>
+      <div class="muted">Reservas que VOCÊ fez em outros vendedores</div>
+    </a>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://addedjckqdzwgdstgqfz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const msgEl = document.getElementById("msg");
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){
+      msgEl.style.display="none";
+      msgEl.textContent = "";
+    }
+
+    async function requireAuth(){
+      const { data: { user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+      return user;
+    }
+
+    // tenta pegar o profile (sem quebrar). se não existir, cria na hora.
+    async function getOrCreateProfile(user){
+      const meta = user.user_metadata || {};
+      const roleFromMeta = meta.role || user.app_metadata?.role || "buyer";
+
+      // ✅ maybeSingle: não explode se vier 0 linhas
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, role, full_name, vendor_onboarding_done")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      // erro real (RLS, tabela, etc)
+      if (error) throw error;
+
+      // se não existe profile, cria (MVP salva-vidas)
+      if (!data){
+        const payload = {
+          id: user.id,
+          role: roleFromMeta,
+          full_name: meta.full_name || [meta.first_name, meta.last_name].filter(Boolean).join(" ") || null,
+          vendor_onboarding_done: false
+        };
+
+        const { error: insErr } = await sb.from("profiles").insert(payload);
+        if (insErr) throw insErr;
+
+        const { data: data2, error: e2 } = await sb
+          .from("profiles")
+          .select("id, role, full_name, vendor_onboarding_done")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (e2) throw e2;
+        return data2;
+      }
+
+      return data;
+    }
+
+    async function requireVendor(){
+      const user = await requireAuth();
+      if (!user) return null;
+
+      const prof = await getOrCreateProfile(user);
+
+      // se por algum motivo ainda não veio profile
+      if (!prof) throw new Error("Não consegui carregar seu perfil.");
+
+      // gate de role
+      if (prof.role !== "vendor"){
+        location.href = "telainicial-comp.html";
+        return null;
+      }
+
+      // se ainda não completou onboarding, manda completar
+      if (prof.vendor_onboarding_done === false){
+        location.href = "vend-onboarding.html";
+        return null;
+      }
+
+      return prof;
+    }
+
+    (async()=>{
+      try{
+        clearMsg();
+        const me = await requireVendor();
+        if (!me) return;
+
+        document.getElementById("title").textContent =
+          "Painel do vendedor — " + (me.full_name || "");
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar painel do vendedor.", true);
+      }
+    })();
+
+    document.getElementById("logout").onclick = async()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+  </script>
+</body>
+</html>

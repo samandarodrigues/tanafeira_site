@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendedor - Comprar</title>
+
+  <style>
+    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+
+    .header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+    }
+    .brand{font-weight:900;font-size:18px}
+    .muted{opacity:.75}
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    .btn{
+      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
+      font-weight:800;
+    }
+    .btn:hover{background:#f6f6f6}
+    .btn-primary{background:#111;color:#fff;border:0}
+    .btn-primary:hover{filter:brightness(.95)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+
+    .toolbar{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .search{
+      flex:1;min-width:220px;
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    }
+    select{
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+      background:#fff;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width:980px){ .grid{grid-template-columns:repeat(2, minmax(0,1fr));} }
+    @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+
+    .card{
+      border:1px solid #ddd;border-radius:16px;overflow:hidden;background:#fff;
+      display:flex;flex-direction:column;
+    }
+    .media{
+      height:160px;background:#f6f6f6;border-bottom:1px solid #eee;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .media img{width:100%;height:100%;object-fit:cover}
+    .content{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
+    .title{font-weight:900}
+    .row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{
+      display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #ddd;
+      font-size:12px;font-weight:900;background:#fafafa;
+    }
+    .price{font-weight:900}
+    .desc{opacity:.8;font-size:14px}
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:auto}
+    .qty{
+      width:92px; padding:10px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    }
+    audio{width:100%}
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div>
+      <div class="brand">TaNaFeira</div>
+      <div id="subtitle" class="muted">Comprar (como vendedor)</div>
+    </div>
+    <div class="right">
+      <button class="btn" id="myRes" type="button">Minhas reservas</button>
+      <button class="btn" id="back" type="button">Voltar</button>
+      <button class="btn" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div id="msg"></div>
+
+  <div class="toolbar">
+    <input id="q" class="search" placeholder="Buscar produto..." />
+    <select id="cat">
+      <option value="all">Todas categorias</option>
+    </select>
+    <select id="onlyInStock" title="Somente com estoque">
+      <option value="yes">Somente com estoque</option>
+      <option value="no">Mostrar zerados também</option>
+    </select>
+    <button class="btn btn-primary" id="refresh" type="button">Atualizar</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const sb = supabase.createClient(
+      "https://addedjckqdzwgdstgqfz.supabase.co",
+      "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
+    );
+
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
+
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function formatCentsToBRL(cents){
+      const v = (Number(cents)||0) / 100;
+      return "R$ " + v.toFixed(2).replace(".", ",");
+    }
+
+    function publicUrlFor(path){
+      if (!path) return null;
+      return sb.storage.from("product-media").getPublicUrl(path).data.publicUrl;
+    }
+
+    // ===== state =====
+    let USER = null;
+    let CATEGORIES = [];
+    let PRODUCTS = [];
+    let VENDOR_NAME = new Map(); // vendor_id -> full_name
+
+    async function requireAuth(){
+      const { data:{ user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+      USER = user;
+      return user;
+    }
+
+    async function loadCategories(){
+      const { data, error } = await sb
+        .from("categories")
+        .select("id,name")
+        .order("name", { ascending:true });
+
+      if (error) throw error;
+      CATEGORIES = data || [];
+
+      const sel = el("cat");
+      sel.innerHTML =
+        `<option value="all">Todas categorias</option>` +
+        CATEGORIES.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+    }
+
+    async function loadProducts(){
+      const { data, error } = await sb
+        .from("products")
+        .select("id,vendor_id,name,description,price_cents,unit,stock,active,category_id,image_path,audio_path,created_at")
+        .eq("active", true)
+        .order("created_at", { ascending:false });
+
+      if (error) throw error;
+      PRODUCTS = data || [];
+
+      await loadVendorNamesForProducts(PRODUCTS);
+      render();
+    }
+
+    async function loadVendorNamesForProducts(prods){
+      VENDOR_NAME = new Map();
+
+      const vendorIds = Array.from(new Set((prods||[]).map(p => p.vendor_id).filter(Boolean).map(String)));
+      if (!vendorIds.length) return;
+
+      // pega do profiles (coluna full_name já existe no seu banco)
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", vendorIds);
+
+      if (error){
+        // se falhar por RLS, pelo menos não mostra o ID inteiro
+        vendorIds.forEach(id => VENDOR_NAME.set(String(id), "Vendedor"));
+        return;
+      }
+
+      (data || []).forEach(v => {
+        const name = (v.full_name || "").trim();
+        VENDOR_NAME.set(String(v.id), name || "Vendedor");
+      });
+
+      // fallback: quem não veio no select
+      vendorIds.forEach(id => {
+        if (!VENDOR_NAME.has(String(id))) VENDOR_NAME.set(String(id), "Vendedor");
+      });
+    }
+
+    function getCategoryName(id){
+      const c = CATEGORIES.find(x => String(x.id) === String(id));
+      return c ? c.name : "—";
+    }
+
+    function parsePositiveInt(val){
+      const s = String(val ?? "").trim();
+      if (!s) return null;
+      if (!/^\d+$/.test(s)) return null;
+      const n = Number(s);
+      if (!Number.isFinite(n)) return null;
+      if (n <= 0) return null;
+      return n;
+    }
+
+    function vendorLabel(vendor_id){
+      const name = VENDOR_NAME.get(String(vendor_id));
+      return name || "Vendedor";
+    }
+
+    function render(){
+      const q = (el("q").value || "").trim().toLowerCase();
+      const cat = el("cat").value;
+      const onlyInStock = el("onlyInStock").value === "yes";
+
+      let rows = PRODUCTS.slice();
+
+      if (q) rows = rows.filter(p => (p.name||"").toLowerCase().includes(q));
+      if (cat !== "all") rows = rows.filter(p => String(p.category_id) === String(cat));
+      if (onlyInStock) rows = rows.filter(p => Number(p.stock||0) > 0);
+
+      const grid = el("grid");
+      if (!rows.length){
+        grid.innerHTML = `<div class="muted">Nenhum produto encontrado.</div>`;
+        return;
+      }
+
+      grid.innerHTML = rows.map(p=>{
+        const imgUrl = publicUrlFor(p.image_path);
+        const audioUrl = publicUrlFor(p.audio_path);
+        const catName = getCategoryName(p.category_id);
+        const stock = Number(p.stock||0);
+
+        return `
+          <div class="card">
+            <div class="media">
+              ${imgUrl ? `<img src="${imgUrl}" alt="Imagem do produto">` : `<span class="muted">Sem imagem</span>`}
+            </div>
+
+            <div class="content">
+              <div class="row">
+                <div class="title">${escapeHtml(p.name||"")}</div>
+                <span class="pill">${escapeHtml(catName)}</span>
+              </div>
+
+              ${p.description ? `<div class="desc">${escapeHtml(p.description)}</div>` : ``}
+
+              <div class="row">
+                <div class="price">${formatCentsToBRL(p.price_cents)}</div>
+                <div class="muted">${escapeHtml(p.unit||"")}</div>
+              </div>
+
+              <div class="row">
+                <div class="muted">Estoque: <b>${stock}</b></div>
+                <div class="muted">Vendedor: <b>${escapeHtml(vendorLabel(p.vendor_id))}</b></div>
+              </div>
+
+              ${audioUrl ? `<audio controls src="${audioUrl}"></audio>` : ``}
+
+              <div class="actions">
+                <input class="qty" id="qty-${p.id}" inputmode="numeric" placeholder="Qtd" />
+                <button class="btn btn-primary" type="button" onclick="window.__reserve('${p.id}')"
+                  ${stock <= 0 ? "disabled" : ""}>
+                  Reservar
+                </button>
+              </div>
+
+              ${stock <= 0 ? `<div class="muted" style="font-size:13px">Produto sem estoque no momento.</div>` : ``}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // tenta inserir reserva com diferentes nomes de coluna de quantidade
+    async function insertReservationFlexible(baseRow, qty){
+      const qtyFields = ["quantity", "qty", "qtd", "amount", "count", "units"];
+
+      for (const field of qtyFields){
+        const row = { ...baseRow, [field]: qty };
+
+        // 1) tenta com vendor_id
+        let res = await sb.from("reservations").insert([{ ...row, vendor_id: baseRow.vendor_id }]);
+        if (!res.error) return res;
+
+        // se erro for "coluna não existe", tenta próximo field
+        const msg = (res.error?.message || "").toLowerCase();
+        const isMissingColumn =
+          msg.includes("could not find the") ||
+          msg.includes("column") && msg.includes("does not exist") ||
+          msg.includes("schema cache");
+
+        if (!isMissingColumn){
+          // não é erro de coluna -> devolve (RLS, etc)
+          return res;
+        }
+
+        // 2) tenta sem vendor_id
+        res = await sb.from("reservations").insert([row]);
+        if (!res.error) return res;
+
+        const msg2 = (res.error?.message || "").toLowerCase();
+        const isMissingColumn2 =
+          msg2.includes("could not find the") ||
+          msg2.includes("column") && msg2.includes("does not exist") ||
+          msg2.includes("schema cache");
+
+        if (!isMissingColumn2) return res;
+      }
+
+      // se chegou aqui, nenhum nome bateu
+      return { error: { message: "Não achei a coluna de quantidade em reservations (quantity/qty/qtd/etc). Me diga o nome certo." } };
+    }
+
+    async function reserveProduct(productId){
+      clearMsg();
+      try{
+        if (!USER) await requireAuth();
+
+        const p = PRODUCTS.find(x => String(x.id) === String(productId));
+        if (!p) return showMsg("Produto não encontrado.", true);
+
+        const qtyEl = document.getElementById(`qty-${p.id}`);
+        const qty = parsePositiveInt(qtyEl?.value);
+
+        if (qty === null) return showMsg("Quantidade inválida. Use inteiro maior que 0.", true);
+
+        const stock = Number(p.stock||0);
+        if (qty > stock) return showMsg(`Quantidade maior que o estoque (${stock}).`, true);
+
+        const baseRow = {
+          product_id: p.id,
+          buyer_id: USER.id,
+          status: "pending",
+          vendor_id: p.vendor_id
+        };
+
+        const ins = await insertReservationFlexible(baseRow, qty);
+        if (ins.error) throw ins.error;
+
+        showMsg("Reserva enviada ✅ (aguardando confirmação).", false);
+
+        // Atualiza UI local
+        p.stock = stock - qty;
+        qtyEl.value = "";
+        render();
+
+      }catch(e){
+        console.error(e);
+        const msg = (e?.message || "");
+        if (msg.toLowerCase().includes("row-level security")){
+          return showMsg("RLS bloqueou a reserva. Falta policy de INSERT em reservations.", true);
+        }
+        showMsg(msg || "Erro ao reservar.", true);
+      }
+    }
+
+    // hooks
+    window.__reserve = (id)=> reserveProduct(id);
+
+    el("q").addEventListener("input", render);
+    el("cat").addEventListener("change", render);
+    el("onlyInStock").addEventListener("change", render);
+
+    el("refresh").onclick = async ()=>{
+      clearMsg();
+      try{
+        await loadCategories();
+        await loadProducts();
+        showMsg("Atualizado ✅");
+      }catch(e){
+        showMsg(e.message || "Erro ao atualizar.", true);
+      }
+    };
+
+    el("myRes").onclick = ()=> location.href="vend-minhas-reservas.html";
+    el("back").onclick = ()=> location.href="vend-home.html";
+    el("logout").onclick = async ()=>{ await sb.auth.signOut(); location.href="login.html"; };
+
+    (async ()=>{
+      try{
+        await requireAuth();
+        await loadCategories();
+        await loadProducts();
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar feed.", true);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendedor - Produtos</title>
+  <style>
+    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+
+    .header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+    }
+    .brand{font-weight:900;font-size:18px}
+    .muted{opacity:.75}
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    .btn{
+      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
+      font-weight:800;
+    }
+    .btn:hover{background:#f6f6f6}
+    .btn-primary{background:#111;color:#fff;border:0}
+    .btn-primary:hover{filter:brightness(.95)}
+    .btn-danger{border:1px solid #f0b7b7;background:#ffe9e9}
+    .btn-danger:hover{filter:brightness(.98)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+
+    .toolbar{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .search{
+      flex:1;min-width:220px;
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    }
+    select, input{
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    }
+
+    .tablewrap{border:1px solid #ddd;border-radius:16px;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
+    th{background:#fafafa;font-size:13px;text-transform:uppercase;letter-spacing:.03em;opacity:.85}
+    tr:last-child td{border-bottom:0}
+
+    .pill{
+      display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #ddd;font-size:12px;font-weight:900
+    }
+    .pill.on{background:#e9ffe9;border-color:#b7f0b7}
+    .pill.off{background:#ffe9e9;border-color:#f0b7b7}
+
+    .price{font-weight:900}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+
+    .thumb{
+      width:44px;height:44px;border-radius:10px;border:1px solid #ddd;object-fit:cover;
+      background:#f6f6f6;display:inline-block;
+    }
+
+    .card{border:1px solid #ddd;border-radius:16px;padding:16px;margin-top:14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .span2{grid-column:1/-1}
+    label{display:block;font-size:14px;opacity:.85;margin:6px 0}
+    textarea{
+      width:100%;min-height:90px;resize:vertical;
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    }
+
+    .mediaRow{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+    .mediaBox{flex:1;min-width:240px}
+    .previewBox{min-width:220px}
+
+    audio{width:100%}
+
+    @media (max-width:860px){
+      .grid{grid-template-columns:1fr}
+      .hide-sm{display:none}
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <div class="brand">TaNaFeira</div>
+      <div id="subtitle" class="muted">Vitrine (Produtos)</div>
+    </div>
+    <div class="right">
+      <button class="btn" id="back" type="button">Voltar</button>
+      <button class="btn" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div id="msg"></div>
+
+  <div class="toolbar">
+    <input id="q" class="search" placeholder="Buscar por nome..." />
+    <select id="filterActive" title="Filtrar por status">
+      <option value="all">Todos</option>
+      <option value="active">Somente ativos</option>
+      <option value="inactive">Somente inativos</option>
+    </select>
+    <button id="btnNew" class="btn btn-primary" type="button">+ Novo produto</button>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th class="hide-sm">Categoria</th>
+          <th>Preço</th>
+          <th>Unidade</th>
+          <th>Estoque</th>
+          <th>Status</th>
+          <th>Mídia</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="8" class="muted">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" id="formCard" style="display:none;">
+    <h2 id="formTitle" style="margin:0 0 8px;">Novo produto</h2>
+    <div class="muted" style="margin-bottom:10px;">Preço no estilo banco: digite números → vira R$ automaticamente.</div>
+
+    <form id="form" class="grid" novalidate>
+      <div class="span2">
+        <label for="name">Nome do produto</label>
+        <input id="name" required maxlength="80" placeholder="Ex: Tomate cereja" />
+        <div class="muted">Máx 80 caracteres.</div>
+      </div>
+
+      <div class="span2">
+        <label for="description">Descrição (opcional)</label>
+        <textarea id="description" maxlength="500" placeholder="Ex: colhido no dia, sem agrotóxico..."></textarea>
+        <div class="muted">Máx 500 caracteres.</div>
+      </div>
+
+      <div>
+        <label for="category_id">Categoria</label>
+        <select id="category_id" required>
+          <option value="">Carregando...</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="unit">Unidade</label>
+        <select id="unit" required>
+          <option value="">Selecione...</option>
+          <option value="un">Unidade (un)</option>
+          <option value="kg">Quilo (kg)</option>
+          <option value="g">Grama (g)</option>
+          <option value="L">Litro (L)</option>
+          <option value="ml">Mililitro (ml)</option>
+          <option value="dz">Dúzia (dz)</option>
+          <option value="pct">Pacote (pct)</option>
+          <option value="cx">Caixa (cx)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="price">Preço</label>
+        <input id="price" inputmode="numeric" autocomplete="off" />
+        <div class="muted">Digite só números. Ex: 1234 → R$ 12,34</div>
+      </div>
+
+      <div>
+        <label for="stock">Estoque disponível</label>
+        <input id="stock" required inputmode="numeric" placeholder="Ex: 20" />
+        <div class="muted">Somente números inteiros (mínimo 1).</div>
+      </div>
+
+      <div class="span2">
+        <label>Mídia do produto</label>
+        <div class="mediaRow">
+          <div class="mediaBox">
+            <div style="margin-bottom:8px">
+              <strong>Imagem (opcional)</strong>
+              <div class="muted">PNG/JPG. Para MVP, 1 imagem por produto.</div>
+            </div>
+            <input id="image" type="file" accept="image/*" />
+          </div>
+
+          <div class="mediaBox">
+            <div style="margin-bottom:8px">
+              <strong>Áudio (opcional)</strong>
+              <div class="muted">Grave uma descrição rápida do produto.</div>
+            </div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <button class="btn" id="recBtn" type="button">Gravar</button>
+              <button class="btn" id="stopBtn" type="button" disabled>Parar</button>
+              <span id="recStatus" class="muted"></span>
+            </div>
+
+            <audio id="audioPreview" controls style="margin-top:8px;display:none"></audio>
+          </div>
+
+          <div class="previewBox">
+            <div class="muted" style="margin-bottom:8px">Preview imagem</div>
+            <img id="imgPreview" class="thumb" style="width:180px;height:180px;display:none" />
+            <div id="imgPreviewHint" class="muted">—</div>
+          </div>
+        </div>
+
+        <div class="muted" style="margin-top:10px">
+          Obs: a mídia é salva no Storage. Se não quiser mídia, é só não anexar/gravar.
+        </div>
+      </div>
+
+      <div class="span2" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <button id="saveBtn" class="btn btn-primary" type="submit">Salvar</button>
+        <button id="cancelBtn" class="btn" type="button">Cancelar</button>
+        <button id="deleteBtn" class="btn btn-danger" type="button" style="margin-left:auto;display:none;">Excluir</button>
+      </div>
+
+      <div class="span2 muted" id="formHint" style="display:none;"></div>
+    </form>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://addedjckqdzwgdstgqfz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ===== helpers UI =====
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    // ===== guards =====
+    async function requireVendor(){
+      const { data: { user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+
+      const { data: prof, error: e2 } = await sb
+        .from("profiles")
+        .select("id, role, full_name, vendor_onboarding_done")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (e2) throw e2;
+      if (!prof) throw new Error("Seu perfil não foi encontrado. Faça logout/login ou recrie a conta.");
+
+      if (prof.role !== "vendor"){ location.href="telainicial-comp.html"; return null; }
+      if (prof.vendor_onboarding_done === false){ location.href="vend-onboarding.html"; return null; }
+
+      el("subtitle").textContent = "Vitrine (Produtos) — " + (prof.full_name || "");
+      return prof;
+    }
+
+    // ===== state =====
+    let ME = null;
+    let CATEGORIES = [];
+    let PRODUCTS = [];
+    let editingId = null;
+
+    // ===== util =====
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
+
+    // ===== money (banco) =====
+    function formatCentsToBRL(cents){
+      const v = (Number(cents)||0) / 100;
+      return "R$ " + v.toFixed(2).replace(".", ",");
+    }
+    function bindMoneyInput(inputEl){
+      inputEl.addEventListener("input", ()=>{
+        const digits = onlyDigits(inputEl.value).slice(0, 9);
+        const cents = digits ? Number(digits) : 0;
+        inputEl.value = formatCentsToBRL(cents);
+        inputEl.dataset.cents = String(cents);
+      });
+      inputEl.value = "R$ 0,00";
+      inputEl.dataset.cents = "0";
+    }
+    function setMoneyCents(inputEl, cents){
+      const c = Number(cents)||0;
+      inputEl.value = formatCentsToBRL(c);
+      inputEl.dataset.cents = String(c);
+    }
+    function getMoneyCents(inputEl){
+      return Number(inputEl.dataset.cents || "0");
+    }
+
+    // ===== stock (AGORA: mínimo 1, nada de 0/negativo) =====
+    function normalizeStock(v){
+      const d = onlyDigits(v);
+      if (!d) return null;
+
+      const n = Number(d);
+
+      // ❌ não aceita 0 nem negativo
+      if (!Number.isInteger(n) || n <= 0) return null;
+
+      return n;
+    }
+
+    // ===== Storage helpers =====
+    function publicUrlFor(path){
+      if (!path) return null;
+      return sb.storage.from("product-media").getPublicUrl(path).data.publicUrl;
+    }
+
+    const imageEl = el("image");
+    const imgPreview = el("imgPreview");
+    const imgPreviewHint = el("imgPreviewHint");
+
+    imageEl.addEventListener("change", ()=>{
+      const file = imageEl.files?.[0];
+      if (!file){
+        imgPreview.style.display="none";
+        imgPreviewHint.textContent = "—";
+        return;
+      }
+      imgPreview.src = URL.createObjectURL(file);
+      imgPreview.style.display="block";
+      imgPreviewHint.textContent = file.name;
+    });
+
+    async function uploadProductImage({ productId, vendorId }){
+      const file = imageEl.files?.[0];
+      if (!file) return null;
+
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${vendorId}/${productId}/cover.${ext}`;
+
+      const { error } = await sb.storage
+        .from("product-media")
+        .upload(path, file, { upsert: true, contentType: file.type });
+
+      if (error) throw error;
+      return path;
+    }
+
+    // ===== Audio record =====
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlob = null;
+
+    const recBtn = el("recBtn");
+    const stopBtn = el("stopBtn");
+    const recStatus = el("recStatus");
+    const audioPreview = el("audioPreview");
+
+    recBtn.onclick = async ()=>{
+      clearMsg();
+      audioBlob = null;
+      audioChunks = [];
+      audioPreview.style.display = "none";
+      recStatus.textContent = "";
+
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (e)=> { if (e.data.size) audioChunks.push(e.data); };
+        mediaRecorder.onstop = ()=>{
+          audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+          audioPreview.src = URL.createObjectURL(audioBlob);
+          audioPreview.style.display = "block";
+          recStatus.textContent = "Áudio pronto ✅";
+          stream.getTracks().forEach(t=>t.stop());
+        };
+
+        mediaRecorder.start();
+        recBtn.disabled = true;
+        stopBtn.disabled = false;
+        recStatus.textContent = "Gravando...";
+      }catch(e){
+        showMsg("Não consegui acessar o microfone. Permita o acesso e tente de novo.", true);
+      }
+    };
+
+    stopBtn.onclick = ()=>{
+      if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+      recBtn.disabled = false;
+      stopBtn.disabled = true;
+    };
+
+    async function uploadProductAudio({ productId, vendorId }){
+      if (!audioBlob) return null;
+
+      const path = `${vendorId}/${productId}/audio.webm`;
+
+      const { error } = await sb.storage
+        .from("product-media")
+        .upload(path, audioBlob, { upsert: true, contentType: audioBlob.type });
+
+      if (error) throw error;
+      return path;
+    }
+
+    // ===== categories =====
+    async function loadCategories(){
+      const { data, error } = await sb
+        .from("categories")
+        .select("id,name")
+        .order("name", { ascending: true });
+
+      if (error) throw error;
+
+      CATEGORIES = data || [];
+      const sel = el("category_id");
+
+      sel.innerHTML = `<option value="">Selecione...</option>` + CATEGORIES
+        .map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`)
+        .join("");
+    }
+
+    function getCategoryName(id){
+      const c = CATEGORIES.find(x => String(x.id) === String(id));
+      return c ? c.name : "—";
+    }
+
+    // ===== products =====
+    async function loadProducts(){
+      const { data, error } = await sb
+        .from("products")
+        .select("id,title,description,price_cents,unit,stock,active,category_id,image_path,audio_path,created_at")
+        .eq("vendor_id", ME.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      PRODUCTS = data || [];
+      renderTable();
+    }
+
+    function renderTable(){
+      const q = (el("q").value || "").trim().toLowerCase();
+      const f = el("filterActive").value;
+
+      let rows = PRODUCTS.slice();
+
+      if (q) rows = rows.filter(p => (p.title || "").toLowerCase().includes(q));
+      if (f === "active") rows = rows.filter(p => p.active === true);
+      if (f === "inactive") rows = rows.filter(p => p.active === false);
+
+      const tbody = el("tbody");
+      if (rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="8" class="muted">Nenhum produto ainda. Clique em “Novo produto”.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(p=>{
+        const status = p.active ? `<span class="pill on">ATIVO</span>` : `<span class="pill off">INATIVO</span>`;
+        const cat = getCategoryName(p.category_id);
+
+        const imgUrl = publicUrlFor(p.image_path);
+        const audioUrl = publicUrlFor(p.audio_path);
+
+        return `
+          <tr>
+            <td>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                ${imgUrl ? `<img class="thumb" src="${imgUrl}" alt="Imagem do produto">` : `<span class="thumb"></span>`}
+                <div>
+                  <div style="font-weight:900">${escapeHtml(p.title || "")}</div>
+                  ${p.description ? `<div class="muted" style="margin-top:4px">${escapeHtml(p.description)}</div>` : ``}
+                </div>
+              </div>
+            </td>
+
+            <td class="hide-sm">${escapeHtml(cat)}</td>
+            <td class="price">${formatCentsToBRL(p.price_cents)}</td>
+            <td>${escapeHtml(p.unit || "")}</td>
+            <td>${Number.isFinite(p.stock) ? p.stock : 0}</td>
+            <td>${status}</td>
+
+            <td>
+              ${audioUrl ? `<audio controls src="${audioUrl}"></audio>` : `<span class="muted">—</span>`}
+            </td>
+
+            <td>
+              <div class="actions">
+                <button class="btn" type="button" onclick="window.__edit('${p.id}')">Editar</button>
+                <button class="btn" type="button" onclick="window.__toggle('${p.id}')">
+                  ${p.active ? "Desativar" : "Ativar"}
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // ===== form open/close =====
+    function openForm(mode, product=null){
+      clearMsg();
+      el("formCard").style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+      imageEl.value = "";
+      imgPreview.style.display = "none";
+      imgPreviewHint.textContent = "—";
+
+      audioBlob = null;
+      audioChunks = [];
+      audioPreview.style.display = "none";
+      recStatus.textContent = "";
+      recBtn.disabled = false;
+      stopBtn.disabled = true;
+
+      if (mode === "new"){
+        editingId = null;
+        el("formTitle").textContent = "Novo produto";
+        el("deleteBtn").style.display = "none";
+        el("formHint").style.display = "none";
+
+        el("name").value = "";
+        el("description").value = "";
+        el("category_id").value = "";
+        el("unit").value = "";
+        setMoneyCents(el("price"), 0);
+        el("stock").value = "";
+      } else {
+        editingId = product.id;
+        el("formTitle").textContent = "Editar produto";
+        el("deleteBtn").style.display = "inline-block";
+        el("formHint").style.display = "block";
+        el("formHint").textContent = "Dica: se você anexar uma nova imagem/áudio aqui, ele substitui o anterior.";
+
+        el("name").value = product.title || "";
+        el("description").value = product.description || "";
+        el("category_id").value = product.category_id ?? "";
+        el("unit").value = product.unit || "";
+        setMoneyCents(el("price"), product.price_cents || 0);
+        el("stock").value = String(product.stock ?? 0);
+
+        const imgUrl = publicUrlFor(product.image_path);
+        if (imgUrl){
+          imgPreview.src = imgUrl;
+          imgPreview.style.display = "block";
+          imgPreviewHint.textContent = "Imagem atual";
+        }
+        const audioUrl = publicUrlFor(product.audio_path);
+        if (audioUrl){
+          audioPreview.src = audioUrl;
+          audioPreview.style.display = "block";
+          recStatus.textContent = "Áudio atual";
+        }
+      }
+    }
+
+    function closeForm(){
+      el("formCard").style.display = "none";
+      editingId = null;
+    }
+
+    // ===== create/update =====
+    async function upsertProduct(ev){
+      ev.preventDefault();
+      clearMsg();
+
+      const saveBtn = el("saveBtn");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Salvando...";
+
+      try{
+        const title = el("name").value.trim();
+        const description = el("description").value.trim();
+        const category_id = el("category_id").value || null;
+        const unit = el("unit").value;
+        const price_cents = getMoneyCents(el("price"));
+        const stock = normalizeStock(el("stock").value);
+
+        if (!title) return showMsg("Informe o nome do produto.", true);
+        if (!category_id) return showMsg("Selecione uma categoria.", true);
+        if (!unit) return showMsg("Selecione a unidade.", true);
+
+        // preço precisa ser > 0
+        if (!price_cents || price_cents <= 0) return showMsg("Preço precisa ser maior que zero.", true);
+
+        // estoque precisa ser > 0
+        if (stock === null) return showMsg("Estoque precisa ser maior que zero.", true);
+
+        let productId = editingId;
+
+        if (!editingId){
+          const { data: created, error: insErr } = await sb
+            .from("products")
+            .insert({
+              vendor_id: ME.id,
+              title,
+              description: description || null,
+              category_id,
+              unit,
+              price_cents,
+              stock,
+              active: true
+            })
+            .select("id")
+            .single();
+
+          if (insErr) throw insErr;
+          productId = created.id;
+          showMsg("Produto criado! Agora salvando mídia...", false);
+        } else {
+          const { error: upErr } = await sb
+            .from("products")
+            .update({
+              title,
+              description: description || null,
+              category_id,
+              unit,
+              price_cents,
+              stock
+            })
+            .eq("id", editingId)
+            .eq("vendor_id", ME.id);
+
+          if (upErr) throw upErr;
+          showMsg("Produto atualizado! Agora salvando mídia...", false);
+        }
+
+        const image_path = await uploadProductImage({ productId, vendorId: ME.id });
+        const audio_path = await uploadProductAudio({ productId, vendorId: ME.id });
+
+        if (image_path || audio_path){
+          const patch = {};
+          if (image_path) patch.image_path = image_path;
+          if (audio_path) patch.audio_path = audio_path;
+
+          const { error: pErr } = await sb
+            .from("products")
+            .update(patch)
+            .eq("id", productId)
+            .eq("vendor_id", ME.id);
+
+          if (pErr) throw pErr;
+        }
+
+        showMsg("Tudo salvo ✅", false);
+        await loadProducts();
+        closeForm();
+
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao salvar produto.", true);
+      }finally{
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Salvar";
+      }
+    }
+
+    async function toggleActive(id){
+      clearMsg();
+      try{
+        const p = PRODUCTS.find(x => String(x.id) === String(id));
+        if (!p) return;
+
+        const next = !p.active;
+        const { error } = await sb
+          .from("products")
+          .update({ active: next })
+          .eq("id", id)
+          .eq("vendor_id", ME.id);
+
+        if (error) throw error;
+
+        await loadProducts();
+        showMsg(next ? "Produto ativado!" : "Produto desativado!", false);
+      }catch(e){
+        showMsg(e.message || "Erro ao ativar/desativar.", true);
+      }
+    }
+
+    async function deleteCurrent(){
+      if (!editingId) return;
+      const ok = confirm("Excluir este produto? Isso não pode ser desfeito.");
+      if (!ok) return;
+
+      clearMsg();
+      const btn = el("deleteBtn");
+      btn.disabled = true;
+      btn.textContent = "Excluindo...";
+
+      try{
+        const { error } = await sb
+          .from("products")
+          .delete()
+          .eq("id", editingId)
+          .eq("vendor_id", ME.id);
+
+        if (error) throw error;
+
+        showMsg("Produto excluído.", false);
+        await loadProducts();
+        closeForm();
+      }catch(e){
+        showMsg(e.message || "Erro ao excluir.", true);
+      }finally{
+        btn.disabled = false;
+        btn.textContent = "Excluir";
+      }
+    }
+
+    window.__edit = (id)=>{
+      const p = PRODUCTS.find(x => String(x.id) === String(id));
+      if (p) openForm("edit", p);
+    };
+    window.__toggle = (id)=> toggleActive(id);
+
+    el("q").addEventListener("input", renderTable);
+    el("filterActive").addEventListener("change", renderTable);
+
+    el("btnNew").onclick = ()=> openForm("new");
+    el("cancelBtn").onclick = closeForm;
+    el("deleteBtn").onclick = deleteCurrent;
+    el("form").addEventListener("submit", upsertProduct);
+
+    el("back").onclick = ()=> location.href = "vend-home.html";
+    el("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href = "login.html";
+    };
+
+    (async ()=>{
+      try{
+        ME = await requireVendor();
+        if (!ME) return;
+
+        bindMoneyInput(el("price"));
+
+        await loadCategories();
+        await loadProducts();
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar produtos.", true);
+      }
+    })();
+  </script>
+</body>
+</html>

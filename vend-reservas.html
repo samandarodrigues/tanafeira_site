@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendedor - Reservas recebidas</title>
+
+  <style>
+    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+
+    .header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+    }
+    .brand{font-weight:900;font-size:18px}
+    .muted{opacity:.75}
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    .btn{
+      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
+      font-weight:800;
+    }
+    .btn:hover{background:#f6f6f6}
+    .btn-primary{background:#111;color:#fff;border:0}
+    .btn-primary:hover{filter:brightness(.95)}
+    .btn-danger{border:1px solid #f0b7b7;background:#ffe9e9}
+    .btn-danger:hover{filter:brightness(.98)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+
+    .toolbar{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .search{
+      flex:1;min-width:220px;
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    }
+    select{
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;background:#fff;
+    }
+
+    .tablewrap{border:1px solid #ddd;border-radius:16px;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
+    th{background:#fafafa;font-size:13px;text-transform:uppercase;letter-spacing:.03em;opacity:.85}
+    tr:last-child td{border-bottom:0}
+
+    .pill{
+      display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #ddd;
+      font-size:12px;font-weight:900
+    }
+    .pill.pending{background:#fff7e6;border-color:#ffe2a8}
+    .pill.confirmed{background:#e9ffe9;border-color:#b7f0b7}
+    .pill.cancelled{background:#ffe9e9;border-color:#f0b7b7}
+
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .strong{font-weight:900}
+    .small{font-size:12px}
+    .hide-sm{display:table-cell}
+    @media (max-width:860px){ .hide-sm{display:none} }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div>
+      <div class="brand">TaNaFeira</div>
+      <div id="subtitle" class="muted">Reservas recebidas</div>
+    </div>
+    <div class="right">
+      <button class="btn" id="back" type="button">Voltar</button>
+      <button class="btn" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div id="msg"></div>
+
+  <div class="toolbar">
+    <input id="q" class="search" placeholder="Buscar por produto..." />
+    <select id="filterStatus" title="Filtrar status">
+      <option value="pending">Pendentes</option>
+      <option value="all">Todas</option>
+      <option value="confirmed">Confirmadas</option>
+      <option value="cancelled">Canceladas</option>
+    </select>
+    <button class="btn btn-primary" id="refresh" type="button">Atualizar</button>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th class="hide-sm">Comprador</th>
+          <th>Qtd</th>
+          <th class="hide-sm">Estoque atual</th>
+          <th>Status</th>
+          <th>Data</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="7" class="muted">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const sb = supabase.createClient(
+      "https://addedjckqdzwgdstgqfz.supabase.co",
+      "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
+    );
+
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
+
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function statusPT(s){
+      const v = String(s || "").toLowerCase().trim();
+      const map = {
+        pending: "Pendente",
+        confirmed: "Confirmada",
+        cancelled: "Cancelada",
+        canceled: "Cancelada",
+        rejected: "Recusada",
+        done: "Concluída",
+        completed: "Concluída"
+      };
+      return map[v] || (v ? (v[0].toUpperCase()+v.slice(1)) : "—");
+    }
+
+    function statusClass(s){
+      const v = String(s || "").toLowerCase().trim();
+      if (v === "confirmed") return "confirmed";
+      if (v === "cancelled" || v === "canceled") return "cancelled";
+      return "pending";
+    }
+
+    // coluna de quantidade pode ter nomes diferentes
+    function getQty(row){
+      const keys = ["quantity","qty","qtd","amount","units","count"];
+      for (const k of keys){
+        if (row && row[k] != null) return Number(row[k]);
+      }
+      return null;
+    }
+
+    // product_id pode variar (caso você tenha criado diferente)
+    function getProductId(row){
+      if (!row) return null;
+      if ("product_id" in row) return row.product_id;
+      if ("produto_id" in row) return row.produto_id;
+      if ("products_id" in row) return row.products_id;
+      return null;
+    }
+
+    function getBuyerId(row){
+      if (!row) return null;
+      if ("buyer_id" in row) return row.buyer_id;
+      if ("comprador_id" in row) return row.comprador_id;
+      return null;
+    }
+
+    // ===== guard vendedor =====
+    let ME_USER = null;
+    let ME_PROFILE = null;
+
+    async function requireVendor(){
+      const { data:{ user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+      ME_USER = user;
+
+      const { data: prof, error: e2 } = await sb
+        .from("profiles")
+        .select("id, role, full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (e2) throw e2;
+      if (!prof) throw new Error("Seu perfil não foi encontrado. Faça logout/login ou recrie a conta.");
+      if (prof.role !== "vendor"){ location.href="telainicial-comp.html"; return null; }
+
+      ME_PROFILE = prof;
+      el("subtitle").textContent = "Reservas recebidas — " + (prof.full_name || "");
+      return prof;
+    }
+
+    // ===== state =====
+    let PRODUCTS = [];          // produtos do vendedor
+    let PROD_MAP = new Map();   // product_id -> produto
+    let BUYER_MAP = new Map();  // buyer_id -> nome (se der)
+    let RESERVATIONS = [];
+
+    async function loadMyProducts(){
+      const { data, error } = await sb
+        .from("products")
+        .select("id,name,title,stock,unit")
+        .eq("vendor_id", ME_PROFILE.id);
+
+      if (error) throw error;
+      PRODUCTS = data || [];
+      PROD_MAP = new Map(PRODUCTS.map(p => [String(p.id), p]));
+    }
+
+    async function loadBuyerNames(buyerIds){
+      BUYER_MAP = new Map();
+      if (!buyerIds.length) return;
+
+      // tenta ler profiles dos compradores (pode dar RLS)
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", buyerIds);
+
+      if (error) {
+        // fallback: não mostra id inteiro feio
+        buyerIds.forEach(id => BUYER_MAP.set(String(id), "Comprador"));
+        return;
+      }
+
+      (data || []).forEach(p => BUYER_MAP.set(String(p.id), (p.full_name || "Comprador")));
+      buyerIds.forEach(id => { if (!BUYER_MAP.has(String(id))) BUYER_MAP.set(String(id), "Comprador"); });
+    }
+
+    async function loadReservationsReceived(){
+      // 1) tenta pelo vendor_id (se existir)
+      try{
+        const { data, error } = await sb
+          .from("reservations")
+          .select("*")
+          .eq("vendor_id", ME_PROFILE.id)
+          .order("created_at", { ascending:false });
+
+        if (error) throw error;
+        RESERVATIONS = data || [];
+        return;
+      }catch(_e){
+        // 2) fallback: pega por product_id IN (meus produtos)
+        const ids = PRODUCTS.map(p => p.id);
+        if (!ids.length){ RESERVATIONS = []; return; }
+
+        const { data, error } = await sb
+          .from("reservations")
+          .select("*")
+          .in("product_id", ids)
+          .order("created_at", { ascending:false });
+
+        if (error) throw error;
+        RESERVATIONS = data || [];
+      }
+    }
+
+    function render(){
+      const q = (el("q").value || "").trim().toLowerCase();
+      const f = el("filterStatus").value;
+
+      let rows = RESERVATIONS.slice();
+
+      // filtro status
+      if (f !== "all"){
+        rows = rows.filter(r => String(r.status||"").toLowerCase() === f);
+      }
+
+      // filtro busca por nome do produto
+      if (q){
+        rows = rows.filter(r => {
+          const pid = getProductId(r);
+          const p = PROD_MAP.get(String(pid));
+          const name = (p?.name || p?.title || "").toLowerCase();
+          return name.includes(q);
+        });
+      }
+
+      const tbody = el("tbody");
+
+      if (!rows.length){
+        tbody.innerHTML = `<tr><td colspan="7" class="muted">Nenhuma reserva encontrada.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(r=>{
+        const pid = getProductId(r);
+        const p = pid ? PROD_MAP.get(String(pid)) : null;
+
+        const prodName = (p?.name || p?.title || "").trim() || "Produto";
+        const buyerId = getBuyerId(r);
+        const buyerName = buyerId ? (BUYER_MAP.get(String(buyerId)) || "Comprador") : "Comprador";
+
+        const qty = getQty(r);
+        const qtyText = (qty != null ? qty : "—");
+
+        const stock = Number(p?.stock ?? 0);
+
+        const st = statusPT(r.status);
+        const stClass = statusClass(r.status);
+
+        const canAct = String(r.status||"").toLowerCase() === "pending";
+
+        return `
+          <tr>
+            <td>
+              <div class="strong">${escapeHtml(prodName)}</div>
+              <div class="muted small">${p?.unit ? ("Unidade: " + escapeHtml(p.unit)) : ""}</div>
+            </td>
+
+            <td class="hide-sm">
+              <div>${escapeHtml(buyerName)}</div>
+              <div class="muted small">${buyerId ? "ID: " + String(buyerId).slice(0,6) + "…" : ""}</div>
+            </td>
+
+            <td class="strong">${qtyText}</td>
+            <td class="hide-sm">${stock}</td>
+
+            <td><span class="pill ${stClass}">${escapeHtml(st)}</span></td>
+
+            <td class="muted small">${r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : ""}</td>
+
+            <td>
+              <div class="actions">
+                <button class="btn btn-primary" type="button"
+                  onclick="window.__confirm('${r.id}')" ${canAct ? "" : "disabled"}>
+                  Confirmar
+                </button>
+                <button class="btn btn-danger" type="button"
+                  onclick="window.__cancel('${r.id}')" ${canAct ? "" : "disabled"}>
+                  Cancelar
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function confirmReservation(resId){
+      clearMsg();
+      try{
+        const r = RESERVATIONS.find(x => String(x.id) === String(resId));
+        if (!r) return;
+
+        const pid = getProductId(r);
+        const p = pid ? PROD_MAP.get(String(pid)) : null;
+        if (!p) return showMsg("Produto não encontrado para esta reserva.", true);
+
+        const qty = getQty(r);
+        if (!Number.isFinite(qty) || qty <= 0){
+          return showMsg("Quantidade inválida nesta reserva (<= 0).", true);
+        }
+
+        // recarrega estoque atual do produto (pra não usar cache)
+        const { data: fresh, error: fErr } = await sb
+          .from("products")
+          .select("id,stock")
+          .eq("id", p.id)
+          .single();
+
+        if (fErr) throw fErr;
+
+        const stockNow = Number(fresh.stock ?? 0);
+        if (qty > stockNow){
+          return showMsg(`Sem estoque suficiente. Estoque atual: ${stockNow}.`, true);
+        }
+
+        // 1) marca reserva como confirmada
+        const { error: uErr } = await sb
+          .from("reservations")
+          .update({ status: "confirmed" })
+          .eq("id", r.id);
+
+        if (uErr) throw uErr;
+
+        // 2) baixa estoque
+        const nextStock = stockNow - qty;
+        const { error: sErr } = await sb
+          .from("products")
+          .update({ stock: nextStock })
+          .eq("id", p.id);
+
+        if (sErr){
+          // reserva confirmada já foi, então avisamos (MVP)
+          showMsg("Reserva confirmada ✅ mas não consegui baixar o estoque (RLS).", true);
+        } else {
+          showMsg("Reserva confirmada ✅ Estoque atualizado.", false);
+        }
+
+        await refreshAll();
+
+      }catch(e){
+        console.error(e);
+        const msg = (e?.message || "");
+        if (msg.toLowerCase().includes("row-level security")){
+          return showMsg("RLS bloqueou a ação. Falta policy de UPDATE em reservations/products para o vendedor.", true);
+        }
+        showMsg(msg || "Erro ao confirmar.", true);
+      }
+    }
+
+    async function cancelReservation(resId){
+      clearMsg();
+      try{
+        const r = RESERVATIONS.find(x => String(x.id) === String(resId));
+        if (!r) return;
+
+        const { error } = await sb
+          .from("reservations")
+          .update({ status: "cancelled" })
+          .eq("id", r.id);
+
+        if (error) throw error;
+
+        showMsg("Reserva cancelada.", false);
+        await refreshAll();
+      }catch(e){
+        console.error(e);
+        const msg = (e?.message || "");
+        if (msg.toLowerCase().includes("row-level security")){
+          return showMsg("RLS bloqueou o cancelamento. Falta policy de UPDATE em reservations para o vendedor.", true);
+        }
+        showMsg(msg || "Erro ao cancelar.", true);
+      }
+    }
+
+    async function refreshAll(){
+      await loadMyProducts();
+      await loadReservationsReceived();
+
+      // tenta carregar nomes dos compradores
+      const buyerIds = Array.from(new Set(RESERVATIONS.map(getBuyerId).filter(Boolean).map(String)));
+      await loadBuyerNames(buyerIds);
+
+      render();
+    }
+
+    // hooks
+    window.__confirm = (id)=> confirmReservation(id);
+    window.__cancel  = (id)=> cancelReservation(id);
+
+    el("q").addEventListener("input", render);
+    el("filterStatus").addEventListener("change", render);
+
+    el("refresh").onclick = async ()=>{
+      clearMsg();
+      try{
+        await refreshAll();
+        showMsg("Atualizado ✅");
+      }catch(e){
+        showMsg(e.message || "Erro ao atualizar.", true);
+      }
+    };
+
+    el("back").onclick = ()=> location.href="vend-home.html";
+    el("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+
+    (async ()=>{
+      try{
+        await requireVendor();
+        await refreshAll();
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar reservas.", true);
+      }
+    })();
+  </script>
+</body>
+</html>

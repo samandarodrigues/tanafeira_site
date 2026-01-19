@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-br">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Feed</title></head>
+<body style="font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px">
+  <h1>Produtos</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="minhas-reservas.html">🧾 Minhas reservas</a>
+    <a href="notificacoes.html">🔔 Notificações</a>
+    <a href="perfil.html">👤 Perfil</a>
+    <a id="vendorLink" href="vend-home.html" style="display:none">🧺 Painel do vendedor</a>
+  </div>
+
+  <div id="msg" style="display:none;margin-top:12px"></div>
+  <div id="list" style="display:grid;gap:12px;margin-top:14px"></div>
+
+  <script src="./supabaseClient.js"></script>
+  <script src="./authGuard.js"></script>
+  <script>
+    let me;
+
+    async function listProducts(){
+      const { data, error } = await window.sb
+        .from("products")
+        .select("id,title,description,price_cents,unit,stock,vendor_id,created_at")
+        .eq("is_active", true)
+        .order("created_at", { ascending:false });
+      if (error) throw error;
+      return data;
+    }
+
+    async function createReservation(productId, qty=1, note=""){
+      // qualquer usuário autenticado pode reservar (inclusive vendedor)
+      const { data: prod, error: e1 } = await window.sb
+        .from("products").select("vendor_id").eq("id", productId).single();
+      if (e1) throw e1;
+
+      const { error } = await window.sb.from("reservations").insert([{
+        product_id: productId,
+        buyer_id: me.id,
+        vendor_id: prod.vendor_id,
+        qty,
+        note
+      }]);
+      if (error) throw error;
+    }
+
+    async function render(){
+      const box = qs("list");
+      box.innerHTML = "carregando...";
+      const items = await listProducts();
+      box.innerHTML = items.map(p=>`
+        <div style="border:1px solid #ddd;border-radius:12px;padding:12px">
+          <strong>${esc(p.title)}</strong>
+          <div style="opacity:.85;margin-top:6px">${esc(p.description||"")}</div>
+          <div style="opacity:.75;margin-top:6px">
+            Preço: ${p.price_cents ?? "-"} | Unidade: ${esc(p.unit||"-")} | Estoque: ${p.stock ?? "-"}
+          </div>
+          <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+            <input id="qty-${p.id}" type="number" min="1" value="1" style="width:90px;padding:8px">
+            <input id="note-${p.id}" placeholder="Obs (opcional)" style="flex:1;min-width:220px;padding:8px">
+            <button data-res="${p.id}" style="padding:8px;cursor:pointer">Reservar</button>
+          </div>
+        </div>
+      `).join("") || "<i>Nenhum produto ainda.</i>";
+
+      box.querySelectorAll("button[data-res]").forEach(btn=>{
+        btn.onclick = async()=>{
+          const pid = btn.getAttribute("data-res");
+          const qty = Number(document.getElementById("qty-"+pid).value || 1);
+          const note = (document.getElementById("note-"+pid).value || "").trim();
+          try{
+            await createReservation(pid, qty, note);
+            showMsg(qs("msg"), "Reserva enviada! ✅", false);
+          }catch(e){
+            showMsg(qs("msg"), e.message, true);
+          }
+        };
+      });
+    }
+
+    (async()=>{
+      me = await getMyProfile();
+      if (me.role === "vendor") qs("vendorLink").style.display = "inline";
+      await render();
+    })();
+  </script>
+</body>
+</html>

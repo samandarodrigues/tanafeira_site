@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-br">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Minhas reservas</title></head>
+<body style="font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px">
+  <h1>Minhas reservas</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="feed.html">🛒 Feed</a>
+    <a href="notificacoes.html">🔔 Notificações</a>
+    <a href="vend-home.html">🧺 Painel vendedor</a>
+  </div>
+
+  <div id="msg" style="display:none;margin-top:12px"></div>
+  <div id="list" style="display:grid;gap:12px;margin-top:14px"></div>
+
+  <script src="./supabaseClient.js"></script>
+  <script src="./authGuard.js"></script>
+  <script>
+    let me;
+
+    async function listMyReservations(){
+      const { data, error } = await window.sb
+        .from("reservations")
+        .select("id,status,qty,note,created_at,product_id,vendor_id")
+        .eq("buyer_id", me.id)
+        .order("created_at", { ascending:false });
+      if (error) throw error;
+      return data;
+    }
+
+    async function render(){
+      const box = qs("list");
+      box.innerHTML="carregando...";
+      const items = await listMyReservations();
+      box.innerHTML = items.map(r=>`
+        <div style="border:1px solid #ddd;border-radius:12px;padding:12px">
+          <div style="display:flex;justify-content:space-between;gap:10px">
+            <strong>Reserva ${esc(r.id)}</strong>
+            <span style="opacity:.75">Status: ${esc(r.status)}</span>
+          </div>
+          <div style="opacity:.85;margin-top:6px">Qtd: ${r.qty} | Produto: ${esc(r.product_id)}</div>
+          <div style="opacity:.75;margin-top:6px">Obs: ${esc(r.note||"-")}</div>
+        </div>
+      `).join("") || "<i>Você ainda não tem reservas.</i>";
+    }
+
+    (async()=>{ me = await getMyProfile(); await render(); })();
+  </script>
+</body>
+</html>

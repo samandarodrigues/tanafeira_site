@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendedor - Notificações</title>
+
+  <style>
+    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+
+    .header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+    }
+    .brand{font-weight:900;font-size:18px}
+    .muted{opacity:.75}
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    .btn{
+      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
+      font-weight:800;
+    }
+    .btn:hover{background:#f6f6f6}
+    .btn-primary{background:#111;color:#fff;border:0}
+    .btn-primary:hover{filter:brightness(.95)}
+    .btn-danger{border:1px solid #f0b7b7;background:#ffe9e9}
+    .btn-danger:hover{filter:brightness(.98)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+
+    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+
+    .toolbar{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    select{
+      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;background:#fff;
+    }
+    .pill{
+      display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid #ddd;
+      font-size:12px;font-weight:900;
+    }
+    .pill.new{background:#e9ffe9;border-color:#b7f0b7}
+    .pill.read{background:#f2f2f2;border-color:#ddd;color:#333}
+
+    .list{display:flex;flex-direction:column;gap:10px}
+    .card{
+      border:1px solid #ddd;border-radius:16px;padding:14px;
+      display:flex;gap:12px;align-items:flex-start;justify-content:space-between;
+    }
+    .left{display:flex;gap:12px;align-items:flex-start}
+    .icon{
+      width:42px;height:42px;border-radius:14px;border:1px solid #ddd;background:#fafafa;
+      display:flex;align-items:center;justify-content:center;font-size:18px;
+      flex:none;
+    }
+    .title{font-weight:900}
+    .small{font-size:12px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+    @media (max-width:720px){
+      .card{flex-direction:column;align-items:stretch}
+      .actions{justify-content:flex-start}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div>
+      <div class="brand">TaNaFeira</div>
+      <div id="subtitle" class="muted">Notificações</div>
+    </div>
+    <div class="right">
+      <button class="btn" id="back" type="button">Voltar</button>
+      <button class="btn" id="logout" type="button">Sair</button>
+    </div>
+  </header>
+
+  <div id="msg"></div>
+
+  <div class="toolbar">
+    <span id="counter" class="pill new">0 novas</span>
+
+    <select id="filter">
+      <option value="all">Todas</option>
+      <option value="unread">Somente novas</option>
+      <option value="read">Somente lidas</option>
+    </select>
+
+    <button class="btn btn-primary" id="refresh" type="button">Atualizar</button>
+    <button class="btn" id="markAll" type="button">Marcar tudo como lido</button>
+    <button class="btn btn-danger" id="clearLocal" type="button" title="Apaga somente o histórico local deste navegador">
+      Limpar histórico local
+    </button>
+  </div>
+
+  <div id="list" class="list">
+    <div class="muted">Carregando...</div>
+  </div>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const sb = supabase.createClient(
+      "https://addedjckqdzwgdstgqfz.supabase.co",
+      "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
+    );
+
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
+
+    function showMsg(text, isErr=false){
+      msgEl.style.display="block";
+      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
+      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
+      msgEl.textContent = text;
+    }
+    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function fmtDate(ts){
+      if (!ts) return "";
+      try{ return new Date(ts).toLocaleString("pt-BR"); }catch(_e){ return ""; }
+    }
+
+    // ===== vendor guard =====
+    let ME_USER = null;
+    let ME_PROFILE = null;
+
+    async function requireVendor(){
+      const { data:{ user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+      ME_USER = user;
+
+      const { data: prof, error: e2 } = await sb
+        .from("profiles")
+        .select("id, role, full_name, updated_at, created_at")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (e2) throw e2;
+      if (!prof) throw new Error("Seu perfil não foi encontrado. Faça logout/login ou recrie a conta.");
+      if (prof.role !== "vendor"){ location.href="telainicial-comp.html"; return null; }
+
+      ME_PROFILE = prof;
+      el("subtitle").textContent = "Notificações — " + (prof.full_name || "");
+      return prof;
+    }
+
+    // ===== local state keys =====
+    function keyRead(){ return `tnf:nots:read:${ME_USER?.id || "anon"}`; }
+    function keyLast(){ return `tnf:nots:last:${ME_USER?.id || "anon"}`; } // para “perfil atualizado”
+    function keyWelcome(){ return `tnf:nots:welcome:${ME_USER?.id || "anon"}`; }
+
+    function getReadSet(){
+      try{
+        const raw = localStorage.getItem(keyRead());
+        const arr = raw ? JSON.parse(raw) : [];
+        return new Set(Array.isArray(arr) ? arr.map(String) : []);
+      }catch(_e){ return new Set(); }
+    }
+    function saveReadSet(set){
+      localStorage.setItem(keyRead(), JSON.stringify(Array.from(set)));
+    }
+
+    function addRead(id){
+      const set = getReadSet();
+      set.add(String(id));
+      saveReadSet(set);
+    }
+    function markAllRead(ids){
+      const set = getReadSet();
+      ids.forEach(id => set.add(String(id)));
+      saveReadSet(set);
+    }
+
+    // ===== data loaders =====
+    async function loadMyProducts(){
+      // só precisamos das datas e nomes
+      const { data, error } = await sb
+        .from("products")
+        .select("id, name, title, created_at, updated_at")
+        .eq("vendor_id", ME_PROFILE.id)
+        .order("created_at", { ascending:false })
+        .limit(50);
+
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function loadReservationsReceived(myProductIds){
+      // tenta vendor_id (se existir) senão fallback por product_id IN
+      try{
+        const { data, error } = await sb
+          .from("reservations")
+          .select("*")
+          .eq("vendor_id", ME_PROFILE.id)
+          .order("created_at", { ascending:false })
+          .limit(80);
+
+        if (error) throw error;
+        return data || [];
+      }catch(_e){
+        if (!myProductIds.length) return [];
+        const { data, error } = await sb
+          .from("reservations")
+          .select("*")
+          .in("product_id", myProductIds)
+          .order("created_at", { ascending:false })
+          .limit(80);
+
+        if (error) throw error;
+        return data || [];
+      }
+    }
+
+    function getQty(row){
+      const keys = ["quantity","qty","qtd","amount","units","count"];
+      for (const k of keys){
+        if (row && row[k] != null) return row[k];
+      }
+      return null;
+    }
+    function getProductId(row){
+      if (!row) return null;
+      if ("product_id" in row) return row.product_id;
+      if ("produto_id" in row) return row.produto_id;
+      if ("products_id" in row) return row.products_id;
+      return null;
+    }
+
+    function statusPT(s){
+      const v = String(s || "").toLowerCase().trim();
+      const map = {
+        pending: "Pendente",
+        confirmed: "Confirmada",
+        cancelled: "Cancelada",
+        canceled: "Cancelada",
+        rejected: "Recusada",
+        done: "Concluída",
+        completed: "Concluída"
+      };
+      return map[v] || (v ? (v[0].toUpperCase()+v.slice(1)) : "—");
+    }
+
+    // ===== notification builder =====
+    function makeId(parts){
+      // id estável p/ marcar lido
+      return parts.map(x => String(x ?? "")).join("|");
+    }
+
+    function iconFor(type){
+      const map = {
+        welcome:"👋",
+        profile:"👤",
+        product:"🧺",
+        reservation:"📦",
+        status:"🔔",
+      };
+      return map[type] || "🔔";
+    }
+
+    function buildNotifications({ products, reservations }){
+      const nots = [];
+
+      // 1) Bem-vindo (uma vez)
+      const welcomed = localStorage.getItem(keyWelcome()) === "1";
+      if (!welcomed){
+        const id = makeId(["welcome", ME_PROFILE.id]);
+        nots.push({
+          id,
+          type: "welcome",
+          title: "Bem-vindo ao painel do vendedor!",
+          body: "Aqui você cria produtos, confirma reservas e mantém seu perfil atualizado.",
+          ts: new Date().toISOString(),
+          cta: { label: "Abrir perfil", href: "vend-perfil.html" }
+        });
+      }
+
+      // 2) Movimento do perfil (detecta mudança no updated_at)
+      try{
+        const lastRaw = localStorage.getItem(keyLast());
+        const last = lastRaw ? JSON.parse(lastRaw) : {};
+        const lastProfileUpdated = last.profile_updated_at || null;
+
+        if (ME_PROFILE.updated_at && lastProfileUpdated && ME_PROFILE.updated_at !== lastProfileUpdated){
+          const id = makeId(["profile_updated", ME_PROFILE.id, ME_PROFILE.updated_at]);
+          nots.push({
+            id,
+            type: "profile",
+            title: "Seu perfil foi atualizado",
+            body: "Alterações no perfil foram salvas com sucesso.",
+            ts: ME_PROFILE.updated_at,
+            cta: { label: "Ver perfil", href: "vend-perfil.html" }
+          });
+        }
+      }catch(_e){}
+
+      // 3) Produtos criados/atualizados (últimos 10)
+      (products || []).slice(0, 10).forEach(p=>{
+        const name = (p.name || p.title || "Produto").trim();
+        const id = makeId(["product", p.id, p.created_at || p.updated_at || ""]);
+        nots.push({
+          id,
+          type: "product",
+          title: "Produto cadastrado/atualizado",
+          body: `“${name}” está na sua vitrine.`,
+          ts: p.updated_at || p.created_at,
+          cta: { label: "Abrir vitrine", href: "vend-produtos.html" }
+        });
+      });
+
+      // 4) Reservas recebidas + status
+      (reservations || []).slice(0, 30).forEach(r=>{
+        const pid = getProductId(r);
+        const qty = getQty(r);
+        const st = String(r.status || "pending").toLowerCase();
+        const idBase = ["reservation", r.id, st, r.updated_at || r.created_at || ""];
+        const id = makeId(idBase);
+
+        if (st === "pending"){
+          nots.push({
+            id,
+            type: "reservation",
+            title: "Nova reserva recebida",
+            body: `Você recebeu uma reserva${qty != null ? (" de " + qty) : ""}.`,
+            ts: r.created_at || r.updated_at,
+            cta: { label: "Ver reservas", href: "vend-reservas.html" }
+          });
+        } else {
+          nots.push({
+            id,
+            type: "status",
+            title: "Reserva atualizada",
+            body: `Status agora: ${statusPT(st)}.`,
+            ts: r.updated_at || r.created_at,
+            cta: { label: "Ver reservas", href: "vend-reservas.html" }
+          });
+        }
+      });
+
+      // ordena por data desc
+      nots.sort((a,b)=> (new Date(b.ts||0)) - (new Date(a.ts||0)));
+
+      // remove duplicados por id (garantia)
+      const seen = new Set();
+      return nots.filter(n => (seen.has(n.id) ? false : (seen.add(n.id), true)));
+    }
+
+    // ===== render =====
+    function render(nots){
+      const filter = el("filter").value;
+      const readSet = getReadSet();
+
+      const allIds = nots.map(n => n.id);
+      const unreadCount = nots.filter(n => !readSet.has(String(n.id))).length;
+
+      el("counter").textContent = unreadCount + " novas";
+      el("counter").className = "pill " + (unreadCount ? "new" : "read");
+
+      let rows = nots.slice();
+      if (filter === "unread") rows = rows.filter(n => !readSet.has(String(n.id)));
+      if (filter === "read") rows = rows.filter(n => readSet.has(String(n.id)));
+
+      const box = el("list");
+      if (!rows.length){
+        box.innerHTML = `<div class="muted">Nenhuma notificação aqui.</div>`;
+        return;
+      }
+
+      box.innerHTML = rows.map(n=>{
+        const isRead = readSet.has(String(n.id));
+        return `
+          <div class="card">
+            <div class="left">
+              <div class="icon" aria-hidden="true">${iconFor(n.type)}</div>
+              <div>
+                <div class="title">${escapeHtml(n.title)}</div>
+                <div class="muted">${escapeHtml(n.body)}</div>
+                <div class="muted small" style="margin-top:6px">${fmtDate(n.ts)}</div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <span class="pill ${isRead ? "read" : "new"}">${isRead ? "LIDA" : "NOVA"}</span>
+              ${n.cta?.href ? `<button class="btn" type="button" onclick="location.href='${escapeHtml(n.cta.href)}'">${escapeHtml(n.cta.label || "Abrir")}</button>` : ""}
+              <button class="btn" type="button" onclick="window.__markRead('${escapeHtml(n.id)}')">Marcar como lida</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // botões globais
+      el("markAll").disabled = (unreadCount === 0);
+      el("markAll").onclick = ()=>{
+        markAllRead(allIds);
+        render(nots);
+        showMsg("Tudo marcado como lido ✅");
+        // bem-vindo vira “já visto”
+        localStorage.setItem(keyWelcome(), "1");
+      };
+    }
+
+    // ===== init / refresh =====
+    let LAST_NOTS = [];
+
+    async function refresh(){
+      clearMsg();
+      el("list").innerHTML = `<div class="muted">Carregando...</div>`;
+
+      await requireVendor();
+
+      const products = await loadMyProducts();
+      const myProductIds = products.map(p => p.id);
+      const reservations = await loadReservationsReceived(myProductIds);
+
+      const nots = buildNotifications({ products, reservations });
+      LAST_NOTS = nots;
+
+      // salva last snapshot para “perfil atualizado”
+      try{
+        localStorage.setItem(keyLast(), JSON.stringify({
+          profile_updated_at: ME_PROFILE.updated_at || null
+        }));
+      }catch(_e){}
+
+      // se carregou pela primeira vez, marca welcome como emitido (não como lido)
+      if (localStorage.getItem(keyWelcome()) !== "1"){
+        // não seta aqui, só quando marcar como lida ou marcar tudo como lido
+      }
+
+      render(nots);
+    }
+
+    window.__markRead = (id)=>{
+      addRead(id);
+      // se foi a welcome, considera “já visto”
+      if (String(id).startsWith("welcome|")) localStorage.setItem(keyWelcome(), "1");
+      render(LAST_NOTS);
+    };
+
+    el("filter").addEventListener("change", ()=> render(LAST_NOTS));
+    el("refresh").onclick = async ()=>{
+      try{ await refresh(); showMsg("Atualizado ✅"); }
+      catch(e){ showMsg(e.message || "Erro ao atualizar.", true); }
+    };
+
+    el("clearLocal").onclick = ()=>{
+      const ok = confirm("Isso apaga o histórico local (lidas/não-lidas) só deste navegador. Continuar?");
+      if (!ok) return;
+      localStorage.removeItem(keyRead());
+      localStorage.removeItem(keyLast());
+      localStorage.removeItem(keyWelcome());
+      showMsg("Histórico local apagado ✅");
+      render(LAST_NOTS);
+    };
+
+    el("back").onclick = ()=> location.href="vend-home.html";
+    el("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+
+    (async ()=>{
+      try{
+        await refresh();
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar notificações.", true);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entrar • TaNaFeira</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <style>
+    :root{
+      --verde:#3aa86b;
+      --verde-escuro:#1e5c3a;
+
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --shadow: 0 18px 55px rgba(0,0,0,.20);
+      --shadow-soft: 0 10px 26px rgba(0,0,0,.12);
+
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+      --page-pad: clamp(14px, 2.6vh, 28px);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input{font-family:inherit;}
+    html, body { height: 100%; }
+
+    body{
+      min-height: 100svh;
+      min-height: 100dvh;
+      overflow-x:hidden;
+
+      background:
+        radial-gradient(1100px 520px at 15% 10%, rgba(255,255,255,.16), rgba(255,255,255,0) 56%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,0,0,.12), rgba(0,0,0,0) 62%),
+        linear-gradient(145deg, var(--teal-1), var(--teal-2));
+
+      padding:
+        calc(var(--page-pad) + env(safe-area-inset-top))
+        calc(var(--page-pad) + env(safe-area-inset-right))
+        calc(var(--page-pad) + env(safe-area-inset-bottom))
+        calc(var(--page-pad) + env(safe-area-inset-left));
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#0f2f2b;
+    }
+
+    .shell{
+      width: min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:16px;
+      align-items:stretch;
+      position:relative;
+      overflow:clip;
+    }
+
+    .shell::before{
+      content:"";
+      position:absolute;
+      top:18px; bottom:18px;
+      left:50%;
+      width:1px;
+      transform:translateX(-8px);
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(255,255,255,.18),
+        rgba(255,255,255,0)
+      );
+      pointer-events:none;
+      opacity:.75;
+    }
+
+    /* BRAND */
+    .brand{
+      border-radius: calc(var(--radius-xl) + 2px);
+      position:relative;
+      overflow:hidden;
+      padding:28px 26px 22px;
+
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow:
+        0 28px 80px rgba(0,0,0,.40),
+        0 0 0 1px rgba(255,255,255,.10) inset;
+
+      color:#eafff3;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .brand::after{
+      content:"";
+      position:absolute;
+      inset:-180px -260px auto auto;
+      width:760px;height:760px;border-radius:999px;
+      background: radial-gradient(circle, rgba(123,255,207,.34), rgba(123,255,207,0) 62%);
+      pointer-events:none;
+    }
+
+    .badge{
+      position:absolute;
+      top:16px; right:16px;
+      z-index:2;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+
+      background: rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 26px rgba(0,0,0,.18);
+
+      font-weight:1000;
+      font-size:12.6px;
+      color: rgba(255,255,255,.92);
+    }
+    .badge i{ color:#7bffcf; }
+
+    .brand-head{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:12px;
+      position:relative;
+      z-index:1;
+    }
+
+    .brand-icon{
+      width:58px;height:58px;border-radius:18px;
+      background: rgba(123,255,207,.14);
+      border:1px solid rgba(255,255,255,.18);
+      display:grid;place-items:center;
+      box-shadow: 0 18px 26px rgba(0,0,0,.18);
+      flex:0 0 auto;
+    }
+    .brand-icon i{font-size:21px;color:#bfffe6;}
+
+    .brand-title h1{
+      font-size:36px;
+      line-height:1.02;
+      font-weight:1000;
+      letter-spacing:-.75px;
+    }
+
+    .brand-title small{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      font-weight:900;
+      opacity:.96;
+      font-size:12.7px;
+      width: fit-content;
+    }
+    .brand-title small i{color:#7bffcf;}
+
+    .brand-copy{
+      margin-top:12px;
+      padding:14px 14px;
+      border-radius:18px;
+      background: rgba(0,0,0,.12);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 16px 26px rgba(0,0,0,.12);
+      position:relative;
+      z-index:1;
+    }
+    .brand-copy p{
+      font-weight:850;
+      color:rgba(255,255,255,.90);
+      line-height:1.65;
+      font-size:14.9px;
+      max-width:60ch;
+    }
+
+    .brand-bottom{
+      position:relative;
+      z-index:1;
+      margin-top:16px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .mini-link{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight:950;
+      font-size:13.6px;
+      color:rgba(255,255,255,.92);
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      transition:.18s;
+    }
+    .mini-link:hover{transform: translateY(-1px); background: rgba(255,255,255,.14);}
+    .mini-link i{color:#7bffcf;}
+
+    /* PANEL */
+    .panel{
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .panel-head{
+      padding: 22px 22px 14px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(255,255,255,.18), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border-bottom: 1px solid rgba(255,255,255,.16);
+    }
+
+    .panel-head h2{
+      color:#eafff3;
+      font-size: 26px;
+      line-height:1.08;
+      font-weight: 1000;
+      letter-spacing:-.2px;
+      margin-bottom: 6px;
+    }
+    .panel-head p{
+      color: rgba(255,255,255,.84);
+      font-weight: 850;
+      line-height:1.55;
+      font-size: 14.6px;
+      max-width: 60ch;
+    }
+
+    .panel-body{
+      padding: 18px 22px 22px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.82);
+      font-weight:850;
+      font-size:13px;
+      line-height:1.35;
+      margin-bottom: 12px;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .field{display:grid; gap:8px; margin-top:12px;}
+    .field label{
+      color: rgba(255,255,255,.88);
+      font-weight: 950;
+      font-size: 13.5px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .field label i{color:#7bffcf;}
+
+    .input-wrap{ position:relative; }
+    .input{
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.92);
+      color: #0f2f2b;
+      font-weight: 800;
+      font-size: 15px;
+      outline: none;
+      box-shadow: var(--shadow-soft);
+      transition: .18s;
+    }
+    .input:focus{ box-shadow: var(--shadow-soft), var(--ring); }
+
+    /* botão olho */
+    .pwbtn{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      color:#2b3f3a;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      transition:.16s;
+    }
+    .pwbtn:hover{filter:brightness(1.02); transform:translateY(-50%) translateY(-1px);}
+    .pwbtn:focus{outline:none; box-shadow: 0 10px 18px rgba(0,0,0,.08), var(--ring);}
+
+    .row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+
+    .link{
+      color: rgba(255,255,255,.92);
+      font-weight: 900;
+      font-size: 13.6px;
+      opacity:.95;
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    .link i{color:#7bffcf;}
+    .link:hover{opacity:1; text-decoration:underline;}
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:12px 16px;
+      font-weight:1000;
+      font-size:14px;
+      transition:.18s;
+      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      justify-content:center;
+    }
+
+    .btn-primary{
+      width:100%;
+      margin-top: 14px;
+      background: #00f0af;
+      color:#003b36;
+      box-shadow: 0 14px 26px rgba(0,240,175,.18);
+    }
+    .btn-primary:hover{background:#00c892; transform: translateY(-1px);}
+
+    .btn-soft{
+      width:100%;
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.92);
+    }
+    .btn-soft:hover{background: rgba(255,255,255,.16); transform: translateY(-1px);}
+
+    .divider{
+      margin: 16px 0 12px;
+      height:1px;
+      background: rgba(255,255,255,.16);
+    }
+
+    .small{
+      color: rgba(255,255,255,.82);
+      font-weight: 850;
+      font-size: 13.6px;
+      line-height: 1.5;
+    }
+
+    .split-actions{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 980px){
+      .shell{grid-template-columns: 1fr;}
+      .shell::before{display:none;}
+      .brand{display:none;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+
+    <section class="brand" aria-label="Apresentação">
+      <div class="badge"><i class="fa-solid fa-leaf"></i> TaNaFeira</div>
+
+      <div>
+        <div class="brand-head">
+          <div class="brand-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+          <div class="brand-title">
+            <h1>Entrar</h1>
+            <small><i class="fa-solid fa-location-dot"></i> Da feira direto pra você</small>
+          </div>
+        </div>
+
+        <div class="brand-copy">
+          <p>
+            Entre pra reservar produtos e acompanhar suas retiradas.
+            Se você é feirante, acesse sua vitrine e as reservas organizadas.
+          </p>
+        </div>
+      </div>
+
+      <div class="brand-bottom">
+        <a class="mini-link" href="index.html"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+        <a class="mini-link" href="criarconta.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Formulário de login">
+      <div class="panel-head">
+        <h2>Entre na sua conta</h2>
+        <p>Use seu e-mail e senha. Se já tiver sessão, você entra direto.</p>
+      </div>
+
+      <div class="panel-body">
+
+        <div class="alert" id="alert">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div id="alertText">Erro</div>
+        </div>
+
+        <form id="loginForm" autocomplete="on">
+          <div class="field">
+            <label for="email"><i class="fa-solid fa-envelope"></i> E-mail</label>
+            <input class="input" id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required />
+          </div>
+
+          <div class="field">
+            <label for="password"><i class="fa-solid fa-lock"></i> Senha</label>
+            <div class="input-wrap">
+              <input class="input" id="password" name="password" type="password" placeholder="••••••••" required />
+              <button class="pwbtn" type="button" id="togglePw" aria-label="Mostrar senha">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <a class="link" href="criarconta.html"><i class="fa-solid fa-user-plus"></i> Criar conta</a>
+            <a class="link" href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+          </div>
+
+          <button class="btn btn-primary" type="submit" id="btnLogin">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar
+          </button>
+        </form>
+
+        <div class="divider"></div>
+
+        <div class="small">Ainda não tem conta? Escolha seu perfil:</div>
+
+        <div class="split-actions">
+          <button class="btn btn-soft" id="btnBuyer" type="button">
+            <i class="fa-solid fa-basket-shopping"></i> Criar conta – Comprador
+          </button>
+          <button class="btn btn-soft" id="btnVendor" type="button">
+            <i class="fa-solid fa-store"></i> Criar conta – Vendedor
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Supabase v2 -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <script>
+    // ===== Supabase config (suas chaves) =====
+    const SUPABASE_URL = "https://addedjckqdzwgdstgqfz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
+
+    // compat: cria client de qualquer jeito
+    const sb = (window.supabase?.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+                                             : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
+
+    // ===== Rotas (do seu projeto) =====
+    const ROUTES = {
+      buyerHome: "telainicial-comp.html",
+      vendorHome: "vend-home.html",
+      signupBuyer: "criarconta-c.html",
+      signupVendor: "criarconta-v.html"
+    };
+
+    // ===== UI helpers =====
+    const alertBox = document.getElementById("alert");
+    const alertText = document.getElementById("alertText");
+    const btnLogin = document.getElementById("btnLogin");
+
+    function showError(msg){
+      alertText.textContent = msg;
+      alertBox.classList.add("show");
+    }
+    function clearError(){
+      alertBox.classList.remove("show");
+      alertText.textContent = "";
+    }
+    function setLoading(isLoading){
+      btnLogin.disabled = isLoading;
+      btnLogin.style.opacity = isLoading ? ".78" : "1";
+      btnLogin.innerHTML = isLoading
+        ? '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...'
+        : '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
+    }
+
+    // ===== Mostrar/ocultar senha =====
+    const togglePw = document.getElementById("togglePw");
+    togglePw.addEventListener("click", () => {
+      const input = document.getElementById("password");
+      const icon = togglePw.querySelector("i");
+      const visible = input.type === "text";
+      input.type = visible ? "password" : "text";
+      icon.classList.toggle("fa-eye", visible);
+      icon.classList.toggle("fa-eye-slash", !visible);
+      togglePw.setAttribute("aria-label", visible ? "Mostrar senha" : "Ocultar senha");
+      input.focus();
+    });
+
+    // ===== Role (igual seu login antigo) =====
+    function getRole(user){
+      return user?.user_metadata?.role || user?.app_metadata?.role || null;
+    }
+
+    function redirectByRole(user){
+      const role = getRole(user);
+
+      // ✅ Mantém exatamente a lógica que funcionava:
+      // role === "vendor" -> vend-home
+      // qualquer outro -> buyer
+      if (role === "vendor") location.href = ROUTES.vendorHome;
+      else location.href = ROUTES.buyerHome;
+    }
+
+    // ===== Se já tiver sessão, pula direto =====
+    (async () => {
+      try{
+        const { data:{ session } } = await sb.auth.getSession();
+        if (session?.user) redirectByRole(session.user);
+      }catch(e){
+        // se der ruim aqui, não trava a tela
+      }
+    })();
+
+    // ===== Login =====
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearError();
+      setLoading(true);
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try{
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        redirectByRole(data.user);
+      }catch(err){
+        showError(err?.message || "Erro ao entrar. Verifique seu e-mail e senha.");
+        setLoading(false);
+      }
+    });
+
+    // ===== Botões criar conta =====
+    document.getElementById("btnBuyer").onclick = () => location.href = ROUTES.signupBuyer;
+    document.getElementById("btnVendor").onclick = () => location.href = ROUTES.signupVendor;
+  </script>
+</body>
+</html>

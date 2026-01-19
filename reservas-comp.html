@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaNaFeira — Conectando quem produz a quem consome</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+  --verde:#3aa86b;
+  --verde-escuro:#1e5c3a;
+  --bg:#ffffff;
+  --texto:#1f2f2b;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,system-ui,Arial;
+}
+
+body{
+  background:#fff;
+  color:var(--texto);
+  line-height:1.5;
+}
+
+/* HEADER */
+header{
+  position:fixed;
+  top:0; left:0; right:0;
+  background:#fff;
+  border-bottom:1px solid #eee;
+  z-index:1000;
+}
+
+.header-inner{
+  max-width:1200px;
+  margin:auto;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+header nav a{
+  margin:0 12px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+}
+
+header nav a:hover{
+  color:var(--verde);
+}
+
+/* HERO */
+.hero{
+  padding:120px 20px 80px;
+  background:linear-gradient(145deg,#005a63,#007b72);
+  color:#fff;
+}
+
+.hero-inner{
+  max-width:1100px;
+  margin:auto;
+}
+
+.hero h1{
+  font-size:46px;
+  max-width:26ch;
+  line-height:1.1;
+}
+
+.hero p{
+  margin-top:16px;
+  font-size:18px;
+  max-width:60ch;
+  opacity:.95;
+}
+
+.cta-row{
+  margin-top:28px;
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:none;
+  cursor:pointer;
+  padding:14px 28px;
+  border-radius:999px;
+  font-size:15px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+
+.btn.primary{
+  background:#00f0af;
+  color:#003b36;
+}
+
+.btn.secondary{
+  background:transparent;
+  border:2px solid #fff;
+  color:#fff;
+}
+
+/* SECTIONS */
+section{
+  padding:80px 20px;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+}
+
+/* BENEFICIOS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:22px;
+  margin-top:40px;
+}
+
+.card{
+  background:#fff;
+  padding:26px;
+  border-radius:18px;
+  box-shadow:0 10px 28px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.card i{
+  font-size:28px;
+  color:var(--verde);
+  margin-bottom:14px;
+}
+
+/* DESTAQUE */
+.titulo-destaque{
+  font-size:42px;
+  line-height:1.15;
+  text-wrap:balance;
+}
+
+.titulo-destaque span{
+  white-space:nowrap;
+  color:var(--verde);
+}
+
+.subtitulo-destaque{
+  margin-top:14px;
+  font-size:17px;
+  opacity:.85;
+  max-width:520px;
+}
+
+/* DEPOIMENTOS */
+.depoimentos{
+  background:#f7f7f7;
+  text-align:center;
+}
+
+.depoimentos-grid{
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+
+.depoimento{
+  background:#fff;
+  padding:26px;
+  border-radius:18px;
+  box-shadow:0 10px 28px rgba(0,0,0,.08);
+}
+
+.depoimento p{
+  font-size:15.5px;
+  margin-bottom:18px;
+}
+
+/* FOOTER */
+footer{
+  background:#0f4b45;
+  color:#fff;
+  padding:40px 20px;
+  text-align:center;
+}
+
+footer a{
+  color:#bfffe6;
+  text-decoration:none;
+}
+
+/* RESPONSIVO */
+@media(max-width:720px){
+  .hero h1{font-size:36px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <strong>TaNaFeira</strong>
+    <nav>
+      <a href="#sobre">Sobre</a>
+      <a href="#funciona">Funcionalidades</a>
+      <a href="#depoimentos">Depoimentos</a>
+      <a href="login.html">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="sobre">
+  <div class="hero-inner">
+    <h1>Chegou, comprou, levou — direto da roça para sua mesa</h1>
+    <p>
+      O TaNaFeira conecta produtores rurais e compradores locais,
+      facilitando a reserva de produtos e a retirada direta na feira.
+    </p>
+
+    <div class="cta-row">
+      <button class="btn primary" onclick="window.location.href='vendedor.html'">
+        <i class="fas fa-tractor"></i> Sou Vendedor
+      </button>
+      <button class="btn secondary" onclick="window.location.href='comprador.html'">
+        <i class="fas fa-shopping-basket"></i> Sou Comprador
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="funciona">
+  <div class="container">
+    <h2 class="titulo-destaque">
+      Organize suas vendas e <span>ganhe tempo</span> na feira
+    </h2>
+    <p class="subtitulo-destaque">
+      Gerencie produtos, acompanhe reservas e chegue na feira sabendo exatamente o que vender.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <i class="fas fa-clipboard-list"></i>
+        <h3>Reserva simples</h3>
+        <p>O comprador reserva e o vendedor se organiza antes da feira.</p>
+      </div>
+
+      <div class="card">
+        <i class="fas fa-map-marker-alt"></i>
+        <h3>Retirada combinada</h3>
+        <p>Produtos retirados no local informado pelo produtor.</p>
+      </div>
+
+      <div class="card">
+        <i class="fas fa-box"></i>
+        <h3>Tudo organizado</h3>
+        <p>Menos desperdício, mais controle e mais tranquilidade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="depoimentos" id="depoimentos">
+  <div class="container">
+    <h2>Quem usa recomenda</h2>
+
+    <div class="depoimentos-grid">
+      <div class="depoimento">
+        <p>Agora sei exatamente o que levar pra feira. Ficou tudo mais organizado.</p>
+        <strong>José Alves</strong><br>
+        <small>Produtor rural</small>
+      </div>
+
+      <div class="depoimento">
+        <p>Posso reservar antes e só ir buscar. Economiza tempo.</p>
+        <strong>Maria do Carmo</strong><br>
+        <small>Compradora</small>
+      </div>
+
+      <div class="depoimento">
+        <p>Facilitou muito o controle das vendas.</p>
+        <strong>Antônio Pereira</strong><br>
+        <small>Vendedor local</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 — TaNaFeira</p>
+  <p>
+    <a href="criarconta.html">Criar conta</a> •
+    <a href="criarconta_v.html">Sou vendedor</a> •
+    <a href="criarconta_c.html">Sou comprador</a>
+  </p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-br">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Notificações</title></head>
+<body style="font-family:system-ui;max-width:800px;margin:24px auto;padding:0 16px">
+  <h1>Notificações</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="feed.html">🛒 Feed</a>
+    <a href="minhas-reservas.html">🧾 Minhas reservas</a>
+    <a href="vend-home.html">🧺 Painel vendedor</a>
+  </div>
+
+  <div id="msg" style="display:none;margin-top:12px"></div>
+  <div id="list" style="display:grid;gap:12px;margin-top:14px"></div>
+
+  <script src="./supabaseClient.js"></script>
+  <script src="./authGuard.js"></script>
+  <script>
+    let me;
+
+    async function listMyNotifications(){
+      const { data, error } = await window.sb
+        .from("notifications")
+        .select("id,type,title,body,is_read,created_at,data")
+        .eq("user_id", me.id)
+        .order("created_at", { ascending:false });
+      if (error) throw error;
+      return data;
+    }
+
+    async function markRead(id){
+      const { error } = await window.sb
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("id", id);
+      if (error) throw error;
+    }
+
+    async function render(){
+      const box = qs("list");
+      box.innerHTML = "carregando...";
+      const items = await listMyNotifications();
+      box.innerHTML = items.map(n=>`
+        <div style="border:1px solid #ddd;border-radius:12px;padding:12px;opacity:${n.is_read?0.65:1}">
+          <div style="display:flex;justify-content:space-between;gap:10px">
+            <strong>${esc(n.title)}</strong>
+            <span style="opacity:.75">${n.is_read ? "Lida" : "Nova"}</span>
+          </div>
+          <div style="opacity:.85;margin-top:6px">${esc(n.body||"")}</div>
+          <div style="opacity:.7;margin-top:6px">${esc(n.type)} • ${esc(n.created_at)}</div>
+          ${n.is_read ? "" : `<button data-read="${n.id}" style="padding:8px;margin-top:10px;cursor:pointer">Marcar como lida</button>`}
+        </div>
+      `).join("") || "<i>Sem notificações.</i>";
+
+      box.querySelectorAll("button[data-read]").forEach(b=>{
+        b.onclick = async()=>{ try{ await markRead(b.dataset.read); await render(); } catch(e){ showMsg(qs("msg"), e.message, true); } };
+      });
+    }
+
+    (async()=>{ me = await getMyProfile(); await render(); })();
+  </script>
+</body>
+</html>

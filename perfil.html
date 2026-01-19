@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-br">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Perfil</title></head>
+<body style="font-family:system-ui;max-width:720px;margin:24px auto;padding:0 16px">
+  <h1>Meu perfil</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="feed.html">🛒 Feed</a>
+    <a href="notificacoes.html">🔔 Notificações</a>
+    <a href="vend-home.html">🧺 Painel vendedor</a>
+  </div>
+
+  <div id="msg" style="display:none;margin-top:12px"></div>
+
+  <form id="f" style="display:grid;gap:10px;margin-top:14px">
+    <input id="full_name" placeholder="Nome completo" required style="padding:10px">
+    <input id="phone" placeholder="Telefone" style="padding:10px">
+    <input id="city" placeholder="Localização/cidade" style="padding:10px">
+    <button style="padding:10px;cursor:pointer">Salvar</button>
+  </form>
+
+  <button id="logout" style="width:100%;padding:10px;margin-top:12px;cursor:pointer">Sair</button>
+
+  <script src="./supabaseClient.js"></script>
+  <script src="./authGuard.js"></script>
+  <script>
+    let me;
+
+    async function load(){
+      me = await getMyProfile();
+      qs("full_name").value = me.full_name || "";
+      qs("phone").value = me.phone || "";
+      qs("city").value = me.city || "";
+    }
+
+    qs("f").addEventListener("submit", async (ev)=>{
+      ev.preventDefault();
+      try{
+        const { error } = await window.sb.from("profiles")
+          .update({
+            full_name: qs("full_name").value.trim(),
+            phone: qs("phone").value.trim(),
+            city: qs("city").value.trim()
+          })
+          .eq("id", me.id);
+        if (error) throw error;
+        showMsg(qs("msg"), "Perfil atualizado ✅", false);
+      }catch(e){
+        showMsg(qs("msg"), e.message, true);
+      }
+    });
+
+    qs("logout").onclick = async()=>{ await window.sb.auth.signOut(); location.href="index.html"; };
+
+    load();
+  </script>
+</body>
+</html>
