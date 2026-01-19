@@ -3,160 +3,501 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vendedor - Minhas Reservas</title>
+  <title>TaNaFeira • Minhas Reservas (Vendedor)</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
   <style>
-    body{font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px}
-    header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding-bottom:10px}
-    h1{margin:0}
-    .btn{padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;font-weight:800}
-    .btn:hover{background:#f6f6f6}
-    .card{border:1px solid #ddd;border-radius:16px;padding:14px;margin-top:12px}
-    .muted{opacity:.7}
-    .status{font-weight:900}
-    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
+
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
+
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input,select,textarea{font-family:inherit;}
+
+    .container{
+      width:min(1100px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 0;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .greet{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .hello{
+      font-weight:1100;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 42ch;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 60ch;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .btn i{opacity:.95;}
+
+    .btn-outline{
+      background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
+
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .brand img{width:124px;}
+      .greet{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 34px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 86ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
+    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+
+    /* ===== LIST ===== */
+    .list{
+      margin-top:16px;
+      display:grid;
+      gap:12px;
+    }
+
+    .card{
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      padding:14px;
+      overflow:hidden;
+    }
+
+    .row{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    .title{
+      font-weight:1200;
+      color:#10312c;
+      font-size:15.5px;
+      line-height:1.2;
+      max-width: 70ch;
+    }
+
+    .meta{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(58,168,107,.08);
+      color:#0f4b45;
+      font-size:12px;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+
+    .status{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      font-size:12px;
+      font-weight:1100;
+      white-space:nowrap;
+    }
+    .st-pending{ background:#fff7e6; border-color:#ffe2a8; color:#6a4a00; }
+    .st-confirmed{ background:#e9ffe9; border-color:#b7f0b7; color:#1e5c3a; }
+    .st-cancelled{ background:#ffe9e9; border-color:#f0b7b7; color:#7a1f1f; }
+    .st-other{ background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.10); color:#0f2f2b; }
+
+    .muted{color:rgba(16,49,44,.72);font-weight:850;}
+    .small{font-size:12.6px;}
+
+    .empty{
+      padding:14px;
+      color:rgba(16,49,44,.72);
+      font-weight:900;
+    }
   </style>
 </head>
+
 <body>
-
-<header>
-  <h1>🧾 Minhas Reservas (vendedor)</h1>
-  <button class="btn" id="back">Voltar</button>
-</header>
-
-<div id="msg"></div>
-<div id="list"></div>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-const sb = supabase.createClient(
-  "https://addedjckqdzwgdstgqfz.supabase.co",
-  "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
-);
-
-const list = document.getElementById("list");
-const msgEl = document.getElementById("msg");
-
-function showMsg(text, isErr=false){
-  msgEl.style.display="block";
-  msgEl.style.background = isErr ? "#ffe9e9" : "#e9ffe9";
-  msgEl.style.border = "1px solid " + (isErr ? "#f0b7b7" : "#b7f0b7");
-  msgEl.textContent = text;
-}
-function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
-
-function escapeHtml(s){
-  return String(s ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-// pega a quantidade independente do nome real da coluna
-function getQty(row){
-  const keys = ["quantity","qty","qtd","amount","units","count"];
-  for (const k of keys){
-    if (row && row[k] != null) return row[k];
-  }
-  return null;
-}
-
-// traduz status para PT-BR
-function statusPT(s){
-  const v = String(s || "").toLowerCase().trim();
-  if (!v) return "—";
-  const map = {
-    pending: "Pendente",
-    confirmed: "Confirmada",
-    canceled: "Cancelada",
-    cancelled: "Cancelada",
-    rejected: "Recusada",
-    done: "Concluída",
-    completed: "Concluída"
-  };
-  return map[v] || (v.charAt(0).toUpperCase() + v.slice(1));
-}
-
-async function load(){
-  clearMsg();
-  list.innerHTML = `<div class="muted" style="margin-top:16px">Carregando...</div>`;
-
-  const { data:{user}, error: uerr } = await sb.auth.getUser();
-  if(uerr) return showMsg(uerr.message || "Erro auth", true);
-  if(!user) return location.href="login.html";
-
-  // pega tudo para não quebrar por coluna faltando
-  const { data: resv, error: rerr } = await sb
-    .from("reservations")
-    .select("*")
-    .eq("buyer_id", user.id)
-    .order("created_at", { ascending:false });
-
-  if(rerr){
-    return showMsg(rerr.message || "Erro ao carregar reservas.", true);
-  }
-
-  if(!resv || resv.length === 0){
-    list.innerHTML = `<div class="muted" style="margin-top:16px">Você ainda não fez reservas.</div>`;
-    return;
-  }
-
-  // tenta descobrir qual campo é o id do produto
-  const productIdField =
-    ("product_id" in resv[0]) ? "product_id" :
-    ("produto_id" in resv[0]) ? "produto_id" :
-    ("products_id" in resv[0]) ? "products_id" :
-    null;
-
-  const productIds = productIdField
-    ? Array.from(new Set(resv.map(r => r[productIdField]).filter(Boolean)))
-    : [];
-
-  let productsMap = new Map();
-
-  if(productIds.length){
-    // ✅ tenta pegar name OU title (qual existir)
-    const { data: prods, error: perr } = await sb
-      .from("products")
-      .select("id,name,title,unit")
-      .in("id", productIds);
-
-    if(perr){
-      // Se RLS bloquear, ok: só mostra "Produto indisponível"
-      showMsg("Aviso: não consegui carregar nome dos produtos (RLS).", true);
-    }else{
-      (prods||[]).forEach(p => productsMap.set(String(p.id), p));
-    }
-  }
-
-  list.innerHTML = resv.map(r=>{
-    const pid = productIdField ? r[productIdField] : null;
-    const p = pid ? productsMap.get(String(pid)) : null;
-
-    const prodName = (p?.name || p?.title || "").trim();
-    const title = prodName || "Produto indisponível";
-    const unit = p?.unit ? (" • " + p.unit) : "";
-
-    const qty = getQty(r);
-    const qtyText = (qty != null) ? qty : "—";
-
-    return `
-      <div class="card">
-        <strong>${escapeHtml(title)}</strong>
-        <div class="muted">Quantidade: ${escapeHtml(String(qtyText))}${escapeHtml(unit)}</div>
-        <div class="status">Status: ${escapeHtml(statusPT(r.status))}</div>
-        <div class="muted" style="font-size:12px;margin-top:6px">
-          ${r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : ""}
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="greet">
+          <div id="hello" class="hello">Carregando...</div>
+          <div class="subtitle">Minhas reservas (vendedor)</div>
         </div>
       </div>
-    `;
-  }).join("");
-}
 
-document.getElementById("back").onclick = ()=> location.href="vend-home.html";
-load();
-</script>
+      <div class="actions">
+        <button class="btn btn-outline" id="back" type="button" title="Voltar">
+          <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
+        </button>
+        <button class="btn btn-danger" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Minhas reservas</h1>
+        <p>Essas são as reservas que você fez em outros vendedores. Acompanhe o status e a data de criação.</p>
+      </div>
+    </div>
+
+    <div id="msg" class="alert"></div>
+    <section id="list" class="list" aria-label="Lista de reservas"></section>
+  </main>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const sb = supabase.createClient(
+      "https://addedjckqdzwgdstgqfz.supabase.co",
+      "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
+    );
+
+    const el = (id)=>document.getElementById(id);
+    const listEl = el("list");
+    const msgEl = el("msg");
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML =
+        `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>` +
+        `<div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){ msgEl.className="alert"; msgEl.innerHTML=""; }
+
+    // pega a quantidade independente do nome real da coluna
+    function getQty(row){
+      const keys = ["quantity","qty","qtd","amount","units","count"];
+      for (const k of keys){
+        if (row && row[k] != null) return row[k];
+      }
+      return null;
+    }
+
+    // traduz status para PT-BR
+    function statusPT(s){
+      const v = String(s || "").toLowerCase().trim();
+      if (!v) return "—";
+      const map = {
+        pending: "Pendente",
+        confirmed: "Confirmada",
+        canceled: "Cancelada",
+        cancelled: "Cancelada",
+        rejected: "Recusada",
+        done: "Concluída",
+        completed: "Concluída"
+      };
+      return map[v] || (v.charAt(0).toUpperCase() + v.slice(1));
+    }
+
+    function statusClass(s){
+      const v = String(s || "").toLowerCase().trim();
+      if (v === "confirmed") return "st-confirmed";
+      if (v === "cancelled" || v === "canceled") return "st-cancelled";
+      if (v === "pending") return "st-pending";
+      return "st-other";
+    }
+
+    // tenta descobrir qual campo é o id do produto
+    function productIdFieldFromRow(r){
+      if (!r) return null;
+      if ("product_id" in r) return "product_id";
+      if ("produto_id" in r) return "produto_id";
+      if ("products_id" in r) return "products_id";
+      return null;
+    }
+
+    async function requireAuth(){
+      const { data:{ user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if(!user){ location.href="login.html"; return null; }
+      return user;
+    }
+
+    async function load(){
+      clearMsg();
+      listEl.innerHTML = `<div class="empty">Carregando...</div>`;
+
+      const user = await requireAuth();
+      if (!user) return;
+
+      // header (nome)
+      const metaName =
+        (user.user_metadata?.full_name || "").trim() ||
+        ([user.user_metadata?.first_name, user.user_metadata?.last_name].filter(Boolean).join(" ").trim());
+      el("hello").textContent = metaName ? ("Olá, " + metaName + "!") : "Olá!";
+
+      const { data: resv, error: rerr } = await sb
+        .from("reservations")
+        .select("*")
+        .eq("buyer_id", user.id)
+        .order("created_at", { ascending:false });
+
+      if(rerr){
+        showMsg(rerr.message || "Erro ao carregar reservas.", true);
+        listEl.innerHTML = "";
+        return;
+      }
+
+      if(!resv || resv.length === 0){
+        listEl.innerHTML = `<div class="empty">Você ainda não fez reservas.</div>`;
+        return;
+      }
+
+      const productIdField = productIdFieldFromRow(resv[0]);
+      const productIds = productIdField
+        ? Array.from(new Set(resv.map(r => r[productIdField]).filter(Boolean)))
+        : [];
+
+      let productsMap = new Map();
+
+      if(productIds.length){
+        const { data: prods, error: perr } = await sb
+          .from("products")
+          .select("id,name,title,unit")
+          .in("id", productIds);
+
+        if(!perr){
+          (prods||[]).forEach(p => productsMap.set(String(p.id), p));
+        }
+      }
+
+      listEl.innerHTML = resv.map(r=>{
+        const pid = productIdField ? r[productIdField] : null;
+        const p = pid ? productsMap.get(String(pid)) : null;
+
+        const prodName = (p?.name || p?.title || "").trim();
+        const title = prodName || "Produto indisponível";
+
+        const qty = getQty(r);
+        const qtyText = (qty != null) ? qty : "—";
+        const unit = (p?.unit || "").trim();
+
+        const stText = statusPT(r.status);
+        const stCls = statusClass(r.status);
+
+        const when = r.created_at ? new Date(r.created_at).toLocaleString("pt-BR") : "";
+
+        return `
+          <article class="card">
+            <div class="row">
+              <div style="min-width:0">
+                <div class="title">${escapeHtml(title)}</div>
+                <div class="meta">
+                  <span class="pill"><i class="fa-solid fa-hashtag"></i> Qtd: ${escapeHtml(String(qtyText))}${unit ? " • " + escapeHtml(unit) : ""}</span>
+                  <span class="status ${stCls}"><i class="fa-solid fa-circle"></i> ${escapeHtml(stText)}</span>
+                </div>
+                ${when ? `<div class="muted small" style="margin-top:10px"><i class="fa-regular fa-clock"></i> ${escapeHtml(when)}</div>` : ``}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    el("back").onclick = ()=> location.href="vend-home.html";
+    el("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+
+    load();
+  </script>
 </body>
 </html>
