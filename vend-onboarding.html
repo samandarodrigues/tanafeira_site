@@ -3,92 +3,461 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vendedor - Completar perfil</title>
+  <title>TaNaFeira • Vendedor</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
   <style>
-    body{font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px}
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
+      --verde-escuro:#1e5c3a;
 
-    /* header (igual vend-home) */
-    .vend-header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
     }
-    .brand{font-weight:900;font-size:18px}
-    .muted{opacity:.75}
-    .btn{padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer}
-    .btn:hover{background:#f6f6f6}
-    .btn-primary{background:#111;color:#fff;border:0}
-    .btn-primary:hover{filter:brightness(.95)}
-    button:disabled{opacity:.6;cursor:not-allowed}
 
-    .card{border:1px solid #ddd;border-radius:16px;padding:16px}
-    .section{margin-top:14px}
-    h1{margin:0 0 6px}
-    h2{margin:0 0 6px;font-size:16px}
-    textarea,input{width:100%;padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px}
-    textarea{min-height:100px;resize:vertical}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
 
-    #msg{display:none;margin-top:12px;padding:10px;border-radius:12px;border:1px solid #ddd}
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input,textarea{font-family:inherit;}
 
-    /* categorias */
+    .container{
+      width:min(980px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .headtext{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+
+    .hello{
+      font-weight:1100;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 40ch;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 46ch;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .btn i{opacity:.95;}
+
+    .btn-outline{
+      background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
+
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
+
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .brand img{width:124px;}
+      .headtext{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 34px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 70ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
+    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+
+    /* ===== CARD ===== */
+    .card{
+      margin-top:16px;
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+
+    .card-head{
+      padding:16px 16px 12px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .card-head h2{
+      margin:0;
+      font-size:16px;
+      font-weight:1200;
+      color:#10312c;
+    }
+    .card-head p{
+      margin-top:6px;
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      font-size:13.4px;
+      line-height:1.5;
+      max-width: 80ch;
+    }
+
+    .card-body{
+      padding:16px;
+      display:grid;
+      gap:14px;
+    }
+
+    .softbox{
+      border-radius:16px;
+      padding:12px;
+      background: rgba(58,168,107,.08);
+      border:1px solid rgba(58,168,107,.14);
+      color:rgba(16,49,44,.82);
+      font-weight:900;
+      font-size:13.2px;
+      line-height:1.5;
+    }
+
+    /* ===== CATEGORIAS ===== */
     .cats{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(3, minmax(0,1fr));
       gap:10px;
       margin-top:10px;
     }
-    .cat{
-      border:1px solid #ddd;border-radius:14px;padding:10px;
-      display:flex;gap:10px;align-items:flex-start;
-      background:#fff;
-    }
-    .cat input{width:auto;margin-top:2px}
-    .cat strong{display:block}
-    .hint{font-size:13px;opacity:.75;margin-top:6px}
+    @media (max-width:860px){ .cats{grid-template-columns:repeat(2, minmax(0,1fr));} }
+    @media (max-width:560px){ .cats{grid-template-columns:1fr;} }
 
-    @media (max-width:860px){
-      .cats{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .cat{
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:18px;
+      padding:12px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+      transition:.18s;
+      cursor:pointer;
+      user-select:none;
     }
-    @media (max-width:560px){
-      .cats{grid-template-columns:1fr}
+    .cat:hover{transform: translateY(-1px); box-shadow: var(--shadow-soft);}
+    .cat input{
+      width:18px;height:18px;
+      margin-top:2px;
+      accent-color: var(--verde);
+      cursor:pointer;
+    }
+    .cat strong{
+      display:block;
+      font-weight:1200;
+      color:#10312c;
+      line-height:1.15;
+    }
+    .cat small{
+      display:block;
+      margin-top:6px;
+      color:rgba(16,49,44,.70);
+      font-weight:850;
+      font-size:12.8px;
+      line-height:1.25;
+    }
+
+    .hint{
+      color:rgba(16,49,44,.66);
+      font-weight:850;
+      font-size:12.8px;
+      line-height:1.45;
+      margin-top:6px;
+    }
+
+    /* ===== BIO ===== */
+    textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      color:#0f2f2b;
+      font-weight:850;
+      font-size:15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition:.18s;
+      min-height:120px;
+      resize:vertical;
+    }
+    textarea:focus{ box-shadow: var(--shadow-soft), var(--ring); }
+
+    .bioRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .counter{
+      font-weight:1000;
+      font-size:12.8px;
+      color:rgba(16,49,44,.72);
+    }
+    .counter b{color:#0f4b45;}
+
+    /* ===== BOTÕES ===== */
+    .actions-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:6px;
+      justify-content:flex-end;
+    }
+    .actions-row .btn{
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14.2px;
+    }
+    .actions-row .btn-primary{
+      min-width: 280px;
+      justify-content:center;
+    }
+
+    @media (max-width:520px){
+      .actions-row .btn-primary{width:100%; min-width:unset;}
     }
   </style>
 </head>
-<body>
 
-  <header class="vend-header">
-    <div>
-      <div class="brand">TaNaFeira</div>
-      <div class="muted">Onboarding do vendedor</div>
-    </div>
-    <div class="row" style="margin:0">
-      <button id="logout" class="btn" type="button">Sair</button>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="headtext">
+          <div class="hello" id="hello">Olá!</div>
+          <div class="subtitle">Onboarding do vendedor</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="logout" class="btn btn-danger" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div class="card">
-    <h1>Complete seu perfil para começar a vender</h1>
-    <div class="muted">Isso é rápido: escolha suas categorias e escreva uma bio curta.</div>
-
-    <div id="msg"></div>
-
-    <div class="section">
-      <h2>1) Quais categorias você vende? <span class="muted">(obrigatório)</span></h2>
-      <div class="hint">Escolha pelo menos 1 categoria. Você pode mudar depois.</div>
-      <div id="cats" class="cats"></div>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Complete seu perfil para começar a vender</h1>
+        <p>Escolha suas categorias e escreva uma bio curtinha. Você pode mudar isso depois.</p>
+      </div>
     </div>
 
-    <div class="section">
-      <h2>2) Sua bio <span class="muted">(obrigatório)</span></h2>
-      <div class="hint">Ex: “Vendo frutas frescas na feira aos sábados. Entrego no Vale do Itaim.”</div>
-      <textarea id="bio" maxlength="300" placeholder="Escreva uma bio curta (máx 300 caracteres)"></textarea>
-      <div class="hint"><span id="bioCount">0</span>/300</div>
-    </div>
+    <div id="msg" class="alert"></div>
 
-    <div class="row" style="margin-top:14px;justify-content:flex-end">
-      <button id="save" class="btn btn-primary" type="button">Concluir e ir para o painel</button>
-    </div>
-  </div>
+    <section class="card" aria-label="Completar perfil do vendedor">
+      <div class="card-head">
+        <h2>Informações essenciais</h2>
+        <p>Esses dados ajudam os compradores a confiarem na sua banca e encontrarem seus produtos com mais facilidade.</p>
+      </div>
+
+      <div class="card-body">
+        <div class="softbox">
+          <i class="fa-solid fa-circle-info" style="color:var(--verde);margin-right:8px;"></i>
+          Escolha <b>pelo menos 1 categoria</b> e escreva uma bio com <b>mínimo 10 caracteres</b>.
+        </div>
+
+        <div>
+          <h2 style="margin:0;font-size:15px;font-weight:1200;color:#10312c;">
+            1) Quais categorias você vende? <span style="color:rgba(16,49,44,.70);font-weight:900;">(obrigatório)</span>
+          </h2>
+          <div class="hint">Dica: você pode selecionar várias categorias.</div>
+          <div id="cats" class="cats"></div>
+        </div>
+
+        <div>
+          <h2 style="margin:0;font-size:15px;font-weight:1200;color:#10312c;">
+            2) Sua bio <span style="color:rgba(16,49,44,.70);font-weight:900;">(obrigatório)</span>
+          </h2>
+          <div class="hint">Ex: “Frutas frescas aos sábados. Aceito reservas e retiro na banca da esquina.”</div>
+
+          <textarea id="bio" maxlength="300" placeholder="Escreva uma bio curta (máx 300 caracteres)"></textarea>
+
+          <div class="bioRow">
+            <div class="hint" style="margin:0">Seja direto: produto + dia/feira + região.</div>
+            <div class="counter"><b id="bioCount">0</b>/300</div>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button id="save" class="btn btn-primary" type="button">
+            <i class="fa-solid fa-check"></i> Concluir e ir para o painel
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
@@ -102,15 +471,37 @@
     const bioCountEl = document.getElementById("bioCount");
     const saveBtn = document.getElementById("save");
 
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
     function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
-      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.textContent = text;
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
     }
     function clearMsg(){
-      msgEl.style.display="none";
-      msgEl.textContent = "";
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
+    }
+
+    function bestNameFromUser(user){
+      const md = user?.user_metadata || {};
+      const full = String(md.full_name || "").trim();
+      if (full) return full;
+
+      const first = String(md.first_name || "").trim();
+      const last  = String(md.last_name || "").trim();
+      const join = (first + " " + last).trim();
+      if (join) return join;
+
+      const email = String(user?.email || "");
+      const beforeAt = email.includes("@") ? email.split("@")[0] : email;
+      return beforeAt ? beforeAt : "Vendedor";
     }
 
     bioEl.addEventListener("input", ()=>{
@@ -121,6 +512,9 @@
       const { data: { user }, error } = await sb.auth.getUser();
       if (error) throw error;
       if (!user) { location.href = "login.html"; return null; }
+
+      // mostra nome no header
+      document.getElementById("hello").textContent = "Olá, " + bestNameFromUser(user) + "!";
 
       const { data: prof, error: e2 } = await sb
         .from("profiles")
@@ -135,13 +529,11 @@
         return null;
       }
 
-      // se já fez onboarding, manda pro painel
       if (prof.vendor_onboarding_done) {
         location.href = "vend-home.html";
         return null;
       }
 
-      // preenche bio se já tinha algo
       if (prof.bio) {
         bioEl.value = prof.bio;
         bioCountEl.textContent = String(bioEl.value.length);
@@ -159,20 +551,11 @@
           <input type="checkbox" value="${c.id}" />
           <div>
             <strong>${escapeHtml(c.name)}</strong>
-            <div class="muted">${escapeHtml(c.slug)}</div>
+            <small>${escapeHtml(c.slug || "")}</small>
           </div>
         `;
         catsEl.appendChild(item);
       }
-    }
-
-    function escapeHtml(s){
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
     }
 
     function selectedCategoryIds(){
@@ -194,7 +577,7 @@
     async function saveOnboarding(){
       clearMsg();
       saveBtn.disabled = true;
-      saveBtn.textContent = "Salvando...";
+      saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
 
       try{
         const { data: { user } } = await sb.auth.getUser();
@@ -204,10 +587,12 @@
         const bio = bioEl.value.trim();
 
         if (cats.length === 0) {
-          return showMsg("Selecione pelo menos 1 categoria.", true);
+          showMsg("Selecione pelo menos 1 categoria.", true);
+          return;
         }
         if (!bio || bio.length < 10) {
-          return showMsg("Escreva uma bio (mínimo 10 caracteres).", true);
+          showMsg("Escreva uma bio (mínimo 10 caracteres).", true);
+          return;
         }
 
         // 1) Atualiza profile (bio + flag)
@@ -217,7 +602,7 @@
           .eq("id", user.id);
         if (e1) throw e1;
 
-        // 2) Substitui categorias (limpa e reinsere)
+        // 2) Substitui categorias
         const { error: e2 } = await sb
           .from("vendor_categories")
           .delete()
@@ -232,13 +617,21 @@
 
         showMsg("Perfil completo! Indo para o painel...", false);
         setTimeout(()=> location.href = "vend-home.html", 700);
+
       }catch(e){
         showMsg(e.message || "Erro ao salvar onboarding.", true);
       }finally{
         saveBtn.disabled = false;
-        saveBtn.textContent = "Concluir e ir para o painel";
+        saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Concluir e ir para o painel`;
       }
     }
+
+    document.getElementById("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+
+    saveBtn.onclick = saveOnboarding;
 
     (async ()=>{
       try{
@@ -248,13 +641,6 @@
         showMsg(e.message || "Erro ao carregar onboarding.", true);
       }
     })();
-
-    document.getElementById("logout").onclick = async ()=>{
-      await sb.auth.signOut();
-      location.href="login.html";
-    };
-
-    saveBtn.onclick = saveOnboarding;
   </script>
 </body>
 </html>
