@@ -3,99 +3,437 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Comprador - Perfil</title>
+  <title>TaNaFeira • Perfil do Comprador</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
   <style>
-    body{font-family:system-ui;max-width:980px;margin:24px auto;padding:0 16px}
-    .header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
+      --verde-escuro:#1e5c3a;
+
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
+
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
     }
-    .brand{font-weight:900;font-size:18px}
-    .muted{opacity:.75}
-    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input,select,textarea{font-family:inherit;}
+
+    .container{
+      width:min(980px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .headtext{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width: 0;
+    }
+    .titleline{
+      font-weight:1100;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 36ch;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 42ch;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
 
     .btn{
-      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
-      font-weight:800;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
     }
-    .btn:hover{background:#f6f6f6}
-    .btn-primary{background:#111;color:#fff;border:0}
-    .btn-primary:hover{filter:brightness(.95)}
-    button:disabled{opacity:.6;cursor:not-allowed}
+    .btn i{opacity:.95;}
 
-    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
-
-    .card{border:1px solid #ddd;border-radius:16px;padding:16px;margin-top:14px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .span2{grid-column:1/-1}
-    label{display:block;font-size:14px;opacity:.85;margin:6px 0}
-    input{
-      width:100%;padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
+    .btn-outline{
       background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
     }
-    input:focus{outline:2px solid #1112}
-    input[readonly]{background:#f7f7f7;color:#333}
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
 
-    .hint{font-size:13px;opacity:.75;margin-top:6px}
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
 
-    @media (max-width:720px){ .grid{grid-template-columns:1fr} }
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
+
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .brand img{width:124px;}
+      .headtext{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 34px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 70ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .alert.err{
+      border-color:#f0b7b7;
+      background:#ffe9e9;
+    }
+    .alert.ok{
+      border-color:#b7f0b7;
+      background:#e9ffe9;
+    }
+
+    /* ===== CARD ===== */
+    .card{
+      margin-top:16px;
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+
+    .card-head{
+      padding:16px 16px 12px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+    .card-head h2{
+      margin:0;
+      font-size:16px;
+      font-weight:1200;
+      color:#10312c;
+    }
+    .card-head p{
+      margin-top:6px;
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      font-size:13.4px;
+      line-height:1.5;
+      max-width: 80ch;
+    }
+
+    .card-body{
+      padding:16px;
+      display:grid;
+      gap:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 760px){
+      .grid{grid-template-columns:1fr;}
+    }
+
+    .field{display:grid;gap:8px;}
+    .field label{
+      font-weight:1000;
+      font-size:13px;
+      color:rgba(16,49,44,.80);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .field label i{color:var(--verde);}
+
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      color:#0f2f2b;
+      font-weight:850;
+      font-size:15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition:.18s;
+    }
+    .input:focus{ box-shadow: var(--shadow-soft), var(--ring); }
+
+    .input[readonly]{
+      background:#f6fbf8;
+      color:#2c3f3a;
+    }
+
+    .hint{
+      color:rgba(16,49,44,.66);
+      font-weight:850;
+      font-size:12.8px;
+      line-height:1.45;
+    }
+
+    .actions-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+    .actions-row .btn{
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14.2px;
+    }
+    .actions-row .btn-primary{flex:1;justify-content:center;}
+
+    .softbox{
+      border-radius:16px;
+      padding:12px;
+      background: rgba(58,168,107,.08);
+      border:1px solid rgba(58,168,107,.14);
+      color:rgba(16,49,44,.82);
+      font-weight:900;
+      font-size:13.2px;
+      line-height:1.5;
+    }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <div>
-      <div class="brand">TaNaFeira</div>
-      <div id="subtitle" class="muted">Meu perfil (comprador)</div>
-    </div>
-    <div class="right">
-      <button class="btn" id="back" type="button">Voltar</button>
-      <button class="btn" id="logout" type="button">Sair</button>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="headtext">
+          <div class="titleline" id="titleline">Meu perfil</div>
+          <div class="subtitle" id="subtitle">Comprador</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline" id="back" type="button" title="Voltar">
+          <i class="fa-solid fa-arrow-left"></i> <span>Voltar</span>
+        </button>
+        <button class="btn btn-danger" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div id="msg"></div>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Perfil do comprador</h1>
+        <p>Atualize seus dados para facilitar suas reservas e a retirada na feira.</p>
+      </div>
+    </div>
 
-  <div class="card">
-    <h2 style="margin:0 0 10px">Dados do comprador</h2>
+    <div id="msg" class="alert"></div>
 
-    <form id="form" class="grid" novalidate>
-      <div>
-        <label for="first_name">Nome</label>
-        <input id="first_name" maxlength="30" autocomplete="given-name" required />
-        <div class="hint">Máx 30 caracteres.</div>
+    <section class="card" aria-label="Dados do comprador">
+      <div class="card-head">
+        <h2>Dados pessoais</h2>
+        <p>Seu e-mail é o mesmo da conta. Você pode editar nome, celular e o endereço resumido.</p>
       </div>
 
-      <div>
-        <label for="last_name">Sobrenome</label>
-        <input id="last_name" maxlength="30" autocomplete="family-name" required />
-        <div class="hint">Máx 30 caracteres.</div>
-      </div>
+      <div class="card-body">
+        <div class="softbox">
+          <i class="fa-solid fa-shield-halved" style="color:var(--verde);margin-right:8px;"></i>
+          Dica: mantenha o celular certo para o vendedor conseguir confirmar sua reserva.
+        </div>
 
-      <div>
-        <label for="phone">Celular</label>
-        <input id="phone" inputmode="tel" autocomplete="tel-national" placeholder="(89) 91234-5678" required />
-      </div>
+        <form id="form" class="grid" novalidate>
+          <div class="field">
+            <label for="first_name"><i class="fa-solid fa-user"></i> Nome</label>
+            <input class="input" id="first_name" maxlength="30" autocomplete="given-name" required />
+            <div class="hint">Máx 30 caracteres.</div>
+          </div>
 
-      <div>
-        <label for="email">Email</label>
-        <input id="email" type="email" readonly />
-        <div class="hint">O email é o mesmo da conta (não edita aqui).</div>
-      </div>
+          <div class="field">
+            <label for="last_name"><i class="fa-solid fa-user"></i> Sobrenome</label>
+            <input class="input" id="last_name" maxlength="30" autocomplete="family-name" required />
+            <div class="hint">Máx 30 caracteres.</div>
+          </div>
 
-      <div class="span2">
-        <label for="address_text">Endereço (linha única)</label>
-        <input id="address_text" placeholder="Rua, número • bairro • cidade - UF • CEP..." />
-        <div class="hint">Ex: Rua X, 123 • Centro • Picos - PI • CEP 64600-000</div>
-      </div>
+          <div class="field">
+            <label for="phone"><i class="fa-solid fa-phone"></i> Celular</label>
+            <input class="input" id="phone" inputmode="tel" autocomplete="tel-national" placeholder="(89) 91234-5678" required />
+            <div class="hint">DDD + número (10 ou 11 dígitos).</div>
+          </div>
 
-      <div class="span2" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
-        <button id="saveBtn" class="btn btn-primary" type="submit">Salvar</button>
-        <button id="reloadBtn" class="btn" type="button">Recarregar</button>
+          <div class="field">
+            <label for="email"><i class="fa-solid fa-envelope"></i> E-mail</label>
+            <input class="input" id="email" type="email" readonly />
+            <div class="hint">O e-mail é da conta e não pode ser alterado aqui.</div>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label for="address_text"><i class="fa-solid fa-location-dot"></i> Endereço (linha única)</label>
+            <input class="input" id="address_text" placeholder="Rua, número • bairro • cidade - UF • CEP..." />
+            <div class="hint">Ex: Rua X, 123 • Centro • Picos - PI • CEP 64600-000</div>
+          </div>
+
+          <div class="actions-row" style="grid-column:1/-1">
+            <button id="saveBtn" class="btn btn-primary" type="submit">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar
+            </button>
+            <button id="reloadBtn" class="btn btn-outline" type="button">
+              <i class="fa-solid fa-rotate"></i> Recarregar
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
+    </section>
+  </main>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
@@ -107,19 +445,30 @@
     const el = (id)=>document.getElementById(id);
     const msgEl = el("msg");
 
-    function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
-      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.textContent = text;
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
+    }
 
     function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
     function maskPhone(v){
       const d = onlyDigits(v).slice(0,11);
       if (d.length <= 2) return d ? `(${d}` : "";
-      if (d.length <= 7) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+      if (d.length <= 6) return `(${d.slice(0,2)}) ${d.slice(2)}`;
+      if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6,10)}`;
       return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;
     }
     el("phone").addEventListener("input", (e)=> e.target.value = maskPhone(e.target.value));
@@ -137,7 +486,8 @@
       el("email").value = user.email || "";
 
       const full = (user.user_metadata?.full_name || "").trim();
-      el("subtitle").textContent = full ? ("Meu perfil (comprador) — " + full) : "Meu perfil (comprador)";
+      el("titleline").textContent = full ? full : "Meu perfil";
+      el("subtitle").textContent = "Comprador";
       return user;
     }
 
@@ -162,8 +512,10 @@
       clearMsg();
 
       const btn = el("saveBtn");
+      const reloadBtn = el("reloadBtn");
       btn.disabled = true;
-      btn.textContent = "Salvando...";
+      reloadBtn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
 
       try{
         const { data:{ user } } = await sb.auth.getUser();
@@ -178,7 +530,9 @@
 
         if (!first_name) throw new Error("Informe seu nome.");
         if (!last_name) throw new Error("Informe seu sobrenome.");
-        if (!phone) throw new Error("Informe seu celular.");
+        if (!onlyDigits(phone)) throw new Error("Informe seu celular.");
+        const digits = onlyDigits(phone);
+        if (!(digits.length === 10 || digits.length === 11)) throw new Error("Celular inválido. Use DDD + número.");
 
         await saveMeta({
           role: "buyer",
@@ -189,7 +543,7 @@
           address_text: address_text || null
         });
 
-        // tenta também atualizar no profiles (se existir as colunas)
+        // tenta também atualizar no profiles (se existir)
         try{
           await sb.from("profiles")
             .update({ full_name, address_text: address_text || null })
@@ -202,7 +556,8 @@
         showMsg(e.message || "Erro ao salvar.", true);
       }finally{
         btn.disabled = false;
-        btn.textContent = "Salvar";
+        reloadBtn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Salvar`;
       }
     });
 
