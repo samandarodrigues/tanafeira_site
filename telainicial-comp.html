@@ -3,141 +3,609 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Comprador - Tela Inicial</title>
+  <title>TaNaFeira • Comprador</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
   <style>
-    body{font-family:system-ui;max-width:1100px;margin:24px auto;padding:0 16px}
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
+      --verde-escuro:#1e5c3a;
 
-    .header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:12px 0;border-bottom:1px solid #eee;margin-bottom:14px;
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:#ffffff;
+      --border:rgba(0,0,0,.08);
+
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
     }
-    .brand{font-weight:900;font-size:18px}
-    .muted{opacity:.75}
-    .hello{font-weight:900;margin-top:4px}
-    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input,select,textarea{font-family:inherit;}
+
+    .container{
+      width:min(1240px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .greet{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .hello{
+      font-weight:1000;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      max-width: 34ch;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
 
     .btn{
-      padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;cursor:pointer;
-      font-weight:800;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
     }
-    .btn:hover{background:#f6f6f6}
-    .btn-primary{background:#111;color:#fff;border:0}
-    .btn-primary:hover{filter:brightness(.95)}
-    button:disabled{opacity:.6;cursor:not-allowed}
+    .btn i{opacity:.95;}
 
-    #msg{display:none;margin:12px 0;padding:10px;border-radius:12px;border:1px solid #ddd}
+    .btn-soft{
+      background: rgba(58,168,107,.10);
+      color:#0f4b45;
+      border:1px solid rgba(58,168,107,.18);
+    }
+    .btn-soft:hover{transform: translateY(-1px); background: rgba(58,168,107,.14);}
 
+    .btn-outline{
+      background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
+
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 34px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 70ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== TOOLBAR ===== */
     .toolbar{
-      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-      margin:10px 0 14px;
-    }
-    .search{
-      flex:1;min-width:240px;
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;
-    }
-    select, input, dialog input{
-      padding:12px;border:1px solid #ccc;border-radius:12px;font-size:16px;background:#fff;
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 1fr 220px 160px;
+      gap:12px;
+      align-items:center;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:12px;
+    .input, select{
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.92);
+      color:#0f2f2b;
+      font-weight:850;
+      font-size:15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition: .18s;
     }
-    @media (max-width:980px){ .grid{grid-template-columns:repeat(2, minmax(0,1fr));} }
-    @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+    .input:focus, select:focus{ box-shadow: var(--shadow-soft), var(--ring); }
+
+    .toolbar .btn-primary{
+      width:100%;
+      justify-content:center;
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14.6px;
+    }
+
+    @media (max-width: 900px){
+      .toolbar{
+        grid-template-columns: 1fr 1fr;
+      }
+      .toolbar .btn-primary{
+        grid-column: 1 / -1;
+      }
+      .brand{min-width: unset;}
+      .greet{display:none;}
+    }
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .toolbar{grid-template-columns: 1fr;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+      .actions .btn i{margin:0;}
+      .brand img{width:124px;}
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .alert.err{
+      border-color:#f0b7b7;
+      background:#ffe9e9;
+    }
+    .alert.ok{
+      border-color:#b7f0b7;
+      background:#e9ffe9;
+    }
+
+    /* ===== GRID PRODUTOS ===== */
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width: 980px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (max-width: 640px){ .grid{grid-template-columns: 1fr;} }
 
     .card{
-      border:1px solid #ddd;border-radius:16px;padding:14px;
-      display:flex;flex-direction:column;gap:10px;
-      background:#fff;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 100%;
     }
-    .row{display:flex;gap:10px;align-items:flex-start}
-    .thumb{
-      width:86px;height:86px;border-radius:14px;border:1px solid #ddd;object-fit:cover;
-      background:#f6f6f6;flex:none;
-    }
-    .title{font-weight:900;font-size:16px}
-    .price{font-weight:900}
-    .meta{display:flex;gap:10px;flex-wrap:wrap;font-size:13px}
-    .pill{
-      display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #ddd;
-      font-size:12px;font-weight:900;background:#fafafa;
-    }
-    audio{width:100%}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
-    .small{font-size:12px}
 
-    dialog{
-      border:1px solid #ddd;border-radius:16px;
-      padding:14px;max-width:520px;width:calc(100% - 24px);
+    .card-top{
+      padding:14px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
     }
-    dialog::backdrop{background:rgba(0,0,0,.35)}
-    .dlgTop{display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .dlgGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    .span2{grid-column:1/-1}
-    label{display:block;font-size:14px;opacity:.85;margin:6px 0}
+
+    .thumb{
+      width:92px;height:92px;
+      border-radius:18px;
+      border:1px solid rgba(0,0,0,.10);
+      object-fit:cover;
+      background:#f0f5f3;
+      flex:0 0 auto;
+    }
+
+    .info{min-width:0;flex:1;}
+    .title{
+      font-weight:1100;
+      font-size:16px;
+      color:#10312c;
+      line-height:1.2;
+      margin-top:2px;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+    }
+    .vendor{
+      margin-top:6px;
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .meta{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(58,168,107,.08);
+      color:#0f4b45;
+      font-size:12px;
+      font-weight:1000;
+    }
+
+    .card-mid{
+      padding:0 14px 14px;
+      display:grid;
+      gap:10px;
+    }
+
+    .desc{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      font-size:13.8px;
+      line-height:1.55;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+    }
+
+    .priceRow{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .price{
+      font-weight:1200;
+      font-size:18px;
+      color:#0f2f2b;
+    }
+    .unit{
+      font-weight:950;
+      font-size:12.8px;
+      color:rgba(16,49,44,.68);
+      white-space:nowrap;
+    }
+
+    audio{
+      width:100%;
+      border-radius:12px;
+    }
+
+    .card-bottom{
+      padding:14px;
+      margin-top:auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      border-top:1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.86);
+    }
+    .card-bottom .btn{
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14.2px;
+    }
+    .btn-reserve{
+      flex:1;
+      justify-content:center;
+    }
+
+    /* ===== MODAL ===== */
+    dialog{
+      border:none;
+      border-radius:22px;
+      padding:0;
+      max-width: 560px;
+      width: calc(100% - 24px);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      background: rgba(255,255,255,.98);
+    }
+    dialog::backdrop{
+      background: rgba(0,0,0,.40);
+      backdrop-filter: blur(2px);
+    }
+
+    .dlgHead{
+      padding:16px 16px 14px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .dlgTitle{
+      font-weight:1200;
+      font-size:16px;
+      color:#10312c;
+      line-height:1.2;
+    }
+    .dlgSub{
+      margin-top:6px;
+      font-weight:900;
+      font-size:12.8px;
+      color:rgba(16,49,44,.72);
+    }
+
+    .dlgBody{
+      padding:14px 16px 16px;
+      display:grid;
+      gap:12px;
+    }
+    .dlgDesc{
+      color:rgba(16,49,44,.74);
+      font-weight:850;
+      line-height:1.55;
+      font-size:13.8px;
+      background: rgba(58,168,107,.08);
+      border:1px solid rgba(58,168,107,.14);
+      border-radius:16px;
+      padding:12px;
+    }
+
+    .dlgGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width:520px){
+      .dlgGrid{grid-template-columns: 1fr;}
+    }
+
+    .field{display:grid;gap:8px;}
+    .field label{
+      font-weight:1000;
+      font-size:13px;
+      color:rgba(16,49,44,.80);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .field label i{color:var(--verde);}
+
+    .dlgActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+    .dlgActions .btn{
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14.2px;
+    }
+
+    .small-note{
+      color:rgba(16,49,44,.64);
+      font-weight:850;
+      font-size:12.8px;
+      line-height:1.5;
+      margin-top:4px;
+    }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <div>
-      <div class="brand">TaNaFeira</div>
-      <div id="hello" class="hello">Olá!</div>
-      <div id="subtitle" class="muted">Feed do comprador</div>
-    </div>
-    <div class="right">
-      <button class="btn" id="profile" type="button">Meu perfil</button>
-      <button class="btn" id="myRes" type="button">Minhas reservas</button>
-      <button class="btn" id="logout" type="button">Sair</button>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="greet">
+          <div id="hello" class="hello">Olá!</div>
+          <div id="subtitle" class="subtitle">Feed do comprador</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-outline" id="profile" type="button" title="Meu perfil">
+          <i class="fa-solid fa-user"></i> <span>Meu perfil</span>
+        </button>
+        <button class="btn btn-soft" id="myRes" type="button" title="Minhas reservas">
+          <i class="fa-solid fa-receipt"></i> <span>Minhas reservas</span>
+        </button>
+        <button class="btn btn-danger" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div id="msg"></div>
-
-  <div class="toolbar">
-    <input id="q" class="search" placeholder="Buscar produto..." />
-    <select id="cat">
-      <option value="all">Todas as categorias</option>
-    </select>
-    <button class="btn btn-primary" id="refresh" type="button">Atualizar</button>
-  </div>
-
-  <div id="grid" class="grid">
-    <div class="muted">Carregando...</div>
-  </div>
-
-  <dialog id="dlg">
-    <div class="dlgTop">
-      <div>
-        <div class="title" id="dlgTitle">Reservar</div>
-        <div class="muted small" id="dlgVendor">Vendedor: —</div>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Produtos disponíveis</h1>
+        <p>Busque por nome, filtre por categoria e reserve em poucos cliques. O vendedor confirma depois.</p>
       </div>
-      <button class="btn" id="dlgClose" type="button">Fechar</button>
     </div>
 
-    <div class="dlgGrid">
-      <div class="span2 muted" id="dlgDesc"></div>
+    <div id="msg" class="alert"></div>
 
+    <div class="toolbar" role="search">
+      <input id="q" class="input" placeholder="Buscar produto..." autocomplete="off" />
+      <select id="cat" aria-label="Categoria">
+        <option value="all">Todas as categorias</option>
+      </select>
+      <button class="btn btn-primary" id="refresh" type="button">
+        <i class="fa-solid fa-rotate"></i> Atualizar
+      </button>
+    </div>
+
+    <section id="grid" class="grid" aria-label="Lista de produtos">
+      <div style="color:rgba(16,49,44,.72);font-weight:900;padding:10px;">Carregando...</div>
+    </section>
+  </main>
+
+  <dialog id="dlg" aria-label="Reservar produto">
+    <div class="dlgHead">
       <div>
-        <label for="dlgQty">Quantidade</label>
-        <input id="dlgQty" inputmode="numeric" placeholder="Ex: 2" />
-        <div class="muted small">Tem que ser maior que 0.</div>
+        <div class="dlgTitle" id="dlgTitle">Reservar</div>
+        <div class="dlgSub" id="dlgVendor">Vendedor: —</div>
+      </div>
+      <button class="btn btn-outline" id="dlgClose" type="button">
+        <i class="fa-solid fa-xmark"></i> Fechar
+      </button>
+    </div>
+
+    <div class="dlgBody">
+      <div class="dlgDesc" id="dlgDesc">—</div>
+
+      <div class="dlgGrid">
+        <div class="field">
+          <label for="dlgQty"><i class="fa-solid fa-hashtag"></i> Quantidade</label>
+          <input class="input" id="dlgQty" inputmode="numeric" placeholder="Ex: 2" />
+        </div>
+
+        <div class="field">
+          <label><i class="fa-solid fa-box"></i> Estoque atual</label>
+          <input class="input" id="dlgStock" disabled />
+        </div>
       </div>
 
-      <div>
-        <label>Estoque atual</label>
-        <input id="dlgStock" disabled />
+      <div class="dlgActions">
+        <button class="btn btn-primary" id="dlgConfirm" type="button" style="flex:1;justify-content:center;border-radius:16px;">
+          <i class="fa-solid fa-check"></i> Confirmar reserva
+        </button>
+        <button class="btn btn-outline" id="dlgCancel" type="button" style="border-radius:16px;">
+          Cancelar
+        </button>
       </div>
 
-      <div class="span2">
-        <button class="btn btn-primary" id="dlgConfirm" type="button">Confirmar reserva</button>
-        <button class="btn" id="dlgCancel" type="button" style="margin-left:8px">Cancelar</button>
-      </div>
-
-      <div class="span2 muted small">
+      <div class="small-note">
         Obs: o estoque só baixa quando o vendedor confirmar.
       </div>
     </div>
@@ -154,12 +622,13 @@
     const msgEl = el("msg");
 
     function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
-      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.textContent = text;
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
     }
-    function clearMsg(){ msgEl.style.display="none"; msgEl.textContent=""; }
+    function clearMsg(){
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
+    }
 
     function escapeHtml(s){
       return String(s ?? "")
@@ -170,7 +639,7 @@
         .replaceAll("'","&#039;");
     }
 
-    function onlyDigits(s){ return (s||"").replace(/\\D/g,""); }
+    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
     function toIntStrict(v){
       const d = onlyDigits(v);
       if (!d) return null;
@@ -198,7 +667,6 @@
 
       const full = (user.user_metadata?.full_name || user.user_metadata?.first_name || "").trim();
       el("hello").textContent = full ? ("Olá, " + full + "!") : "Olá!";
-
       el("subtitle").textContent = "Feed do comprador";
       return user;
     }
@@ -221,7 +689,6 @@
         CATEGORIES.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
     }
 
-    // ✅ Lê produtos e resolve NOME do vendedor via profiles.full_name
     async function loadProductsAndVendors(){
       const { data, error } = await sb
         .from("products")
@@ -245,7 +712,6 @@
           .select("id, full_name")
           .in("id", vendorIds);
 
-        // Se RLS travar profiles, a gente cai no fallback sem quebrar o feed.
         if (!perr){
           (profs || []).forEach(p => {
             const name = (p.full_name || "").trim();
@@ -254,7 +720,6 @@
         }
       }
 
-      // fallback final: nunca mostrar UUID
       vendorIds.forEach(id=>{
         if (!VENDOR_NAME.has(String(id))) VENDOR_NAME.set(String(id), "Vendedor");
       });
@@ -275,7 +740,7 @@
       if (q) rows = rows.filter(p => ((p.name || p.title || "").toLowerCase()).includes(q));
 
       if (!rows.length){
-        grid.innerHTML = `<div class="muted">Nenhum produto encontrado.</div>`;
+        grid.innerHTML = `<div style="color:rgba(16,49,44,.72);font-weight:900;padding:10px;">Nenhum produto encontrado.</div>`;
         return;
       }
 
@@ -290,35 +755,44 @@
         const stock = Number(p.stock ?? 0);
         const canReserve = stock > 0;
 
+        const desc = (p.description || "").trim();
+
         return `
-          <div class="card">
-            <div class="row">
-              ${img ? `<img class="thumb" src="${img}" alt="Imagem do produto">` : `<span class="thumb"></span>`}
-              <div style="min-width:0">
+          <article class="card">
+            <div class="card-top">
+              ${img ? `<img class="thumb" src="${img}" alt="Imagem do produto">` : `<div class="thumb" aria-hidden="true"></div>`}
+              <div class="info">
                 <div class="title">${escapeHtml(name)}</div>
-                <div class="muted small">Vendedor: ${escapeHtml(vendorName)}</div>
-                <div class="meta" style="margin-top:6px">
-                  <span class="pill">${escapeHtml(catName)}</span>
-                  <span class="pill">${escapeHtml(p.unit || "—")}</span>
-                  <span class="pill">Estoque: ${stock}</span>
+                <div class="vendor">Vendedor: ${escapeHtml(vendorName)}</div>
+
+                <div class="meta">
+                  <span class="pill"><i class="fa-solid fa-tag"></i> ${escapeHtml(catName)}</span>
+                  <span class="pill"><i class="fa-solid fa-scale-balanced"></i> ${escapeHtml(p.unit || "—")}</span>
+                  <span class="pill"><i class="fa-solid fa-box"></i> Estoque: ${stock}</span>
                 </div>
               </div>
             </div>
 
-            ${p.description ? `<div class="muted">${escapeHtml(p.description)}</div>` : ``}
+            <div class="card-mid">
+              ${desc ? `<div class="desc">${escapeHtml(desc)}</div>` : ``}
 
-            <div class="price">${formatCentsToBRL(p.price_cents)}</div>
+              <div class="priceRow">
+                <div class="price">${formatCentsToBRL(p.price_cents)}</div>
+                <div class="unit">${escapeHtml(p.unit ? ("por " + p.unit) : "")}</div>
+              </div>
 
-            ${aud ? `<audio controls src="${aud}"></audio>` : ``}
+              ${aud ? `<audio controls src="${aud}"></audio>` : ``}
+            </div>
 
-            <div class="actions">
-              <button class="btn btn-primary" type="button"
+            <div class="card-bottom">
+              <button class="btn btn-primary btn-reserve" type="button"
                 onclick="window.__openReserve('${p.id}')"
                 ${canReserve ? "" : "disabled"}>
+                <i class="fa-solid fa-basket-shopping"></i>
                 ${canReserve ? "Reservar" : "Sem estoque"}
               </button>
             </div>
-          </div>
+          </article>
         `;
       }).join("");
     }
@@ -361,7 +835,7 @@
 
       dlgTitle.textContent = "Reservar: " + name;
       dlgVendor.textContent = "Vendedor: " + vendorName;
-      dlgDesc.textContent = p.description ? p.description : "—";
+      dlgDesc.textContent = (p.description && p.description.trim()) ? p.description.trim() : "Sem descrição.";
       dlgQty.value = "";
       dlgStock.value = String(Number(p.stock ?? 0));
 
@@ -378,7 +852,7 @@
       if (!CURRENT) return;
 
       dlgConfirm.disabled = true;
-      dlgConfirm.textContent = "Salvando...";
+      dlgConfirm.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
 
       try{
         const qty = toIntStrict(dlgQty.value);
@@ -407,7 +881,7 @@
         showMsg(e?.message || "Erro ao reservar.", true);
       }finally{
         dlgConfirm.disabled = false;
-        dlgConfirm.textContent = "Confirmar reserva";
+        dlgConfirm.innerHTML = `<i class="fa-solid fa-check"></i> Confirmar reserva`;
       }
     };
 
@@ -419,7 +893,7 @@
       try{
         await loadProductsAndVendors();
         render();
-        showMsg("Atualizado ✅");
+        showMsg("Atualizado ✅", false);
       }catch(e){
         showMsg(e.message || "Erro ao atualizar.", true);
       }
