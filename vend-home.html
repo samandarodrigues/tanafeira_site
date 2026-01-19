@@ -3,58 +3,399 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Vendedor - Home</title>
+  <title>TaNaFeira • Vendedor</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
   <style>
-    body{font-family:system-ui;max-width:900px;margin:24px auto;padding:0 16px}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
-    a.card{display:block;border:1px solid #ddd;border-radius:14px;padding:14px;text-decoration:none;color:inherit}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .muted{opacity:.75}
-    button{padding:10px;cursor:pointer;border-radius:12px;border:1px solid #ddd;background:#fff}
-    button:hover{background:#f6f6f6}
-    #msg{display:none;margin-top:12px;padding:10px;border-radius:12px;border:1px solid #ddd}
-    @media (max-width:680px){ .grid{grid-template-columns:1fr} }
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
+
+      --teal-1:#005a63;
+      --teal-2:#007b72;
+
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
+
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
+
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
+
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
+
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button{font-family:inherit;}
+
+    .container{
+      width:min(1240px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO (não tampa) ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 0;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .greet{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .hello{
+      font-weight:1100;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 42ch;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 60ch;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .btn i{opacity:.95;}
+
+    .btn-outline{
+      background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
+
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
+
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .brand img{width:124px;}
+      .greet{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 40px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 86ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
+    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+
+    /* ===== GRID CARDS ===== */
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width: 860px){ .grid{grid-template-columns:1fr;} }
+
+    .card{
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      padding:16px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      transition:.18s;
+    }
+    .card:hover{transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.12);}
+    .ico{
+      width:44px;height:44px;border-radius:16px;
+      display:grid;place-items:center;
+      background: rgba(58,168,107,.10);
+      border:1px solid rgba(58,168,107,.18);
+      color:#0f4b45;
+      flex:0 0 auto;
+    }
+    .card h3{
+      margin:0;
+      font-size:15.5px;
+      font-weight:1200;
+      color:#10312c;
+      line-height:1.2;
+    }
+    .card p{
+      margin-top:6px;
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      font-size:13.6px;
+      line-height:1.55;
+      max-width: 70ch;
+    }
+    .arrow{
+      margin-left:auto;
+      color:rgba(16,49,44,.55);
+      padding-top:2px;
+    }
+
+    /* ===== CTA (top) ===== */
+    .cta{
+      margin-top:14px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:22px;
+      box-shadow: var(--shadow-soft);
+      padding:16px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .cta strong{font-weight:1200;color:#10312c;}
+    .cta span{display:block;margin-top:6px;color:rgba(16,49,44,.72);font-weight:850;font-size:13.6px;line-height:1.55;max-width:90ch;}
   </style>
 </head>
+
 <body>
-  <div class="top">
-    <h1 id="title">Painel do vendedor</h1>
-    <button id="logout">Sair</button>
-  </div>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="greet">
+          <div id="hello" class="hello">Carregando...</div>
+          <div class="subtitle">Painel do vendedor</div>
+        </div>
+      </div>
 
-  <div id="msg"></div>
+      <div class="actions">
+        <button class="btn btn-outline" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-  <div class="grid">
-    <a class="card" href="vend-produtos.html">
-      <strong>🧺 Vitrine (Produtos)</strong>
-      <div class="muted">Criar, editar, ativar/desativar, upload de mídia</div>
-    </a>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Painel do vendedor</h1>
+        <p>Gerencie produtos, confirme reservas e mantenha seu perfil atualizado — tudo em um só lugar.</p>
+      </div>
+    </div>
 
-    <a class="card" href="vend-reservas.html">
-      <strong>📦 Reservas recebidas</strong>
-      <div class="muted">Confirmar/cancelar reservas dos seus produtos</div>
-    </a>
+    <div id="msg" class="alert"></div>
 
-    <a class="card" href="vend-nots.html">
-      <strong>🔔 Notificações</strong>
-      <div class="muted">Alertas de novas reservas e atualizações</div>
-    </a>
+    <section class="cta" aria-label="Resumo do painel">
+      <div>
+        <strong id="ctaTitle">Pronto para vender hoje?</strong>
+        <span id="ctaText">Atualize sua vitrine e confira as reservas pendentes antes de sair para a feira.</span>
+      </div>
+      <button class="btn btn-primary" type="button" onclick="location.href='vend-reservas.html'">
+        <i class="fa-solid fa-bell"></i> Ver reservas
+      </button>
+    </section>
 
-    <a class="card" href="vend-perfil.html">
-      <strong>👤 Meu perfil (vendedor)</strong>
-      <div class="muted">Editar dados do vendedor</div>
-    </a>
+    <section class="grid" aria-label="Atalhos do vendedor">
+      <a class="card" href="vend-produtos.html">
+        <div class="ico"><i class="fa-solid fa-basket-shopping"></i></div>
+        <div style="min-width:0">
+          <h3>Vitrine (Produtos)</h3>
+          <p>Criar, editar, ativar/desativar e enviar mídia (imagem/áudio) para cada produto.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
 
-    <a class="card" href="vend-telainicial.html">
-      <strong>🛒 Comprar (como vendedor)</strong>
-      <div class="muted">Acessar feed e reservar sem misturar com telas de comprador</div>
-    </a>
+      <a class="card" href="vend-reservas.html">
+        <div class="ico"><i class="fa-solid fa-box"></i></div>
+        <div style="min-width:0">
+          <h3>Reservas recebidas</h3>
+          <p>Veja pendentes, confirme para baixar estoque automaticamente ou cancele quando precisar.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
 
-    <a class="card" href="vend-minhas-reservas.html">
-      <strong>🧾 Minhas reservas (vendedor)</strong>
-      <div class="muted">Reservas que VOCÊ fez em outros vendedores</div>
-    </a>
-  </div>
+      <a class="card" href="vend-nots.html">
+        <div class="ico"><i class="fa-solid fa-bell"></i></div>
+        <div style="min-width:0">
+          <h3>Notificações</h3>
+          <p>Alertas de novas reservas e mudanças de status (MVP). Se não usar agora, pode ocultar depois.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-perfil.html">
+        <div class="ico"><i class="fa-solid fa-user"></i></div>
+        <div style="min-width:0">
+          <h3>Meu perfil</h3>
+          <p>Edite nome, celular, bio e categorias para compradores saberem quem você é.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-telainicial.html">
+        <div class="ico"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div style="min-width:0">
+          <h3>Comprar (como vendedor)</h3>
+          <p>Precisa reservar de outro feirante? Pesquise, filtre e envie a reserva (sem misturar telas).</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-minhas-reservas.html">
+        <div class="ico"><i class="fa-solid fa-receipt"></i></div>
+        <div style="min-width:0">
+          <h3>Minhas reservas</h3>
+          <p>As reservas que você fez em outros vendedores. Acompanhe pendentes e confirmadas.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+    </section>
+  </main>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
@@ -62,41 +403,45 @@
     const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const msgEl = document.getElementById("msg");
-    function showMsg(text, isErr=false){
-      msgEl.style.display="block";
-      msgEl.style.borderColor = isErr ? "#f0b7b7" : "#b7f0b7";
-      msgEl.style.background  = isErr ? "#ffe9e9" : "#e9ffe9";
-      msgEl.textContent = text;
-    }
-    function clearMsg(){
-      msgEl.style.display="none";
-      msgEl.textContent = "";
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML =
+        `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>` +
+        `<div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){ msgEl.className="alert"; msgEl.innerHTML=""; }
+
     async function requireAuth(){
-      const { data: { user }, error } = await sb.auth.getUser();
+      const { data:{ user }, error } = await sb.auth.getUser();
       if (error) throw error;
       if (!user){ location.href="login.html"; return null; }
       return user;
     }
 
-    // tenta pegar o profile (sem quebrar). se não existir, cria na hora.
     async function getOrCreateProfile(user){
       const meta = user.user_metadata || {};
       const roleFromMeta = meta.role || user.app_metadata?.role || "buyer";
 
-      // ✅ maybeSingle: não explode se vier 0 linhas
       const { data, error } = await sb
         .from("profiles")
         .select("id, role, full_name, vendor_onboarding_done")
         .eq("id", user.id)
         .maybeSingle();
 
-      // erro real (RLS, tabela, etc)
       if (error) throw error;
 
-      // se não existe profile, cria (MVP salva-vidas)
       if (!data){
         const payload = {
           id: user.id,
@@ -126,40 +471,42 @@
       if (!user) return null;
 
       const prof = await getOrCreateProfile(user);
-
-      // se por algum motivo ainda não veio profile
       if (!prof) throw new Error("Não consegui carregar seu perfil.");
 
-      // gate de role
       if (prof.role !== "vendor"){
         location.href = "telainicial-comp.html";
         return null;
       }
 
-      // se ainda não completou onboarding, manda completar
       if (prof.vendor_onboarding_done === false){
         location.href = "vend-onboarding.html";
         return null;
       }
 
-      return prof;
+      return { user, prof };
     }
 
     (async()=>{
       try{
         clearMsg();
-        const me = await requireVendor();
-        if (!me) return;
+        const pack = await requireVendor();
+        if (!pack) return;
 
-        document.getElementById("title").textContent =
-          "Painel do vendedor — " + (me.full_name || "");
+        const { user, prof } = pack;
+
+        const displayName =
+          (prof.full_name || "").trim() ||
+          (user.user_metadata?.full_name || "").trim() ||
+          (user.email || "Vendedor");
+
+        el("hello").textContent = "Olá, " + displayName + "!";
       }catch(e){
         console.error(e);
         showMsg(e.message || "Erro ao carregar painel do vendedor.", true);
       }
     })();
 
-    document.getElementById("logout").onclick = async()=>{
+    el("logout").onclick = async()=>{
       await sb.auth.signOut();
       location.href="login.html";
     };
