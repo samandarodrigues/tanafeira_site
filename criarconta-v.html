@@ -42,7 +42,6 @@
     button,input,select{font-family:inherit;}
     html,body{height:100%;}
 
-    /* ✅ não corta nada no notebook */
     body{
       min-height:100svh;
       min-height:100dvh;
@@ -102,13 +101,8 @@
       margin-bottom:10px;
     }
 
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+    .logo{display:flex;align-items:center;gap:10px;}
 
-    /* ✅ deixa a logo visível mesmo verde escuro */
     .logo img{
       height:34px;
       width:auto;
@@ -165,7 +159,6 @@
       background: var(--glass2);
     }
 
-    /* msg geral (ex: erro do supabase) */
     .msg{
       display:none;
       margin-bottom:12px;
@@ -244,7 +237,6 @@
       color: rgba(255,255,255,.86);
     }
 
-    /* ✅ erro por campo (embaixo do label/input) */
     .ferr{
       display:none;
       margin-top:8px;
@@ -263,7 +255,6 @@
       box-shadow: var(--shadow-soft), 0 0 0 4px rgba(192,57,43,.16);
     }
 
-    /* senha + olho (mesmo padrão do comprador) */
     .pwrow{position:relative;}
     .pwrow .input{padding-right:54px;}
     .pwbtn{
@@ -283,7 +274,6 @@
     .pwbtn:hover{filter:brightness(1.02); transform:translateY(calc(-50% + 2px)) translateY(-1px);}
     .pwbtn:focus{outline:none; box-shadow: 0 10px 18px rgba(0,0,0,.08), var(--ring);}
 
-    /* botão "Sem número" */
     .miniBtn{
       margin-top:8px;
       display:inline-flex;
@@ -354,7 +344,6 @@
       .head{padding:16px;}
     }
 
-    /* remove “olho nativo” do navegador */
     input::-ms-reveal,input::-ms-clear{display:none}
     input[type="password"]::-webkit-credentials-auto-fill-button,
     input[type="password"]::-webkit-textfield-decoration-container{
@@ -404,6 +393,14 @@
             <input class="input" id="last_name" required maxlength="30" autocomplete="family-name"/>
             <div class="muted">Máx 30 caracteres. Pode usar “-”.</div>
             <div class="ferr" id="err_last_name"></div>
+          </div>
+
+          <!-- ✅ ADICIONADO: NOME DA BANCA (OPCIONAL) -->
+          <div class="span2">
+            <label for="store_name"><i class="fa-solid fa-store"></i> Nome da banca (opcional)</label>
+            <input class="input" id="store_name" maxlength="60" placeholder="Ex: Banca da Dona Maria"/>
+            <div class="muted">Máx 60 caracteres. Pode usar letras, números e “-”.</div>
+            <div class="ferr" id="err_store_name"></div>
           </div>
 
           <div>
@@ -526,7 +523,6 @@
 
     const msgEl = qs("msg");
     const submitBtn = qs("submitBtn");
-
     const btnSemNumero = qs("btnSemNumero");
 
     function showMsg(text, isErr=false){
@@ -568,13 +564,20 @@
       ].forEach(clearFieldError);
     }
 
-    // ✅ permite letras + espaço + hífen (nome/sobrenome)
+    // nome/sobrenome: letras + espaço + hífen + apóstrofo
     function sanitizePersonName(v){
-      // letras (com acento), espaço, hífen e apóstrofo
       return (v || "")
         .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g, "")
         .replace(/\s{2,}/g, " ")
         .slice(0, 30);
+    }
+
+    // nome da banca: letras/números + espaço + hífen + apóstrofo + ponto
+    function sanitizeStoreName(v){
+      return (v || "")
+        .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9' .-]/g, "")
+        .replace(/\s{2,}/g, " ")
+        .slice(0, 60);
     }
 
     function isValidEmail(email){
@@ -608,13 +611,11 @@
       return `${d.slice(0,5)}-${d.slice(5,8)}`;
     }
 
-    // ✅ Numero: só dígitos OU "-" (apenas 1 hífen, não duplo/triplo)
+    // numero: só dígitos OU "-" (apenas 1 hífen)
     function sanitizeNumero(v){
       const raw = String(v || "").trim();
       if (raw === "-") return "-";
-      // remove tudo que não for dígito
-      const d = onlyDigits(raw);
-      return d;
+      return onlyDigits(raw);
     }
     function isValidNumero(v){
       const x = String(v || "").trim();
@@ -623,7 +624,6 @@
       return /^[0-9]{1,10}$/.test(x);
     }
 
-    // eventos: limpar erros enquanto digita
     ["first_name","last_name","store_name","phone","email","cep","numero","rua","bairro","cidade","uf","complemento","password","password2"]
       .forEach(id=>{
         const el = qs(id);
@@ -632,26 +632,16 @@
         el.addEventListener("change", ()=> clearFieldError(id));
       });
 
-    // máscaras e filtros
-    qs("phone").addEventListener("input", e=>{
-      e.target.value = maskPhone(e.target.value);
-    });
-    qs("cep").addEventListener("input", e=>{
-      e.target.value = maskCEP(e.target.value);
-    });
-
-    qs("first_name").addEventListener("input", e=>{
-      e.target.value = sanitizePersonName(e.target.value);
-    });
-    qs("last_name").addEventListener("input", e=>{
-      e.target.value = sanitizePersonName(e.target.value);
-    });
+    // máscaras/filtros
+    qs("phone").addEventListener("input", e=> e.target.value = maskPhone(e.target.value));
+    qs("cep").addEventListener("input", e=> e.target.value = maskCEP(e.target.value));
+    qs("first_name").addEventListener("input", e=> e.target.value = sanitizePersonName(e.target.value));
+    qs("last_name").addEventListener("input", e=> e.target.value = sanitizePersonName(e.target.value));
+    qs("store_name").addEventListener("input", e=> e.target.value = sanitizeStoreName(e.target.value));
 
     qs("numero").addEventListener("input", e=>{
-      // se usuário tentar digitar "--" ou letras, limpa
       const next = sanitizeNumero(e.target.value);
       e.target.value = next;
-      // botão sem número ativo/inativo
       btnSemNumero.classList.toggle("on", next === "-");
     });
 
@@ -737,15 +727,12 @@
     function normalizeSupabaseErrorMessage(e){
       const m = String(e?.message || "");
       const ml = m.toLowerCase();
-
-      if (ml.includes("invalid login credentials")) return "E-mail ou senha inválidos.";
       if (ml.includes("email") && ml.includes("invalid")) return "E-mail inválido.";
+      if (ml.includes("already") || ml.includes("exists") || ml.includes("registered")) return "Esse e-mail já está cadastrado.";
       if (ml.includes("password") && (ml.includes("short") || ml.includes("6"))) return "Senha muito curta (mínimo 6).";
-      if (ml.includes("already registered") || ml.includes("already") || ml.includes("exists")) return "Esse e-mail já está cadastrado.";
       return m || "Erro ao criar conta.";
     }
 
-    // ✅ valida tudo e mostra erros simultâneos (um em cada label/campo)
     function validateAll(){
       clearMsg();
       clearAllFieldErrors();
@@ -756,42 +743,21 @@
       const last_name  = qs("last_name").value.trim();
       const store_name = qs("store_name").value.trim();
 
-      if (!first_name){
-        setFieldError("first_name", "Digite seu nome.");
-        ok = false;
-      }
-      if (!last_name){
-        setFieldError("last_name", "Digite seu sobrenome.");
-        ok = false;
-      }
-      if (store_name && store_name.length > 60){
-        setFieldError("store_name", "Máximo 60 caracteres.");
-        ok = false;
-      }
+      if (!first_name){ setFieldError("first_name", "Digite seu nome."); ok = false; }
+      if (!last_name){ setFieldError("last_name", "Digite seu sobrenome."); ok = false; }
+      if (store_name && store_name.length > 60){ setFieldError("store_name", "Máximo 60 caracteres."); ok = false; }
 
       const phone = qs("phone").value.trim();
-      if (!isValidBRPhone(phone)){
-        setFieldError("phone", "Celular inválido. Use DDD + número (10 ou 11 dígitos).");
-        ok = false;
-      }
+      if (!isValidBRPhone(phone)){ setFieldError("phone", "Celular inválido. Use DDD + número (10 ou 11 dígitos)."); ok = false; }
 
       const email = qs("email").value.trim().toLowerCase();
-      if (!isValidEmail(email)){
-        setFieldError("email", "Digite um e-mail válido (ex: maria@gmail.com).");
-        ok = false;
-      }
+      if (!isValidEmail(email)){ setFieldError("email", "Digite um e-mail válido (ex: maria@gmail.com)."); ok = false; }
 
       const cep = qs("cep").value.trim();
-      if (onlyDigits(cep).length !== 8){
-        setFieldError("cep", "CEP inválido. Use 8 dígitos (00000-000).");
-        ok = false;
-      }
+      if (onlyDigits(cep).length !== 8){ setFieldError("cep", "CEP inválido. Use 8 dígitos (00000-000)."); ok = false; }
 
       const numero = qs("numero").value.trim();
-      if (!isValidNumero(numero)){
-        setFieldError("numero", "Número inválido. Use apenas números ou selecione “Sem número” (vira “-”).");
-        ok = false;
-      }
+      if (!isValidNumero(numero)){ setFieldError("numero", "Número inválido. Use apenas números ou selecione “Sem número” (vira “-”)."); ok = false; }
 
       const rua = qs("rua").value.trim();
       const bairro = qs("bairro").value.trim();
@@ -801,27 +767,14 @@
       if (!rua){ setFieldError("rua", "Preencha a rua."); ok = false; }
       if (!bairro){ setFieldError("bairro", "Preencha o bairro."); ok = false; }
       if (!cidade){ setFieldError("cidade", "Preencha a cidade."); ok = false; }
-
-      if (!UF_ALLOWED.has(uf)){
-        setFieldError("uf", "Selecione PI ou PE.");
-        ok = false;
-      }
+      if (!UF_ALLOWED.has(uf)){ setFieldError("uf", "Selecione PI ou PE."); ok = false; }
 
       const password = qs("password").value;
       const password2 = qs("password2").value;
 
-      if (!password || password.length < 6){
-        setFieldError("password", "Senha inválida. Use no mínimo 6 caracteres.");
-        ok = false;
-      }
-      if (!password2){
-        setFieldError("password2", "Confirme sua senha.");
-        ok = false;
-      }
-      if (password && password2 && password !== password2){
-        setFieldError("password2", "As senhas não conferem.");
-        ok = false;
-      }
+      if (!password || password.length < 6){ setFieldError("password", "Senha inválida. Use no mínimo 6 caracteres."); ok = false; }
+      if (!password2){ setFieldError("password2", "Confirme sua senha."); ok = false; }
+      if (password && password2 && password !== password2){ setFieldError("password2", "As senhas não conferem."); ok = false; }
 
       return ok;
     }
@@ -838,20 +791,20 @@
       const last_name  = qs("last_name").value.trim().slice(0,30);
       const full_name  = (first_name + " " + last_name).trim();
 
+      const store_name = qs("store_name").value.trim().slice(0,60);
 
       const phone = qs("phone").value.trim();
       const email = qs("email").value.trim().toLowerCase();
 
       const cep = qs("cep").value.trim();
       const rua = qs("rua").value.trim();
-      const numero = qs("numero").value.trim(); // pode ser "-"
+      const numero = qs("numero").value.trim();
       const bairro = qs("bairro").value.trim();
       const cidade = qs("cidade").value.trim();
       const uf = qs("uf").value.trim().toUpperCase();
       const complemento = qs("complemento").value.trim();
 
       const password = qs("password").value;
-
       const address_text = buildAddressText({rua, numero, bairro, cidade, uf, cep, complemento});
 
       try{
@@ -874,7 +827,6 @@
         });
         if (error) throw error;
 
-        // se entrou direto (sem confirmação de email)
         if (data?.session?.user) {
           location.replace("vend-onboarding.html");
           return;
@@ -884,9 +836,8 @@
 
       }catch(e){
         const nice = normalizeSupabaseErrorMessage(e);
-
-        // tenta mapear erros comuns pra campos
         const ml = String(e?.message || "").toLowerCase();
+
         if (ml.includes("email") && (ml.includes("invalid") || ml.includes("email address"))) {
           setFieldError("email", "E-mail inválido.");
         } else if (ml.includes("already") || ml.includes("exists") || ml.includes("registered")) {
@@ -894,10 +845,8 @@
         } else if (ml.includes("password") && (ml.includes("short") || ml.includes("6"))) {
           setFieldError("password", "Senha muito curta (mínimo 6).");
         } else {
-          // erro geral (rls, rede, etc)
           showMsg(nice, true);
         }
-
       }finally{
         setLoading(false);
       }
@@ -907,4 +856,3 @@
   </script>
 </body>
 </html>
-
