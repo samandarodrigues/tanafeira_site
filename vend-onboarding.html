@@ -11,7 +11,6 @@
     :root{
       --verde:#3aa86b;
       --verde-hover:#2f8a59;
-      --verde-escuro:#1e5c3a;
 
       --text:#0f2f2b;
       --muted:rgba(16,49,44,.72);
@@ -19,11 +18,9 @@
       --bg:#f5fbf8;
       --surface:rgba(255,255,255,.92);
 
-      --shadow:0 14px 36px rgba(0,0,0,.14);
       --shadow-soft:0 10px 26px rgba(0,0,0,.10);
 
       --radius-xl: 26px;
-      --radius-lg: 18px;
       --ring: 0 0 0 4px rgba(58,168,107,.14);
 
       --header-h: 78px;
@@ -51,16 +48,10 @@
     img{max-width:100%;display:block;}
     button,input,textarea{font-family:inherit;}
 
-    .container{
-      width:min(980px, 100%);
-      margin:0 auto;
-      padding: 0 var(--page-pad);
-    }
+    .container{width:min(980px, 100%); margin:0 auto; padding: 0 var(--page-pad);}
 
-    /* ===== HEADER FIXO ===== */
     header{
-      position:fixed;
-      top:0; left:0; right:0;
+      position:fixed; top:0; left:0; right:0;
       z-index:9999;
       height: var(--header-h);
       background: rgba(255,255,255,.78);
@@ -68,101 +59,25 @@
       -webkit-backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(0,0,0,.06);
     }
-
-    .header-inner{
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width: 220px;
-    }
-
-    .brand img{
-      width:138px;
-      height:auto;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
-    }
-
-    .headtext{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width:0;
-    }
-
-    .hello{
-      font-weight:1100;
-      font-size:14.5px;
-      color:#0f4b45;
-      line-height:1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 40ch;
-    }
-    .subtitle{
-      font-weight:850;
-      font-size:12.8px;
-      color:rgba(16,49,44,.70);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 46ch;
-    }
-
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
+    .header-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+    .brand{display:flex;align-items:center;gap:12px;min-width: 220px;}
+    .brand img{width:138px;height:auto;filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));}
+    .headtext{display:flex;flex-direction:column;gap:2px;min-width:0;}
+    .hello{font-weight:1100;font-size:14.5px;color:#0f4b45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width: 40ch;}
+    .subtitle{font-weight:850;font-size:12.8px;color:rgba(16,49,44,.70);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width: 46ch;}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
 
     .btn{
-      border:none;
-      cursor:pointer;
-      border-radius:999px;
-      padding:10px 14px;
-      font-weight:1000;
-      font-size:13.8px;
-      transition:.18s;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      white-space:nowrap;
-      user-select:none;
+      border:none;cursor:pointer;border-radius:999px;padding:10px 14px;
+      font-weight:1000;font-size:13.8px;transition:.18s;
+      display:inline-flex;align-items:center;gap:10px;white-space:nowrap;user-select:none;
     }
-    .btn i{opacity:.95;}
-
-    .btn-primary{
-      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
-      color:#fff;
-      box-shadow: 0 12px 24px rgba(58,168,107,.22);
-    }
+    .btn-primary{background: linear-gradient(180deg, var(--verde), var(--verde-hover)); color:#fff; box-shadow: 0 12px 24px rgba(58,168,107,.22);}
     .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
-
-    .btn-ghost{
-      background:#fff;
-      border:1px solid rgba(0,0,0,.10);
-      color:#0f2f2b;
-      box-shadow: 0 10px 18px rgba(0,0,0,.04);
-    }
+    .btn-ghost{background:#fff;border:1px solid rgba(0,0,0,.10);color:#0f2f2b;box-shadow: 0 10px 18px rgba(0,0,0,.04);}
     .btn-ghost:hover{transform: translateY(-1px); background:#f7fbf9;}
-
-    .btn-danger{
-      background: rgba(0,0,0,.08);
-      color:#0f2f2b;
-      border:1px solid rgba(0,0,0,.10);
-    }
+    .btn-danger{background: rgba(0,0,0,.08);color:#0f2f2b;border:1px solid rgba(0,0,0,.10);}
     .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
-
     button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
 
     @media (max-width: 520px){
@@ -173,70 +88,26 @@
       .actions .btn{gap:0;}
     }
 
-    /* ===== MAIN ===== */
-    main{
-      padding-top: calc(var(--header-h) + 18px);
-      padding-bottom: 34px;
-    }
+    main{padding-top: calc(var(--header-h) + 18px); padding-bottom: 34px;}
 
-    .page-head{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
+    .page-title h1{font-size:28px;font-weight:1100;letter-spacing:-.2px;color:#102d2a;line-height:1.1;}
+    .page-title p{color:rgba(16,49,44,.72);font-weight:850;max-width: 72ch;line-height:1.6;font-size:14.4px;margin-top:6px;}
 
-    .page-title{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .page-title h1{
-      font-size:28px;
-      font-weight:1100;
-      letter-spacing:-.2px;
-      color:#102d2a;
-      line-height:1.1;
-    }
-    .page-title p{
-      color:rgba(16,49,44,.72);
-      font-weight:850;
-      max-width: 72ch;
-      line-height:1.6;
-      font-size:14.4px;
-    }
-
-    /* ===== ALERT ===== */
     .alert{
-      display:none;
-      align-items:flex-start;
-      gap:10px;
-      margin-top:14px;
-      padding:12px 12px;
-      border-radius:16px;
-      background: rgba(255,255,255,.92);
-      border: 1px solid rgba(0,0,0,.10);
-      box-shadow: var(--shadow-soft);
-      color: rgba(16,49,44,.84);
-      font-weight:850;
-      font-size:13.2px;
-      line-height:1.35;
+      display:none; align-items:flex-start; gap:10px; margin-top:14px;
+      padding:12px 12px; border-radius:16px; background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10); box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84); font-weight:850; font-size:13.2px; line-height:1.35;
     }
     .alert.show{display:flex;}
     .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
     .alert.err{border-color:var(--err-br);background:var(--err-bg);}
     .alert.ok{border-color:var(--ok-br);background:var(--ok-bg);}
 
-    /* ===== CARD ===== */
     .card{
-      margin-top:16px;
-      background: var(--surface);
-      border:1px solid rgba(0,0,0,.08);
-      border-radius: 22px;
-      box-shadow: var(--shadow-soft);
-      overflow:hidden;
+      margin-top:16px; background: var(--surface);
+      border:1px solid rgba(0,0,0,.08); border-radius: 22px;
+      box-shadow: var(--shadow-soft); overflow:hidden;
     }
 
     .card-head{
@@ -246,231 +117,83 @@
         linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
       border-bottom:1px solid rgba(0,0,0,.06);
     }
-    .card-head h2{
-      margin:0;
-      font-size:16px;
-      font-weight:1200;
-      color:#10312c;
-    }
-    .card-head p{
-      margin-top:6px;
-      color:rgba(16,49,44,.72);
-      font-weight:850;
-      font-size:13.4px;
-      line-height:1.5;
-      max-width: 84ch;
-    }
+    .card-head h2{margin:0;font-size:16px;font-weight:1200;color:#10312c;}
+    .card-head p{margin-top:6px;color:rgba(16,49,44,.72);font-weight:850;font-size:13.4px;line-height:1.5;max-width: 84ch;}
 
-    .card-body{
-      padding:16px;
-      display:grid;
-      gap:14px;
-    }
+    .card-body{padding:16px;display:grid;gap:14px;}
 
     .softbox{
-      border-radius:16px;
-      padding:12px;
+      border-radius:16px;padding:12px;
       background: rgba(58,168,107,.08);
       border:1px solid rgba(58,168,107,.14);
       color:rgba(16,49,44,.82);
-      font-weight:900;
-      font-size:13.2px;
-      line-height:1.5;
+      font-weight:900;font-size:13.2px;line-height:1.5;
     }
 
-    /* ===== FIELD ===== */
-    .field h3{
-      margin:0;
-      font-size:15px;
-      font-weight:1200;
-      color:#10312c;
-    }
-    .hint{
-      color:rgba(16,49,44,.66);
-      font-weight:850;
-      font-size:12.8px;
-      line-height:1.45;
-      margin-top:6px;
-    }
+    .field h3{margin:0;font-size:15px;font-weight:1200;color:#10312c;}
+    .hint{color:rgba(16,49,44,.66);font-weight:850;font-size:12.8px;line-height:1.45;margin-top:6px;}
 
     input[type="text"]{
-      width:100%;
-      margin-top:10px;
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.10);
-      background:#fff;
-      color:#0f2f2b;
-      font-weight:850;
-      font-size:15px;
-      outline:none;
-      box-shadow: var(--shadow-soft);
-      transition:.18s;
+      width:100%; margin-top:10px; padding:12px 14px;
+      border-radius:16px; border:1px solid rgba(0,0,0,.10);
+      background:#fff; color:#0f2f2b; font-weight:850; font-size:15px;
+      outline:none; box-shadow: var(--shadow-soft); transition:.18s;
     }
     input[type="text"]:focus{ box-shadow: var(--shadow-soft), var(--ring); }
 
-    /* ===== CATEGORIAS ===== */
-    .cats{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:10px;
-      margin-top:10px;
-    }
+    .cats{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:10px;}
     @media (max-width:860px){ .cats{grid-template-columns:repeat(2, minmax(0,1fr));} }
     @media (max-width:560px){ .cats{grid-template-columns:1fr;} }
 
     .cat{
       border:1px solid rgba(0,0,0,.10);
-      border-radius:18px;
-      padding:12px;
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
+      border-radius:18px; padding:12px;
+      display:flex; gap:12px; align-items:flex-start;
       background: rgba(255,255,255,.92);
       box-shadow: 0 10px 18px rgba(0,0,0,.04);
-      transition:.18s;
-      cursor:pointer;
-      user-select:none;
+      transition:.18s; cursor:pointer; user-select:none;
     }
     .cat:hover{transform: translateY(-1px); box-shadow: var(--shadow-soft);}
-    .cat input{
-      width:18px;height:18px;
-      margin-top:2px;
-      accent-color: var(--verde);
-      cursor:pointer;
-    }
-    .cat strong{
-      display:block;
-      font-weight:1200;
-      color:#10312c;
-      line-height:1.15;
-    }
-    .cat small{
-      display:block;
-      margin-top:6px;
-      color:rgba(16,49,44,.70);
-      font-weight:850;
-      font-size:12.8px;
-      line-height:1.25;
-    }
+    .cat input{width:18px;height:18px;margin-top:2px;accent-color: var(--verde);cursor:pointer;}
+    .cat strong{display:block;font-weight:1200;color:#10312c;line-height:1.15;}
+    .cat small{display:block;margin-top:6px;color:rgba(16,49,44,.70);font-weight:850;font-size:12.8px;line-height:1.25;}
 
-    /* ===== BIO ===== */
     textarea{
-      width:100%;
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.10);
-      background:#fff;
-      color:#0f2f2b;
-      font-weight:850;
-      font-size:15px;
-      outline:none;
-      box-shadow: var(--shadow-soft);
-      transition:.18s;
-      min-height:120px;
-      resize:vertical;
+      width:100%; padding:12px 14px;
+      border-radius:16px; border:1px solid rgba(0,0,0,.10);
+      background:#fff; color:#0f2f2b; font-weight:850; font-size:15px;
+      outline:none; box-shadow: var(--shadow-soft); transition:.18s;
+      min-height:120px; resize:vertical;
     }
     textarea:focus{ box-shadow: var(--shadow-soft), var(--ring); }
 
-    .bioRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:6px;
-    }
-    .counter{
-      font-weight:1000;
-      font-size:12.8px;
-      color:rgba(16,49,44,.72);
-    }
+    .bioRow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;}
+    .counter{font-weight:1000;font-size:12.8px;color:rgba(16,49,44,.72);}
     .counter b{color:#0f4b45;}
 
-    /* ===== UPLOADS ===== */
-    .mediaGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top:10px;
-    }
+    .mediaGrid{display:grid;grid-template-columns: 1fr 1fr;gap:12px;margin-top:10px;}
     @media (max-width:720px){ .mediaGrid{grid-template-columns:1fr;} }
-
     .mediaCard{
-      border:1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.92);
-      border-radius:18px;
-      padding:12px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.04);
-      display:grid;
-      gap:10px;
+      border:1px solid rgba(0,0,0,.10); background: rgba(255,255,255,.92);
+      border-radius:18px; padding:12px; box-shadow: 0 10px 18px rgba(0,0,0,.04);
+      display:grid; gap:10px;
     }
-
     .preview{
-      width:100%;
-      border-radius:16px;
-      border:1px solid rgba(0,0,0,.10);
-      background: #f5f7f6;
-      overflow:hidden;
-      position:relative;
-      min-height:120px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:rgba(16,49,44,.65);
-      font-weight:900;
-      font-size:13px;
+      width:100%; border-radius:16px; border:1px solid rgba(0,0,0,.10);
+      background: #f5f7f6; overflow:hidden; position:relative; min-height:120px;
+      display:flex; align-items:center; justify-content:center;
+      color:rgba(16,49,44,.65); font-weight:900; font-size:13px;
     }
-    .preview img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
+    .preview img{width:100%;height:100%;object-fit:cover;display:block;}
     .preview.avatar{aspect-ratio: 1 / 1; max-width:240px; margin:0 auto;}
     .preview.header{aspect-ratio: 16 / 6;}
+    .file input{width:100%; padding:10px 12px; border-radius:14px; border:1px dashed rgba(0,0,0,.20); background:#fff; font-weight:850;}
+    .mediaRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
 
-    .mediaRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .file{
-      width:100%;
-    }
-    .file input{
-      width:100%;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px dashed rgba(0,0,0,.20);
-      background:#fff;
-      font-weight:850;
-    }
-
-    /* ===== BOTÕES ===== */
-    .actions-row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:6px;
-      justify-content:flex-end;
-    }
-    .actions-row .btn{
-      border-radius:16px;
-      padding:12px 14px;
-      font-size:14.2px;
-    }
-    .actions-row .btn-primary{
-      min-width: 280px;
-      justify-content:center;
-    }
-
-    @media (max-width:520px){
-      .actions-row .btn-primary{width:100%; min-width:unset;}
-    }
+    .actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;justify-content:flex-end;}
+    .actions-row .btn{border-radius:16px;padding:12px 14px;font-size:14.2px;}
+    .actions-row .btn-primary{min-width: 280px;justify-content:center;}
+    @media (max-width:520px){ .actions-row .btn-primary{width:100%; min-width:unset;} }
   </style>
 </head>
 
@@ -494,11 +217,9 @@
   </header>
 
   <main class="container">
-    <div class="page-head">
-      <div class="page-title">
-        <h1>Complete seu perfil para começar a vender</h1>
-        <p>Foto de perfil ajuda compradores a reconhecerem sua banca. Header é opcional. Categorias e bio são obrigatórias.</p>
-      </div>
+    <div class="page-title">
+      <h1>Complete seu perfil para começar a vender</h1>
+      <p>Foto de perfil ajuda compradores a reconhecerem sua banca. Header é opcional. Categorias e bio são obrigatórias.</p>
     </div>
 
     <div id="msg" class="alert"></div>
@@ -516,16 +237,14 @@
           Foto de perfil e header são opcionais (mas recomendados).
         </div>
 
-        <!-- ✅ NOVO: nome da banca (opcional) -->
         <div class="field">
           <h3>0) Nome da banca <span style="color:rgba(16,49,44,.70);font-weight:900;">(opcional)</span></h3>
           <div class="hint">Esse nome pode aparecer para compradores (se você preencher).</div>
           <input id="store_name" type="text" maxlength="60" placeholder="Ex: Banca da Dona Maria" />
         </div>
 
-        <!-- ✅ NOVO: uploads -->
         <div class="field">
-          <h3>0.1) Sua identidade <span style="color:rgba(16,49,44,.70);font-weight:900;">(recomendado)</span></h3>
+          <h3>0.1) Sua identidade <span style="color:rgba(16,49,44,.70);font-weight:900;">(opcional)</span></h3>
           <div class="hint">Envie uma foto de perfil (opcional) e um header (opcional). Use imagem .jpg/.png/.webp.</div>
 
           <div class="mediaGrid">
@@ -535,9 +254,7 @@
                 <div class="hint" style="margin:0">Quadrada</div>
               </div>
 
-              <div class="preview avatar" id="avatarPreview">
-                <span>Nenhuma imagem</span>
-              </div>
+              <div class="preview avatar" id="avatarPreview"><span>Nenhuma imagem</span></div>
 
               <div class="file">
                 <input id="avatarFile" type="file" accept="image/*" />
@@ -547,7 +264,7 @@
                 <button class="btn btn-ghost" type="button" id="removeAvatar">
                   <i class="fa-solid fa-trash"></i> Remover
                 </button>
-                <span class="hint" id="avatarHint" style="margin:0">Máx 4MB</span>
+                <span class="hint" style="margin:0">Máx 4MB</span>
               </div>
             </div>
 
@@ -557,9 +274,7 @@
                 <div class="hint" style="margin:0">Paisagem</div>
               </div>
 
-              <div class="preview header" id="headerPreview">
-                <span>Nenhuma imagem</span>
-              </div>
+              <div class="preview header" id="headerPreview"><span>Nenhuma imagem</span></div>
 
               <div class="file">
                 <input id="headerFile" type="file" accept="image/*" />
@@ -569,7 +284,7 @@
                 <button class="btn btn-ghost" type="button" id="removeHeader">
                   <i class="fa-solid fa-trash"></i> Remover
                 </button>
-                <span class="hint" id="headerHint" style="margin:0">Máx 6MB</span>
+                <span class="hint" style="margin:0">Máx 6MB</span>
               </div>
             </div>
           </div>
@@ -609,11 +324,9 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
     // =========================
-    // ✅ CONFIGURE AQUI O BUCKET
+    // ✅ CONFIGURE O BUCKET AQUI
     // =========================
-    // Coloque EXATAMENTE o nome do bucket que você criou:
-    const BUCKET_VENDOR_MEDIA = "SEU_BUCKET_AQUI"; // ex: "vendor-media" ou "avatars"
-    // Pastas dentro do bucket (opcional)
+    const BUCKET_VENDOR_MEDIA = "SEU_BUCKET_AQUI";  // <-- troque pelo nome real do bucket
     const FOLDER_AVATAR = "avatars";
     const FOLDER_HEADER = "headers";
 
@@ -626,7 +339,6 @@
     const bioEl = document.getElementById("bio");
     const bioCountEl = document.getElementById("bioCount");
     const saveBtn = document.getElementById("save");
-
     const storeNameEl = document.getElementById("store_name");
 
     const avatarFileEl = document.getElementById("avatarFile");
@@ -636,13 +348,13 @@
     const removeAvatarBtn = document.getElementById("removeAvatar");
     const removeHeaderBtn = document.getElementById("removeHeader");
 
-    // arquivos selecionados (pra upload)
     let AVATAR_FILE = null;
     let HEADER_FILE = null;
 
-    // urls atuais (se o usuário já tiver)
     let CURRENT_AVATAR_URL = null;
     let CURRENT_HEADER_URL = null;
+
+    let ME = { user:null, prof:null };
 
     function escapeHtml(s){
       return String(s ?? "")
@@ -666,23 +378,18 @@
       const md = user?.user_metadata || {};
       const full = String(md.full_name || "").trim();
       if (full) return full;
-
       const first = String(md.first_name || "").trim();
       const last  = String(md.last_name || "").trim();
       const join = (first + " " + last).trim();
       if (join) return join;
-
       const email = String(user?.email || "");
       const beforeAt = email.includes("@") ? email.split("@")[0] : email;
       return beforeAt ? beforeAt : "Vendedor";
     }
 
-    bioEl.addEventListener("input", ()=>{
-      bioCountEl.textContent = String(bioEl.value.length);
-    });
+    bioEl.addEventListener("input", ()=> bioCountEl.textContent = String(bioEl.value.length));
 
     function setPreview(el, fileOrUrl, mode){
-      // mode: "avatar" | "header"
       el.classList.remove("avatar","header");
       el.classList.add(mode);
 
@@ -690,12 +397,10 @@
         el.innerHTML = "<span>Nenhuma imagem</span>";
         return;
       }
-
       if (typeof fileOrUrl === "string"){
         el.innerHTML = `<img alt="${mode}" src="${escapeHtml(fileOrUrl)}">`;
         return;
       }
-
       const url = URL.createObjectURL(fileOrUrl);
       el.innerHTML = `<img alt="${mode}" src="${url}">`;
     }
@@ -739,7 +444,7 @@
 
     removeAvatarBtn.addEventListener("click", ()=>{
       AVATAR_FILE = null;
-      CURRENT_AVATAR_URL = null; // remove do perfil ao salvar
+      CURRENT_AVATAR_URL = null;
       avatarFileEl.value = "";
       setPreview(avatarPreviewEl, null, "avatar");
       clearMsg();
@@ -747,7 +452,7 @@
 
     removeHeaderBtn.addEventListener("click", ()=>{
       HEADER_FILE = null;
-      CURRENT_HEADER_URL = null; // remove do perfil ao salvar
+      CURRENT_HEADER_URL = null;
       headerFileEl.value = "";
       setPreview(headerPreviewEl, null, "header");
       clearMsg();
@@ -760,16 +465,15 @@
 
       document.getElementById("hello").textContent = "Olá, " + bestNameFromUser(user) + "!";
 
+      // ✅ NÃO quebra se faltar coluna
       const { data: prof, error: e2 } = await sb
         .from("profiles")
-        // ✅ se você já criou colunas avatar_url/header_url/store_name, vai carregar
-        .select("id, role, vendor_onboarding_done, bio, store_name, avatar_url, header_url")
+        .select("*")
         .eq("id", user.id)
         .single();
-
       if (e2) throw e2;
 
-      if (prof.role !== "vendor") {
+      if (String(prof.role || "").toLowerCase() !== "vendor") {
         location.href = "telainicial-comp.html";
         return null;
       }
@@ -779,14 +483,15 @@
         return null;
       }
 
+      ME.user = user;
+      ME.prof = prof;
+
       // preenche existentes
       if (prof.bio) {
         bioEl.value = prof.bio;
         bioCountEl.textContent = String(bioEl.value.length);
       }
-      if (prof.store_name) {
-        storeNameEl.value = prof.store_name;
-      }
+      if (prof.store_name) storeNameEl.value = prof.store_name;
 
       CURRENT_AVATAR_URL = prof.avatar_url || null;
       CURRENT_HEADER_URL = prof.header_url || null;
@@ -797,13 +502,14 @@
       return user;
     }
 
-    function renderCategories(list){
+    function renderCategories(list, selectedSet){
       catsEl.innerHTML = "";
       for (const c of list){
+        const checked = selectedSet?.has(c.id) ? "checked" : "";
         const item = document.createElement("label");
         item.className = "cat";
         item.innerHTML = `
-          <input type="checkbox" value="${c.id}" />
+          <input type="checkbox" value="${c.id}" ${checked} />
           <div>
             <strong>${escapeHtml(c.name)}</strong>
             <small>${escapeHtml(c.slug || "")}</small>
@@ -820,20 +526,32 @@
     }
 
     async function loadCategories(){
+      // ✅ se RLS bloquear, vai cair no catch e mostrar msg clara
       const { data, error } = await sb
         .from("categories")
         .select("id,name,slug")
         .order("name", { ascending: true });
 
       if (error) throw error;
-      renderCategories(data || []);
+      return data || [];
+    }
+
+    async function loadVendorSelectedCategories(){
+      // ✅ pega categorias já salvas (pra marcar automaticamente)
+      const { data, error } = await sb
+        .from("vendor_categories")
+        .select("category_id")
+        .eq("vendor_id", ME.user.id);
+
+      if (error) throw error;
+      const set = new Set((data || []).map(r => Number(r.category_id)).filter(Number.isFinite));
+      return set;
     }
 
     function safeExtFromFile(file){
       const name = String(file?.name || "");
       const ext = name.includes(".") ? name.split(".").pop().toLowerCase() : "";
       if (["jpg","jpeg","png","webp"].includes(ext)) return ext === "jpeg" ? "jpg" : ext;
-      // fallback por mimetype
       const mt = String(file?.type || "").toLowerCase();
       if (mt.includes("png")) return "png";
       if (mt.includes("webp")) return "webp";
@@ -859,12 +577,10 @@
           upsert: true,
           contentType: file.type || "image/*"
         });
-
       if (upErr) throw upErr;
 
       const { data } = sb.storage.from(BUCKET_VENDOR_MEDIA).getPublicUrl(path);
       const publicUrl = data?.publicUrl || null;
-
       if (!publicUrl) throw new Error("Upload feito, mas não consegui gerar a URL pública. Verifique as configs do bucket.");
       return publicUrl;
     }
@@ -875,38 +591,25 @@
       saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Salvando...`;
 
       try{
-        const { data: { user } } = await sb.auth.getUser();
-        if (!user) { location.href="login.html"; return; }
-
         const cats = selectedCategoryIds();
         const bio = bioEl.value.trim();
         const store_name = storeNameEl.value.trim().slice(0,60);
 
-        if (cats.length === 0) {
-          showMsg("Selecione pelo menos 1 categoria.", true);
-          return;
-        }
-        if (!bio || bio.length < 10) {
-          showMsg("Escreva uma bio (mínimo 10 caracteres).", true);
-          return;
-        }
+        if (cats.length === 0) { showMsg("Selecione pelo menos 1 categoria.", true); return; }
+        if (!bio || bio.length < 10) { showMsg("Escreva uma bio (mínimo 10 caracteres).", true); return; }
 
-        // ✅ uploads (se tiver arquivo novo)
-        // Se usuário clicou em remover -> CURRENT_* fica null e será salvo como null
-        // Se usuário não mexeu -> CURRENT_* mantém e só atualiza se tiver novo file
         let avatar_url = CURRENT_AVATAR_URL;
         let header_url = CURRENT_HEADER_URL;
 
         if (AVATAR_FILE){
           showMsg("Enviando foto de perfil...", false);
-          avatar_url = await uploadIfNeeded(user.id, AVATAR_FILE, FOLDER_AVATAR);
+          avatar_url = await uploadIfNeeded(ME.user.id, AVATAR_FILE, FOLDER_AVATAR);
         }
         if (HEADER_FILE){
           showMsg("Enviando header...", false);
-          header_url = await uploadIfNeeded(user.id, HEADER_FILE, FOLDER_HEADER);
+          header_url = await uploadIfNeeded(ME.user.id, HEADER_FILE, FOLDER_HEADER);
         }
 
-        // 1) Atualiza profile (bio + flag + opcional store_name + urls)
         const updatePayload = {
           bio,
           vendor_onboarding_done: true,
@@ -918,23 +621,21 @@
         const { error: e1 } = await sb
           .from("profiles")
           .update(updatePayload)
-          .eq("id", user.id);
+          .eq("id", ME.user.id);
         if (e1) throw e1;
 
-        // 2) Substitui categorias
         const { error: e2 } = await sb
           .from("vendor_categories")
           .delete()
-          .eq("vendor_id", user.id);
+          .eq("vendor_id", ME.user.id);
         if (e2) throw e2;
 
-        const rows = cats.map(category_id => ({ vendor_id: user.id, category_id }));
+        const rows = cats.map(category_id => ({ vendor_id: ME.user.id, category_id }));
         const { error: e3 } = await sb
           .from("vendor_categories")
           .insert(rows);
         if (e3) throw e3;
 
-        // ✅ DEU TUDO CERTO -> PAINEL
         location.href = "vend-home.html";
         return;
 
@@ -956,9 +657,22 @@
     (async ()=>{
       try{
         await requireVendor();
-        await loadCategories();
+
+        // ✅ carrega categorias + marca as já selecionadas
+        const [cats, selectedSet] = await Promise.all([
+          loadCategories(),
+          loadVendorSelectedCategories().catch(()=> new Set()) // se não existir tabela/policy, não quebra
+        ]);
+
+        if (!cats.length){
+          showMsg("Não encontrei categorias para listar. Provável RLS/policy bloqueando o SELECT em 'categories'.", true);
+        }
+
+        renderCategories(cats, selectedSet);
+
       }catch(e){
-        showMsg(e.message || "Erro ao carregar onboarding.", true);
+        console.error(e);
+        showMsg(e?.message || "Erro ao carregar onboarding.", true);
       }
     })();
   </script>
