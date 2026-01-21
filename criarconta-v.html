@@ -406,14 +406,6 @@
             <div class="ferr" id="err_last_name"></div>
           </div>
 
-          <!-- ✅ novo campo: nome da banca (opcional) -->
-          <div class="span2">
-            <label for="store_name"><i class="fa-solid fa-store"></i> Nome da banca (opcional)</label>
-            <input class="input" id="store_name" maxlength="60" placeholder="Ex: Banca da Dona Maria"/>
-            <div class="muted">Aparece para compradores (se você preencher). Máx 60.</div>
-            <div class="ferr" id="err_store_name"></div>
-          </div>
-
           <div>
             <label for="phone"><i class="fa-solid fa-phone"></i> Celular</label>
             <input class="input" id="phone" required inputmode="tel" autocomplete="tel-national" placeholder="(89) 91234-5678"/>
@@ -772,10 +764,6 @@
         setFieldError("last_name", "Digite seu sobrenome.");
         ok = false;
       }
-      if (store_name && store_name.length < 2){
-        setFieldError("store_name", "Nome da banca muito curto.");
-        ok = false;
-      }
       if (store_name && store_name.length > 60){
         setFieldError("store_name", "Máximo 60 caracteres.");
         ok = false;
@@ -850,7 +838,6 @@
       const last_name  = qs("last_name").value.trim().slice(0,30);
       const full_name  = (first_name + " " + last_name).trim();
 
-      const store_name = qs("store_name").value.trim().slice(0,60);
 
       const phone = qs("phone").value.trim();
       const email = qs("email").value.trim().toLowerCase();
@@ -920,3 +907,4 @@
   </script>
 </body>
 </html>
+
