@@ -1,281 +1,515 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Painel do Vendedor • TaNaFeira</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TaNaFeira • Vendedor</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-<style>
-:root{
-  --green:#3aa86b;
-  --green-dark:#1e5c3a;
-  --bg:#f4faf7;
-  --card:#ffffff;
-  --muted:#6b8f86;
-  --shadow:0 14px 30px rgba(0,0,0,.08);
-}
+  <style>
+    :root{
+      --verde:#3aa86b;
+      --verde-hover:#2f8a59;
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,system-ui}
-body{background:var(--bg);color:#10312c}
+      --teal-1:#005a63;
+      --teal-2:#007b72;
 
-/* ===== HEADER ===== */
-header{
-  position:fixed;top:0;left:0;right:0;
-  height:78px;
-  background:#fff;
-  border-bottom:1px solid rgba(0,0,0,.08);
-  z-index:1000;
-}
-.header{
-  max-width:1300px;
-  margin:0 auto;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 20px;
-}
-.brand{display:flex;align-items:center;gap:14px}
-.brand img{height:36px}
-.profileTop{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  cursor:pointer;
-}
-.profileTop img{
-  width:44px;height:44px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid var(--green);
-}
-.profileTop div{line-height:1.1}
-.profileTop b{font-size:14px}
-.profileTop span{font-size:12px;color:var(--muted)}
+      --text:#0f2f2b;
+      --muted:rgba(16,49,44,.72);
 
-/* ===== LAYOUT ===== */
-.wrapper{
-  max-width:1300px;
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:240px 1fr;
-  gap:24px;
-  padding:110px 20px 40px;
-}
+      --bg:#f5fbf8;
+      --surface:rgba(255,255,255,.92);
+      --border:rgba(0,0,0,.08);
 
-/* ===== MENU ===== */
-nav{
-  background:#fff;
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  padding:16px;
-  height:fit-content;
-}
-nav a{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 14px;
-  border-radius:12px;
-  font-weight:600;
-  color:#10312c;
-  text-decoration:none;
-  transition:.15s;
-}
-nav a i{color:var(--green)}
-nav a:hover{background:#eef7f2}
-nav a.active{background:#e6f6ee;font-weight:700}
+      --shadow:0 14px 36px rgba(0,0,0,.14);
+      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
 
-/* ===== MAIN ===== */
-main h1{
-  font-size:26px;
-  margin-bottom:6px;
-}
-main p{color:var(--muted);margin-bottom:18px}
+      --radius-xl: 26px;
+      --radius-lg: 18px;
 
-/* ===== FEED ===== */
-.feed{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  gap:18px;
-}
-.card{
-  background:var(--card);
-  border-radius:18px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
-.card img{
-  width:100%;
-  height:160px;
-  object-fit:cover;
-}
-.card .body{
-  padding:14px;
-  flex:1;
-}
-.card h3{font-size:15px}
-.price{font-weight:700;color:var(--green)}
-.card .actions{
-  padding:12px;
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-.btn{
-  flex:1;
-  border:none;
-  border-radius:10px;
-  padding:10px;
-  font-weight:700;
-  cursor:pointer;
-}
-.edit{background:#e9f7f0;color:#1e5c3a}
-.pause{background:#f1f1f1}
+      --ring: 0 0 0 4px rgba(58,168,107,.14);
 
-/* ===== EMPTY ===== */
-.empty{
-  background:#fff;
-  border-radius:18px;
-  padding:40px;
-  text-align:center;
-  box-shadow:var(--shadow);
-}
-.empty i{
-  font-size:48px;
-  color:var(--green);
-  margin-bottom:14px;
-}
-.empty b{font-size:18px}
-.empty p{margin-top:6px}
+      --header-h: 78px;
+      --page-pad: clamp(14px, 2.5vw, 24px);
+    }
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:900px){
-  .wrapper{grid-template-columns:1fr}
-  nav{display:flex;gap:10px;overflow-x:auto}
-  nav a{white-space:nowrap}
-}
-</style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:
+        radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.45;
+      overflow-x:hidden;
+      min-height:100svh;
+    }
+
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button{font-family:inherit;}
+
+    .container{
+      width:min(1240px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+    }
+
+    /* ===== HEADER FIXO (não tampa) ===== */
+    header{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      height: var(--header-h);
+
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .header-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 0;
+    }
+
+    .brand img{
+      width:138px;
+      height:auto;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
+    }
+
+    .greet{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .hello{
+      font-weight:1100;
+      font-size:14.5px;
+      color:#0f4b45;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 42ch;
+    }
+    .subtitle{
+      font-weight:850;
+      font-size:12.8px;
+      color:rgba(16,49,44,.70);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 60ch;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:1000;
+      font-size:13.8px;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .btn i{opacity:.95;}
+
+    .btn-outline{
+      background:#fff;
+      color:#0f4b45;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
+
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+
+    .btn-danger{
+      background: rgba(0,0,0,.08);
+      color:#0f2f2b;
+      border:1px solid rgba(0,0,0,.10);
+    }
+    .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
+
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
+
+    @media (max-width: 520px){
+      :root{ --header-h: 72px; }
+      .brand img{width:124px;}
+      .greet{display:none;}
+      .actions .btn span{display:none;}
+      .actions .btn{gap:0;}
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 40px;
+    }
+
+    .page-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    .page-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .page-title h1{
+      font-size:28px;
+      font-weight:1100;
+      letter-spacing:-.2px;
+      color:#102d2a;
+      line-height:1.1;
+    }
+    .page-title p{
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      max-width: 86ch;
+      line-height:1.6;
+      font-size:14.4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert{
+      display:none;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: var(--shadow-soft);
+      color: rgba(16,49,44,.84);
+      font-weight:850;
+      font-size:13.2px;
+      line-height:1.35;
+    }
+    .alert.show{display:flex;}
+    .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+
+    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
+    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+
+    /* ===== GRID CARDS ===== */
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width: 860px){ .grid{grid-template-columns:1fr;} }
+
+    .card{
+      background: var(--surface);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      padding:16px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      transition:.18s;
+    }
+    .card:hover{transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.12);}
+    .ico{
+      width:44px;height:44px;border-radius:16px;
+      display:grid;place-items:center;
+      background: rgba(58,168,107,.10);
+      border:1px solid rgba(58,168,107,.18);
+      color:#0f4b45;
+      flex:0 0 auto;
+    }
+    .card h3{
+      margin:0;
+      font-size:15.5px;
+      font-weight:1200;
+      color:#10312c;
+      line-height:1.2;
+    }
+    .card p{
+      margin-top:6px;
+      color:rgba(16,49,44,.72);
+      font-weight:850;
+      font-size:13.6px;
+      line-height:1.55;
+      max-width: 70ch;
+    }
+    .arrow{
+      margin-left:auto;
+      color:rgba(16,49,44,.55);
+      padding-top:2px;
+    }
+
+    /* ===== CTA (top) ===== */
+    .cta{
+      margin-top:14px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:22px;
+      box-shadow: var(--shadow-soft);
+      padding:16px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .cta strong{font-weight:1200;color:#10312c;}
+    .cta span{display:block;margin-top:6px;color:rgba(16,49,44,.72);font-weight:850;font-size:13.6px;line-height:1.55;max-width:90ch;}
+  </style>
 </head>
 
 <body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
+        <div class="greet">
+          <div id="hello" class="hello">Carregando...</div>
+          <div class="subtitle">Painel do vendedor</div>
+        </div>
+      </div>
 
-<header>
-  <div class="header">
-    <div class="brand">
-      <img src="LogoTaNaFeira.png">
-    </div>
-
-    <!-- 👉 CLIQUE AQUI VAI PRO PERFIL -->
-    <div class="profileTop" id="goProfile">
-      <img id="avatarTop">
-      <div>
-        <b id="storeName">Minha banca</b><br>
-        <span>Ver perfil</span>
+      <div class="actions">
+        <button class="btn btn-outline" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
+        </button>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<div class="wrapper">
-
-  <!-- MENU -->
-  <nav>
-    <a class="active"><i class="fa-solid fa-house"></i> Home</a>
-    <a href="vend-produtos.html"><i class="fa-solid fa-box"></i> Produtos</a>
-    <a href="vend-reservas.html"><i class="fa-solid fa-receipt"></i> Reservas</a>
-    <a href="vend-perfil.html"><i class="fa-solid fa-user"></i> Perfil</a>
-    <a id="logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
-  </nav>
-
-  <!-- MAIN -->
-  <main>
-    <h1>Seus produtos</h1>
-    <p>Gerencie seus produtos e acompanhe suas vendas.</p>
-
-    <div id="feed" class="feed"></div>
-
-    <div id="empty" class="empty" style="display:none">
-      <i class="fa-solid fa-box-open"></i>
-      <b>Nenhum produto cadastrado</b>
-      <p>Cadastre seu primeiro produto para começar a vender.</p>
+  <main class="container">
+    <div class="page-head">
+      <div class="page-title">
+        <h1>Painel do vendedor</h1>
+        <p>Gerencie produtos, confirme reservas e mantenha seu perfil atualizado — tudo em um só lugar.</p>
+      </div>
     </div>
+
+    <div id="msg" class="alert"></div>
+
+    <section class="cta" aria-label="Resumo do painel">
+      <div>
+        <strong id="ctaTitle">Pronto para vender hoje?</strong>
+        <span id="ctaText">Atualize sua vitrine e confira as reservas pendentes antes de sair para a feira.</span>
+      </div>
+      <button class="btn btn-primary" type="button" onclick="location.href='vend-reservas.html'">
+        <i class="fa-solid fa-bell"></i> Ver reservas
+      </button>
+    </section>
+
+    <section class="grid" aria-label="Atalhos do vendedor">
+      <a class="card" href="vend-produtos.html">
+        <div class="ico"><i class="fa-solid fa-basket-shopping"></i></div>
+        <div style="min-width:0">
+          <h3>Vitrine (Produtos)</h3>
+          <p>Criar, editar, ativar/desativar e enviar mídia (imagem/áudio) para cada produto.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-reservas.html">
+        <div class="ico"><i class="fa-solid fa-box"></i></div>
+        <div style="min-width:0">
+          <h3>Reservas recebidas</h3>
+          <p>Veja pendentes, confirme para baixar estoque automaticamente ou cancele quando precisar.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-nots.html">
+        <div class="ico"><i class="fa-solid fa-bell"></i></div>
+        <div style="min-width:0">
+          <h3>Notificações</h3>
+          <p>Alertas de novas reservas e mudanças de status (MVP). Se não usar agora, pode ocultar depois.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-perfil.html">
+        <div class="ico"><i class="fa-solid fa-user"></i></div>
+        <div style="min-width:0">
+          <h3>Meu perfil</h3>
+          <p>Edite nome, celular, bio e categorias para compradores saberem quem você é.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-telainicial.html">
+        <div class="ico"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div style="min-width:0">
+          <h3>Comprar (como vendedor)</h3>
+          <p>Precisa reservar de outro feirante? Pesquise, filtre e envie a reserva (sem misturar telas).</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+
+      <a class="card" href="vend-minhas-reservas.html">
+        <div class="ico"><i class="fa-solid fa-receipt"></i></div>
+        <div style="min-width:0">
+          <h3>Minhas reservas</h3>
+          <p>As reservas que você fez em outros vendedores. Acompanhe pendentes e confirmadas.</p>
+        </div>
+        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+      </a>
+    </section>
   </main>
 
-</div>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://addedjckqdzwgdstgqfz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-const sb = supabase.createClient(
- "https://addedjckqdzwgdstgqfz.supabase.co",
- "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB"
-);
+    const el = (id)=>document.getElementById(id);
+    const msgEl = el("msg");
 
-const feed = document.getElementById("feed");
-const empty = document.getElementById("empty");
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
 
-async function loadVendor(){
- const { data:{ user }} = await sb.auth.getUser();
- if(!user){ location.href="login.html"; return }
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML =
+        `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>` +
+        `<div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){ msgEl.className="alert"; msgEl.innerHTML=""; }
 
- const { data:profile } = await sb
-  .from("profiles")
-  .select("store_name,avatar_url")
-  .eq("id",user.id)
-  .single();
+    async function requireAuth(){
+      const { data:{ user }, error } = await sb.auth.getUser();
+      if (error) throw error;
+      if (!user){ location.href="login.html"; return null; }
+      return user;
+    }
 
- document.getElementById("storeName").textContent =
-   profile.store_name || "Minha banca";
+    async function getOrCreateProfile(user){
+      const meta = user.user_metadata || {};
+      const roleFromMeta = meta.role || user.app_metadata?.role || "buyer";
 
- document.getElementById("avatarTop").src =
-   profile.avatar_url || "https://via.placeholder.com/100";
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, role, full_name, vendor_onboarding_done")
+        .eq("id", user.id)
+        .maybeSingle();
 
- document.getElementById("goProfile").onclick =
-   ()=>location.href="vend-perfil.html";
+      if (error) throw error;
 
- loadProducts(user.id);
-}
+      if (!data){
+        const payload = {
+          id: user.id,
+          role: roleFromMeta,
+          full_name: meta.full_name || [meta.first_name, meta.last_name].filter(Boolean).join(" ") || null,
+          vendor_onboarding_done: false
+        };
 
-async function loadProducts(vendorId){
- const { data:products } = await sb
-  .from("products")
-  .select("id,name,price,image_url")
-  .eq("vendor_id",vendorId);
+        const { error: insErr } = await sb.from("profiles").insert(payload);
+        if (insErr) throw insErr;
 
- if(!products || products.length===0){
-   empty.style.display="block";
-   return;
- }
+        const { data: data2, error: e2 } = await sb
+          .from("profiles")
+          .select("id, role, full_name, vendor_onboarding_done")
+          .eq("id", user.id)
+          .maybeSingle();
 
- feed.innerHTML="";
- products.forEach(p=>{
-   feed.innerHTML+=`
-    <div class="card">
-      <img src="${p.image_url || 'https://via.placeholder.com/300'}">
-      <div class="body">
-        <h3>${p.name}</h3>
-        <div class="price">R$ ${p.price}</div>
-      </div>
-      <div class="actions">
-        <button class="btn edit">Editar</button>
-        <button class="btn pause">Pausar</button>
-      </div>
-    </div>
-   `;
- });
-}
+        if (e2) throw e2;
+        return data2;
+      }
 
-document.getElementById("logout").onclick = async ()=>{
- await sb.auth.signOut();
- location.href="login.html";
-};
+      return data;
+    }
 
-loadVendor();
-</script>
+    async function requireVendor(){
+      const user = await requireAuth();
+      if (!user) return null;
 
+      const prof = await getOrCreateProfile(user);
+      if (!prof) throw new Error("Não consegui carregar seu perfil.");
+
+      if (prof.role !== "vendor"){
+        location.href = "telainicial-comp.html";
+        return null;
+      }
+
+      if (prof.vendor_onboarding_done === false){
+        location.href = "vend-onboarding.html";
+        return null;
+      }
+
+      return { user, prof };
+    }
+
+    (async()=>{
+      try{
+        clearMsg();
+        const pack = await requireVendor();
+        if (!pack) return;
+
+        const { user, prof } = pack;
+
+        const displayName =
+          (prof.full_name || "").trim() ||
+          (user.user_metadata?.full_name || "").trim() ||
+          (user.email || "Vendedor");
+
+        el("hello").textContent = "Olá, " + displayName + "!";
+      }catch(e){
+        console.error(e);
+        showMsg(e.message || "Erro ao carregar painel do vendedor.", true);
+      }
+    })();
+
+    el("logout").onclick = async()=>{
+      await sb.auth.signOut();
+      location.href="login.html";
+    };
+  </script>
 </body>
 </html>
