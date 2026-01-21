@@ -13,9 +13,6 @@
       --verde-hover:#2f8a59;
       --verde-escuro:#1e5c3a;
 
-      --teal-1:#005a63;
-      --teal-2:#007b72;
-
       --text:#0f2f2b;
       --muted:rgba(16,49,44,.72);
 
@@ -31,6 +28,11 @@
 
       --header-h: 78px;
       --page-pad: clamp(14px, 2.5vw, 24px);
+
+      --err-bg:#ffe9e9;
+      --err-br:#f0b7b7;
+      --ok-bg:#e9ffe9;
+      --ok-br:#b7f0b7;
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -146,6 +148,14 @@
     }
     .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
 
+    .btn-ghost{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      color:#0f2f2b;
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+    }
+    .btn-ghost:hover{transform: translateY(-1px); background:#f7fbf9;}
+
     .btn-danger{
       background: rgba(0,0,0,.08);
       color:#0f2f2b;
@@ -193,7 +203,7 @@
     .page-title p{
       color:rgba(16,49,44,.72);
       font-weight:850;
-      max-width: 70ch;
+      max-width: 72ch;
       line-height:1.6;
       font-size:14.4px;
     }
@@ -216,8 +226,8 @@
     }
     .alert.show{display:flex;}
     .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
-    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
-    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
+    .alert.err{border-color:var(--err-br);background:var(--err-bg);}
+    .alert.ok{border-color:var(--ok-br);background:var(--ok-bg);}
 
     /* ===== CARD ===== */
     .card{
@@ -248,7 +258,7 @@
       font-weight:850;
       font-size:13.4px;
       line-height:1.5;
-      max-width: 80ch;
+      max-width: 84ch;
     }
 
     .card-body{
@@ -267,6 +277,37 @@
       font-size:13.2px;
       line-height:1.5;
     }
+
+    /* ===== FIELD ===== */
+    .field h3{
+      margin:0;
+      font-size:15px;
+      font-weight:1200;
+      color:#10312c;
+    }
+    .hint{
+      color:rgba(16,49,44,.66);
+      font-weight:850;
+      font-size:12.8px;
+      line-height:1.45;
+      margin-top:6px;
+    }
+
+    input[type="text"]{
+      width:100%;
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      color:#0f2f2b;
+      font-weight:850;
+      font-size:15px;
+      outline:none;
+      box-shadow: var(--shadow-soft);
+      transition:.18s;
+    }
+    input[type="text"]:focus{ box-shadow: var(--shadow-soft), var(--ring); }
 
     /* ===== CATEGORIAS ===== */
     .cats{
@@ -313,14 +354,6 @@
       line-height:1.25;
     }
 
-    .hint{
-      color:rgba(16,49,44,.66);
-      font-weight:850;
-      font-size:12.8px;
-      line-height:1.45;
-      margin-top:6px;
-    }
-
     /* ===== BIO ===== */
     textarea{
       width:100%;
@@ -353,6 +386,69 @@
       color:rgba(16,49,44,.72);
     }
     .counter b{color:#0f4b45;}
+
+    /* ===== UPLOADS ===== */
+    .mediaGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width:720px){ .mediaGrid{grid-template-columns:1fr;} }
+
+    .mediaCard{
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.92);
+      border-radius:18px;
+      padding:12px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+      display:grid;
+      gap:10px;
+    }
+
+    .preview{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background: #f5f7f6;
+      overflow:hidden;
+      position:relative;
+      min-height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(16,49,44,.65);
+      font-weight:900;
+      font-size:13px;
+    }
+    .preview img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .preview.avatar{aspect-ratio: 1 / 1; max-width:240px; margin:0 auto;}
+    .preview.header{aspect-ratio: 16 / 6;}
+
+    .mediaRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .file{
+      width:100%;
+    }
+    .file input{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(0,0,0,.20);
+      background:#fff;
+      font-weight:850;
+    }
 
     /* ===== BOTÕES ===== */
     .actions-row{
@@ -401,7 +497,7 @@
     <div class="page-head">
       <div class="page-title">
         <h1>Complete seu perfil para começar a vender</h1>
-        <p>Escolha suas categorias e escreva uma bio curtinha. Você pode mudar isso depois.</p>
+        <p>Foto de perfil ajuda compradores a reconhecerem sua banca. Header é opcional. Categorias e bio são obrigatórias.</p>
       </div>
     </div>
 
@@ -410,13 +506,73 @@
     <section class="card" aria-label="Completar perfil do vendedor">
       <div class="card-head">
         <h2>Informações essenciais</h2>
-        <p>Esses dados ajudam os compradores a confiarem na sua banca e encontrarem seus produtos com mais facilidade.</p>
+        <p>Preencha o que for necessário e conclua. Se tudo estiver certo, você vai direto para o painel do vendedor.</p>
       </div>
 
       <div class="card-body">
         <div class="softbox">
           <i class="fa-solid fa-circle-info" style="color:var(--verde);margin-right:8px;"></i>
-          Escolha <b>pelo menos 1 categoria</b> e escreva uma bio com <b>mínimo 10 caracteres</b>.
+          Obrigatório: <b>pelo menos 1 categoria</b> e uma bio com <b>mínimo 10 caracteres</b>.
+          Foto de perfil e header são opcionais (mas recomendados).
+        </div>
+
+        <!-- ✅ NOVO: nome da banca (opcional) -->
+        <div class="field">
+          <h3>0) Nome da banca <span style="color:rgba(16,49,44,.70);font-weight:900;">(opcional)</span></h3>
+          <div class="hint">Esse nome pode aparecer para compradores (se você preencher).</div>
+          <input id="store_name" type="text" maxlength="60" placeholder="Ex: Banca da Dona Maria" />
+        </div>
+
+        <!-- ✅ NOVO: uploads -->
+        <div class="field">
+          <h3>0.1) Sua identidade <span style="color:rgba(16,49,44,.70);font-weight:900;">(recomendado)</span></h3>
+          <div class="hint">Envie uma foto de perfil (opcional) e um header (opcional). Use imagem .jpg/.png/.webp.</div>
+
+          <div class="mediaGrid">
+            <div class="mediaCard">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div style="font-weight:1200;color:#10312c">Foto de perfil</div>
+                <div class="hint" style="margin:0">Quadrada</div>
+              </div>
+
+              <div class="preview avatar" id="avatarPreview">
+                <span>Nenhuma imagem</span>
+              </div>
+
+              <div class="file">
+                <input id="avatarFile" type="file" accept="image/*" />
+              </div>
+
+              <div class="mediaRow">
+                <button class="btn btn-ghost" type="button" id="removeAvatar">
+                  <i class="fa-solid fa-trash"></i> Remover
+                </button>
+                <span class="hint" id="avatarHint" style="margin:0">Máx 4MB</span>
+              </div>
+            </div>
+
+            <div class="mediaCard">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div style="font-weight:1200;color:#10312c">Header (capa)</div>
+                <div class="hint" style="margin:0">Paisagem</div>
+              </div>
+
+              <div class="preview header" id="headerPreview">
+                <span>Nenhuma imagem</span>
+              </div>
+
+              <div class="file">
+                <input id="headerFile" type="file" accept="image/*" />
+              </div>
+
+              <div class="mediaRow">
+                <button class="btn btn-ghost" type="button" id="removeHeader">
+                  <i class="fa-solid fa-trash"></i> Remover
+                </button>
+                <span class="hint" id="headerHint" style="margin:0">Máx 6MB</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -452,6 +608,15 @@
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
+    // =========================
+    // ✅ CONFIGURE AQUI O BUCKET
+    // =========================
+    // Coloque EXATAMENTE o nome do bucket que você criou:
+    const BUCKET_VENDOR_MEDIA = "SEU_BUCKET_AQUI"; // ex: "vendor-media" ou "avatars"
+    // Pastas dentro do bucket (opcional)
+    const FOLDER_AVATAR = "avatars";
+    const FOLDER_HEADER = "headers";
+
     const SUPABASE_URL = "https://addedjckqdzwgdstgqfz.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_WaH0GklqXIWCYjL2jVzZjg_GD6XdrXB";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -461,6 +626,23 @@
     const bioEl = document.getElementById("bio");
     const bioCountEl = document.getElementById("bioCount");
     const saveBtn = document.getElementById("save");
+
+    const storeNameEl = document.getElementById("store_name");
+
+    const avatarFileEl = document.getElementById("avatarFile");
+    const headerFileEl = document.getElementById("headerFile");
+    const avatarPreviewEl = document.getElementById("avatarPreview");
+    const headerPreviewEl = document.getElementById("headerPreview");
+    const removeAvatarBtn = document.getElementById("removeAvatar");
+    const removeHeaderBtn = document.getElementById("removeHeader");
+
+    // arquivos selecionados (pra upload)
+    let AVATAR_FILE = null;
+    let HEADER_FILE = null;
+
+    // urls atuais (se o usuário já tiver)
+    let CURRENT_AVATAR_URL = null;
+    let CURRENT_HEADER_URL = null;
 
     function escapeHtml(s){
       return String(s ?? "")
@@ -499,17 +681,89 @@
       bioCountEl.textContent = String(bioEl.value.length);
     });
 
+    function setPreview(el, fileOrUrl, mode){
+      // mode: "avatar" | "header"
+      el.classList.remove("avatar","header");
+      el.classList.add(mode);
+
+      if (!fileOrUrl){
+        el.innerHTML = "<span>Nenhuma imagem</span>";
+        return;
+      }
+
+      if (typeof fileOrUrl === "string"){
+        el.innerHTML = `<img alt="${mode}" src="${escapeHtml(fileOrUrl)}">`;
+        return;
+      }
+
+      const url = URL.createObjectURL(fileOrUrl);
+      el.innerHTML = `<img alt="${mode}" src="${url}">`;
+    }
+
+    function validateImage(file, maxBytes){
+      if (!file) return null;
+      if (!file.type.startsWith("image/")) return "Envie um arquivo de imagem.";
+      if (file.size > maxBytes) return "Imagem muito grande. Envie uma menor.";
+      return null;
+    }
+
+    avatarFileEl.addEventListener("change", ()=>{
+      clearMsg();
+      const f = avatarFileEl.files?.[0] || null;
+      const err = validateImage(f, 4 * 1024 * 1024);
+      if (err){
+        AVATAR_FILE = null;
+        avatarFileEl.value = "";
+        setPreview(avatarPreviewEl, CURRENT_AVATAR_URL, "avatar");
+        showMsg("Foto de perfil: " + err, true);
+        return;
+      }
+      AVATAR_FILE = f;
+      setPreview(avatarPreviewEl, f, "avatar");
+    });
+
+    headerFileEl.addEventListener("change", ()=>{
+      clearMsg();
+      const f = headerFileEl.files?.[0] || null;
+      const err = validateImage(f, 6 * 1024 * 1024);
+      if (err){
+        HEADER_FILE = null;
+        headerFileEl.value = "";
+        setPreview(headerPreviewEl, CURRENT_HEADER_URL, "header");
+        showMsg("Header: " + err, true);
+        return;
+      }
+      HEADER_FILE = f;
+      setPreview(headerPreviewEl, f, "header");
+    });
+
+    removeAvatarBtn.addEventListener("click", ()=>{
+      AVATAR_FILE = null;
+      CURRENT_AVATAR_URL = null; // remove do perfil ao salvar
+      avatarFileEl.value = "";
+      setPreview(avatarPreviewEl, null, "avatar");
+      clearMsg();
+    });
+
+    removeHeaderBtn.addEventListener("click", ()=>{
+      HEADER_FILE = null;
+      CURRENT_HEADER_URL = null; // remove do perfil ao salvar
+      headerFileEl.value = "";
+      setPreview(headerPreviewEl, null, "header");
+      clearMsg();
+    });
+
     async function requireVendor(){
       const { data: { user }, error } = await sb.auth.getUser();
       if (error) throw error;
       if (!user) { location.href = "login.html"; return null; }
 
-      // mostra nome no header
       document.getElementById("hello").textContent = "Olá, " + bestNameFromUser(user) + "!";
 
       const { data: prof, error: e2 } = await sb
         .from("profiles")
-        .select("id, role, vendor_onboarding_done, bio")
+        // ✅ se você já criou colunas avatar_url/header_url/store_name, vai carregar
+        .select("id, role, vendor_onboarding_done, bio, store_name, avatar_url, header_url")
         .eq("id", user.id)
         .single();
 
@@ -525,10 +779,20 @@
         return null;
       }
 
+      // preenche existentes
       if (prof.bio) {
         bioEl.value = prof.bio;
         bioCountEl.textContent = String(bioEl.value.length);
       }
+      if (prof.store_name) {
+        storeNameEl.value = prof.store_name;
+      }
+
+      CURRENT_AVATAR_URL = prof.avatar_url || null;
+      CURRENT_HEADER_URL = prof.header_url || null;
+
+      setPreview(avatarPreviewEl, CURRENT_AVATAR_URL, "avatar");
+      setPreview(headerPreviewEl, CURRENT_HEADER_URL, "header");
 
       return user;
     }
@@ -565,6 +829,46 @@
       renderCategories(data || []);
     }
 
+    function safeExtFromFile(file){
+      const name = String(file?.name || "");
+      const ext = name.includes(".") ? name.split(".").pop().toLowerCase() : "";
+      if (["jpg","jpeg","png","webp"].includes(ext)) return ext === "jpeg" ? "jpg" : ext;
+      // fallback por mimetype
+      const mt = String(file?.type || "").toLowerCase();
+      if (mt.includes("png")) return "png";
+      if (mt.includes("webp")) return "webp";
+      return "jpg";
+    }
+
+    async function uploadIfNeeded(userId, file, folder){
+      if (!file) return null;
+
+      if (!BUCKET_VENDOR_MEDIA || BUCKET_VENDOR_MEDIA === "SEU_BUCKET_AQUI"){
+        throw new Error("Você esqueceu de colocar o nome do bucket em BUCKET_VENDOR_MEDIA no topo do arquivo.");
+      }
+
+      const ext = safeExtFromFile(file);
+      const fileName = `${crypto.randomUUID()}.${ext}`;
+      const path = `${folder}/${userId}/${fileName}`;
+
+      const { error: upErr } = await sb
+        .storage
+        .from(BUCKET_VENDOR_MEDIA)
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: true,
+          contentType: file.type || "image/*"
+        });
+
+      if (upErr) throw upErr;
+
+      const { data } = sb.storage.from(BUCKET_VENDOR_MEDIA).getPublicUrl(path);
+      const publicUrl = data?.publicUrl || null;
+
+      if (!publicUrl) throw new Error("Upload feito, mas não consegui gerar a URL pública. Verifique as configs do bucket.");
+      return publicUrl;
+    }
+
     async function saveOnboarding(){
       clearMsg();
       saveBtn.disabled = true;
@@ -576,6 +880,7 @@
 
         const cats = selectedCategoryIds();
         const bio = bioEl.value.trim();
+        const store_name = storeNameEl.value.trim().slice(0,60);
 
         if (cats.length === 0) {
           showMsg("Selecione pelo menos 1 categoria.", true);
@@ -586,10 +891,33 @@
           return;
         }
 
-        // 1) Atualiza profile (bio + flag)
+        // ✅ uploads (se tiver arquivo novo)
+        // Se usuário clicou em remover -> CURRENT_* fica null e será salvo como null
+        // Se usuário não mexeu -> CURRENT_* mantém e só atualiza se tiver novo file
+        let avatar_url = CURRENT_AVATAR_URL;
+        let header_url = CURRENT_HEADER_URL;
+
+        if (AVATAR_FILE){
+          showMsg("Enviando foto de perfil...", false);
+          avatar_url = await uploadIfNeeded(user.id, AVATAR_FILE, FOLDER_AVATAR);
+        }
+        if (HEADER_FILE){
+          showMsg("Enviando header...", false);
+          header_url = await uploadIfNeeded(user.id, HEADER_FILE, FOLDER_HEADER);
+        }
+
+        // 1) Atualiza profile (bio + flag + opcional store_name + urls)
+        const updatePayload = {
+          bio,
+          vendor_onboarding_done: true,
+          store_name: store_name || null,
+          avatar_url: avatar_url || null,
+          header_url: header_url || null
+        };
+
         const { error: e1 } = await sb
           .from("profiles")
-          .update({ bio, vendor_onboarding_done: true })
+          .update(updatePayload)
           .eq("id", user.id);
         if (e1) throw e1;
 
@@ -606,12 +934,12 @@
           .insert(rows);
         if (e3) throw e3;
 
-        // ✅ SE DEU TUDO CERTO -> REDIRECIONA IMEDIATO
+        // ✅ DEU TUDO CERTO -> PAINEL
         location.href = "vend-home.html";
         return;
 
       }catch(e){
-        showMsg(e.message || "Erro ao salvar onboarding.", true);
+        showMsg(e?.message || "Erro ao salvar onboarding.", true);
       }finally{
         saveBtn.disabled = false;
         saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Concluir e ir para o painel`;
