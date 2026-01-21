@@ -108,16 +108,16 @@
       font-size:14.5px;
       color:#0f4b45;
       line-height:1.2;
-      white-space:normal;         /* ✅ deixa quebrar */
-      overflow:visible;           /* ✅ não corta */
-      text-overflow:unset;        /* ✅ não coloca ... */
+      white-space:normal;
+      overflow:visible;
+      text-overflow:unset;
       word-break:break-word;
     }
     .subtitle{
       font-weight:850;
       font-size:12.8px;
       color:rgba(16,49,44,.70);
-      white-space:normal;         /* ✅ deixa quebrar */
+      white-space:normal;
       overflow:visible;
       text-overflow:unset;
       word-break:break-word;
@@ -190,16 +190,16 @@
       letter-spacing:-.2px;
       color:#102d2a;
       line-height:1.15;
-      white-space:normal;       /* ✅ não corta */
+      white-space:normal;
       word-break:break-word;
     }
     .page-title p{
       color:rgba(16,49,44,.72);
       font-weight:850;
-      max-width: 80ch;          /* ✅ um pouco mais confortável */
+      max-width: 80ch;
       line-height:1.6;
       font-size:14.4px;
-      white-space:normal;       /* ✅ não corta */
+      white-space:normal;
       word-break:break-word;
     }
 
@@ -273,7 +273,6 @@
     }
     .alert.show{display:flex;}
     .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
-
     .alert.err{ border-color:#f0b7b7; background:#ffe9e9; }
     .alert.ok { border-color:#b7f0b7; background:#e9ffe9; }
 
@@ -380,7 +379,7 @@
       align-items:baseline;
       justify-content:space-between;
       gap:10px;
-      flex-wrap:wrap; /* ✅ evita cortar */
+      flex-wrap:wrap;
     }
     .price{
       font-weight:1200;
@@ -632,15 +631,6 @@
     const el = (id)=>document.getElementById(id);
     const msgEl = el("msg");
 
-    function showMsg(text, isErr=false){
-      msgEl.className = "alert show " + (isErr ? "err" : "ok");
-      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
-    }
-    function clearMsg(){
-      msgEl.className = "alert";
-      msgEl.innerHTML = "";
-    }
-
     function escapeHtml(s){
       return String(s ?? "")
         .replaceAll("&","&amp;")
@@ -650,7 +640,16 @@
         .replaceAll("'","&#039;");
     }
 
-    function onlyDigits(s){ return (s||"").replace(/\\D/g,""); }
+    function showMsg(text, isErr=false){
+      msgEl.className = "alert show " + (isErr ? "err" : "ok");
+      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
+    }
+    function clearMsg(){
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
+    }
+
+    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
     function toIntStrict(v){
       const d = onlyDigits(v);
       if (!d) return null;
@@ -686,6 +685,26 @@
     let PRODUCTS = [];
     let VENDOR_NAME = new Map();
 
+    // ✅ monta o melhor nome possível pro vendedor
+    function vendorDisplayName(prof){
+      if (!prof) return "Vendedor";
+      const store = String(prof.store_name || "").trim();
+      if (store) return store;
+
+      const full = String(prof.full_name || "").trim();
+      if (full) return full;
+
+      const first = String(prof.first_name || "").trim();
+      const last  = String(prof.last_name || "").trim();
+      const join = (first + " " + last).trim();
+      if (join) return join;
+
+      if (first) return first;
+      if (last) return last;
+
+      return "Vendedor";
+    }
+
     async function loadCategories(){
       const { data, error } = await sb
         .from("categories")
@@ -718,15 +737,15 @@
       VENDOR_NAME = new Map();
 
       if (vendorIds.length){
+        // ✅ AQUI É A CORREÇÃO: pega store_name/first/last também
         const { data: profs, error: perr } = await sb
           .from("profiles")
-          .select("id, full_name")
+          .select("id, full_name, first_name, last_name, store_name")
           .in("id", vendorIds);
 
         if (!perr){
           (profs || []).forEach(p => {
-            const name = (p.full_name || "").trim();
-            VENDOR_NAME.set(String(p.id), name || "Vendedor");
+            VENDOR_NAME.set(String(p.id), vendorDisplayName(p));
           });
         }
       }
