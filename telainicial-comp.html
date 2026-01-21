@@ -95,7 +95,6 @@
       flex: 0 0 auto;
     }
 
-    /* ✅ aqui tava cortando: agora pode quebrar linha e não some */
     .greet{
       display:flex;
       flex-direction:column;
@@ -123,13 +122,14 @@
       word-break:break-word;
     }
 
+    /* ✅ CENTRALIZA OS BOTÕES NO HEADER */
     .actions{
       display:flex;
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
-      justify-content:flex-end;
-      flex: 0 0 auto;
+      justify-content:center;  /* ✅ central */
+      flex: 1 1 auto;          /* ✅ ocupa e permite centralizar */
     }
 
     .btn{
@@ -395,6 +395,7 @@
 
     audio{ width:100%; border-radius:12px; }
 
+    /* ✅ CENTRALIZA O BOTÃO RESERVAR */
     .card-bottom{
       padding:14px;
       margin-top:auto;
@@ -403,6 +404,7 @@
       flex-wrap:wrap;
       border-top:1px solid rgba(0,0,0,.06);
       background: rgba(255,255,255,.86);
+      justify-content:center; /* ✅ centro */
     }
     .card-bottom .btn{
       border-radius:16px;
@@ -414,10 +416,12 @@
       box-shadow: 0 12px 24px rgba(58,168,107,.22);
     }
     .card-bottom .btn:hover{filter:brightness(1.02);}
+
+    /* ✅ opção 1: centralizado com largura “bonita” */
     .btn-reserve{
-      flex:1;
+      flex:0 0 auto;      /* ✅ não estica */
+      min-width: 220px;   /* ✅ fica visível */
       justify-content:center;
-      min-width: 160px;
     }
 
     /* ===== MODAL ===== */
@@ -543,13 +547,16 @@
         </div>
       </div>
 
-      <!-- ✅ SOMENTE PERFIL E RESERVAS -->
+      <!-- ✅ PERFIL / RESERVAS / SAIR (CENTRALIZADOS) -->
       <div class="actions">
-        <button class="btn btn-outline" id="profile" type="button" title="Meu perfil">
+        <button class="btn" id="profile" type="button" title="Meu perfil">
           <i class="fa-solid fa-user"></i> <span>Meu perfil</span>
         </button>
         <button class="btn btn-soft" id="myRes" type="button" title="Minhas reservas">
           <i class="fa-solid fa-receipt"></i> <span>Minhas reservas</span>
+        </button>
+        <button class="btn" id="logout" type="button" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
         </button>
       </div>
     </div>
@@ -586,7 +593,7 @@
         <div class="dlgTitle" id="dlgTitle">Reservar</div>
         <div class="dlgSub" id="dlgVendor">Vendedor: —</div>
       </div>
-      <button class="btn btn-outline" id="dlgClose" type="button">
+      <button class="btn" id="dlgClose" type="button">
         <i class="fa-solid fa-xmark"></i> Fechar
       </button>
     </div>
@@ -685,7 +692,6 @@
     let PRODUCTS = [];
     let VENDOR_NAME = new Map();
 
-    // ✅ monta o melhor nome possível pro vendedor
     function vendorDisplayName(prof){
       if (!prof) return "Vendedor";
       const store = String(prof.store_name || "").trim();
@@ -730,23 +736,17 @@
       if (error) throw error;
       PRODUCTS = data || [];
 
-      const vendorIds = Array.from(
-        new Set((PRODUCTS || []).map(p => p.vendor_id).filter(Boolean).map(String))
-      );
-
+      const vendorIds = Array.from(new Set((PRODUCTS||[]).map(p=>p.vendor_id).filter(Boolean).map(String)));
       VENDOR_NAME = new Map();
 
       if (vendorIds.length){
-        // ✅ AQUI É A CORREÇÃO: pega store_name/first/last também
         const { data: profs, error: perr } = await sb
           .from("profiles")
           .select("id, full_name, first_name, last_name, store_name")
           .in("id", vendorIds);
 
         if (!perr){
-          (profs || []).forEach(p => {
-            VENDOR_NAME.set(String(p.id), vendorDisplayName(p));
-          });
+          (profs || []).forEach(p => VENDOR_NAME.set(String(p.id), vendorDisplayName(p)));
         }
       }
 
@@ -929,9 +929,13 @@
       }
     };
 
-    /* ✅ SOMENTE PERFIL E RESERVAS */
     el("profile").onclick = ()=> location.href = "perfil-comp.html";
     el("myRes").onclick = ()=> location.href = "reservas-comp.html";
+
+    el("logout").onclick = async ()=>{
+      await sb.auth.signOut();
+      location.href = "login.html";
+    };
 
     (async ()=>{
       try{
