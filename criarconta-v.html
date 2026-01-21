@@ -33,6 +33,7 @@
       --white: rgba(255,255,255,.92);
 
       --page-pad: clamp(14px, 2.6vh, 28px);
+      --err:#c0392b;
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -107,9 +108,14 @@
       gap:10px;
     }
 
+    /* ✅ deixa a logo visível mesmo verde escuro */
     .logo img{
       height:34px;
       width:auto;
+      padding:8px 10px;
+      border-radius:14px;
+      background: rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
       filter: drop-shadow(0 12px 20px rgba(0,0,0,.18));
     }
 
@@ -159,6 +165,7 @@
       background: var(--glass2);
     }
 
+    /* msg geral (ex: erro do supabase) */
     .msg{
       display:none;
       margin-bottom:12px;
@@ -237,10 +244,28 @@
       color: rgba(255,255,255,.86);
     }
 
+    /* ✅ erro por campo (embaixo do label/input) */
+    .ferr{
+      display:none;
+      margin-top:8px;
+      font-size:12.8px;
+      font-weight:950;
+      color:#ffd6d6;
+      background: rgba(192,57,43,.22);
+      border:1px solid rgba(255,160,160,.35);
+      padding:10px 10px;
+      border-radius:14px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.10);
+    }
+    .ferr.show{display:block;}
+    .input.err, select.err{
+      border-color: rgba(255,170,170,.85);
+      box-shadow: var(--shadow-soft), 0 0 0 4px rgba(192,57,43,.16);
+    }
+
     /* senha + olho (mesmo padrão do comprador) */
     .pwrow{position:relative;}
     .pwrow .input{padding-right:54px;}
-
     .pwbtn{
       position:absolute;
       right:10px;
@@ -257,6 +282,30 @@
     }
     .pwbtn:hover{filter:brightness(1.02); transform:translateY(calc(-50% + 2px)) translateY(-1px);}
     .pwbtn:focus{outline:none; box-shadow: 0 10px 18px rgba(0,0,0,.08), var(--ring);}
+
+    /* botão "Sem número" */
+    .miniBtn{
+      margin-top:8px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      font-weight: 950;
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+      transition:.16s;
+    }
+    .miniBtn:hover{transform:translateY(-1px); background: rgba(255,255,255,.14);}
+    .miniBtn.on{
+      background: rgba(0,240,175,.20);
+      border-color: rgba(0,240,175,.30);
+      color:#eafff3;
+    }
 
     .btn-row{
       grid-column: 1 / -1;
@@ -331,7 +380,7 @@
         </div>
 
         <h1>Criar conta — Vendedor</h1>
-        <p>Cadastre-se para montar sua vitrine e organizar reservas. Se o Supabase não exigir confirmação de e-mail, você entra e vai direto pro seu perfil.</p>
+        <p>Cadastre-se para montar sua vitrine e organizar reservas. Se o Supabase não exigir confirmação de e-mail, você entra e vai direto pro onboarding.</p>
       </div>
 
       <div class="body">
@@ -346,24 +395,36 @@
           <div>
             <label for="first_name"><i class="fa-solid fa-id-card"></i> Nome</label>
             <input class="input" id="first_name" required maxlength="30" autocomplete="given-name"/>
-            <div class="muted">Máx 30 caracteres.</div>
+            <div class="muted">Máx 30 caracteres. Pode usar “-”.</div>
+            <div class="ferr" id="err_first_name"></div>
           </div>
 
           <div>
             <label for="last_name"><i class="fa-solid fa-id-card-clip"></i> Sobrenome</label>
             <input class="input" id="last_name" required maxlength="30" autocomplete="family-name"/>
-            <div class="muted">Máx 30 caracteres.</div>
+            <div class="muted">Máx 30 caracteres. Pode usar “-”.</div>
+            <div class="ferr" id="err_last_name"></div>
+          </div>
+
+          <!-- ✅ novo campo: nome da banca (opcional) -->
+          <div class="span2">
+            <label for="store_name"><i class="fa-solid fa-store"></i> Nome da banca (opcional)</label>
+            <input class="input" id="store_name" maxlength="60" placeholder="Ex: Banca da Dona Maria"/>
+            <div class="muted">Aparece para compradores (se você preencher). Máx 60.</div>
+            <div class="ferr" id="err_store_name"></div>
           </div>
 
           <div>
             <label for="phone"><i class="fa-solid fa-phone"></i> Celular</label>
             <input class="input" id="phone" required inputmode="tel" autocomplete="tel-national" placeholder="(89) 91234-5678"/>
             <div class="muted">DDD + número (10 ou 11 dígitos).</div>
+            <div class="ferr" id="err_phone"></div>
           </div>
 
           <div>
             <label for="email"><i class="fa-solid fa-envelope"></i> Email</label>
             <input class="input" id="email" required type="email" autocomplete="email" placeholder="voce@email.com" maxlength="254"/>
+            <div class="ferr" id="err_email"></div>
           </div>
 
           <div class="section">
@@ -375,26 +436,35 @@
             <label for="cep"><i class="fa-solid fa-map-pin"></i> CEP</label>
             <input class="input" id="cep" required inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9"/>
             <div class="muted">Somente PI/PE.</div>
+            <div class="ferr" id="err_cep"></div>
           </div>
 
           <div>
             <label for="numero"><i class="fa-solid fa-hashtag"></i> Número</label>
             <input class="input" id="numero" required placeholder="Ex: 123" autocomplete="address-line2"/>
+            <button class="miniBtn" type="button" id="btnSemNumero">
+              <i class="fa-solid fa-ban"></i> Sem número
+            </button>
+            <div class="muted">Se não tiver número, selecione “Sem número” (vira “-”).</div>
+            <div class="ferr" id="err_numero"></div>
           </div>
 
           <div class="span2">
             <label for="rua"><i class="fa-solid fa-road"></i> Rua</label>
             <input class="input" id="rua" required autocomplete="address-line1" placeholder="Preenchido pelo CEP"/>
+            <div class="ferr" id="err_rua"></div>
           </div>
 
           <div>
             <label for="bairro"><i class="fa-solid fa-signs-post"></i> Bairro</label>
             <input class="input" id="bairro" required autocomplete="address-level3" placeholder="Preenchido pelo CEP"/>
+            <div class="ferr" id="err_bairro"></div>
           </div>
 
           <div>
             <label for="cidade"><i class="fa-solid fa-city"></i> Cidade</label>
             <input class="input" id="cidade" required autocomplete="address-level2" placeholder="Preenchido pelo CEP"/>
+            <div class="ferr" id="err_cidade"></div>
           </div>
 
           <div>
@@ -404,11 +474,13 @@
               <option value="PI">PI</option>
               <option value="PE">PE</option>
             </select>
+            <div class="ferr" id="err_uf"></div>
           </div>
 
           <div>
             <label for="complemento"><i class="fa-solid fa-circle-plus"></i> Complemento (opcional)</label>
             <input class="input" id="complemento" autocomplete="address-line2" placeholder="Apto, bloco, referência..."/>
+            <div class="ferr" id="err_complemento"></div>
           </div>
 
           <div class="section">
@@ -424,6 +496,7 @@
                 <i class="fa-solid fa-eye"></i>
               </button>
             </div>
+            <div class="ferr" id="err_password"></div>
           </div>
 
           <div class="span2">
@@ -434,6 +507,7 @@
                 <i class="fa-solid fa-eye"></i>
               </button>
             </div>
+            <div class="ferr" id="err_password2"></div>
           </div>
 
           <div class="btn-row">
@@ -457,8 +531,11 @@
 
     const UF_ALLOWED = new Set(["PI","PE"]);
     const qs = (id)=>document.getElementById(id);
+
     const msgEl = qs("msg");
     const submitBtn = qs("submitBtn");
+
+    const btnSemNumero = qs("btnSemNumero");
 
     function showMsg(text, isErr=false){
       msgEl.classList.add("show");
@@ -472,9 +549,40 @@
 
     function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
 
-    function isValidBRPhone(masked){
-      const d = onlyDigits(masked);
-      return d.length === 10 || d.length === 11;
+    function setFieldError(fieldId, message){
+      const input = qs(fieldId);
+      const err = qs("err_" + fieldId);
+      if (!input || !err) return;
+      input.classList.add("err");
+      err.classList.add("show");
+      err.textContent = message;
+    }
+
+    function clearFieldError(fieldId){
+      const input = qs(fieldId);
+      const err = qs("err_" + fieldId);
+      if (!input || !err) return;
+      input.classList.remove("err");
+      err.classList.remove("show");
+      err.textContent = "";
+    }
+
+    function clearAllFieldErrors(){
+      [
+        "first_name","last_name","store_name",
+        "phone","email",
+        "cep","numero","rua","bairro","cidade","uf","complemento",
+        "password","password2"
+      ].forEach(clearFieldError);
+    }
+
+    // ✅ permite letras + espaço + hífen (nome/sobrenome)
+    function sanitizePersonName(v){
+      // letras (com acento), espaço, hífen e apóstrofo
+      return (v || "")
+        .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g, "")
+        .replace(/\s{2,}/g, " ")
+        .slice(0, 30);
     }
 
     function isValidEmail(email){
@@ -489,6 +597,11 @@
       return true;
     }
 
+    function isValidBRPhone(masked){
+      const d = onlyDigits(masked);
+      return d.length === 10 || d.length === 11;
+    }
+
     function maskPhone(v){
       const d = onlyDigits(v).slice(0,11);
       if (d.length <= 2) return d ? `(${d}` : "";
@@ -496,14 +609,72 @@
       if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6,10)}`;
       return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7,11)}`;
     }
+
     function maskCEP(v){
       const d = onlyDigits(v).slice(0,8);
       if (d.length <= 5) return d;
       return `${d.slice(0,5)}-${d.slice(5,8)}`;
     }
 
-    qs("phone").addEventListener("input", e=> e.target.value = maskPhone(e.target.value));
-    qs("cep").addEventListener("input", e=> e.target.value = maskCEP(e.target.value));
+    // ✅ Numero: só dígitos OU "-" (apenas 1 hífen, não duplo/triplo)
+    function sanitizeNumero(v){
+      const raw = String(v || "").trim();
+      if (raw === "-") return "-";
+      // remove tudo que não for dígito
+      const d = onlyDigits(raw);
+      return d;
+    }
+    function isValidNumero(v){
+      const x = String(v || "").trim();
+      if (!x) return false;
+      if (x === "-") return true;
+      return /^[0-9]{1,10}$/.test(x);
+    }
+
+    // eventos: limpar erros enquanto digita
+    ["first_name","last_name","store_name","phone","email","cep","numero","rua","bairro","cidade","uf","complemento","password","password2"]
+      .forEach(id=>{
+        const el = qs(id);
+        if (!el) return;
+        el.addEventListener("input", ()=> clearFieldError(id));
+        el.addEventListener("change", ()=> clearFieldError(id));
+      });
+
+    // máscaras e filtros
+    qs("phone").addEventListener("input", e=>{
+      e.target.value = maskPhone(e.target.value);
+    });
+    qs("cep").addEventListener("input", e=>{
+      e.target.value = maskCEP(e.target.value);
+    });
+
+    qs("first_name").addEventListener("input", e=>{
+      e.target.value = sanitizePersonName(e.target.value);
+    });
+    qs("last_name").addEventListener("input", e=>{
+      e.target.value = sanitizePersonName(e.target.value);
+    });
+
+    qs("numero").addEventListener("input", e=>{
+      // se usuário tentar digitar "--" ou letras, limpa
+      const next = sanitizeNumero(e.target.value);
+      e.target.value = next;
+      // botão sem número ativo/inativo
+      btnSemNumero.classList.toggle("on", next === "-");
+    });
+
+    btnSemNumero.addEventListener("click", ()=>{
+      const cur = qs("numero").value.trim();
+      if (cur === "-"){
+        qs("numero").value = "";
+        btnSemNumero.classList.remove("on");
+      } else {
+        qs("numero").value = "-";
+        btnSemNumero.classList.add("on");
+      }
+      clearFieldError("numero");
+      qs("numero").focus();
+    });
 
     // olho: alterna ícone
     document.querySelectorAll("button[data-toggle]").forEach(btn=>{
@@ -536,7 +707,7 @@
 
       const uf = (data.uf || "").toUpperCase();
       if (!UF_ALLOWED.has(uf)) {
-        showMsg("CEP fora da área atendida (somente PI/PE – Vale do Itaim).", true);
+        setFieldError("cep", "CEP fora da área atendida (somente PI/PE – Vale do Itaim).");
         qs("rua").value = ""; qs("bairro").value = ""; qs("cidade").value = "";
         qs("uf").value = "";
         return;
@@ -550,7 +721,7 @@
 
     qs("cep").addEventListener("blur", async ()=>{
       try { await fillAddressByCEP(); }
-      catch(e){ showMsg("Não consegui buscar o CEP.", true); }
+      catch(_e){ setFieldError("cep", "Não consegui buscar o CEP agora."); }
     });
 
     function setLoading(on){
@@ -560,44 +731,141 @@
         : '<i class="fa-solid fa-store"></i> Criar conta';
     }
 
-    // ✅ BUG FIX: se vier sessão, vai direto pro perfil vendedor
+    function buildAddressText({rua, numero, bairro, cidade, uf, cep, complemento}){
+      const numTxt = (numero === "-" ? "s/n" : numero);
+      return [
+        rua && (rua + (numTxt ? ", " + numTxt : "")),
+        bairro,
+        cidade && (cidade + (uf ? " - " + uf : "")),
+        cep && ("CEP " + cep),
+        complemento
+      ].filter(Boolean).join(" • ");
+    }
+
+    function normalizeSupabaseErrorMessage(e){
+      const m = String(e?.message || "");
+      const ml = m.toLowerCase();
+
+      if (ml.includes("invalid login credentials")) return "E-mail ou senha inválidos.";
+      if (ml.includes("email") && ml.includes("invalid")) return "E-mail inválido.";
+      if (ml.includes("password") && (ml.includes("short") || ml.includes("6"))) return "Senha muito curta (mínimo 6).";
+      if (ml.includes("already registered") || ml.includes("already") || ml.includes("exists")) return "Esse e-mail já está cadastrado.";
+      return m || "Erro ao criar conta.";
+    }
+
+    // ✅ valida tudo e mostra erros simultâneos (um em cada label/campo)
+    function validateAll(){
+      clearMsg();
+      clearAllFieldErrors();
+
+      let ok = true;
+
+      const first_name = qs("first_name").value.trim();
+      const last_name  = qs("last_name").value.trim();
+      const store_name = qs("store_name").value.trim();
+
+      if (!first_name){
+        setFieldError("first_name", "Digite seu nome.");
+        ok = false;
+      }
+      if (!last_name){
+        setFieldError("last_name", "Digite seu sobrenome.");
+        ok = false;
+      }
+      if (store_name && store_name.length < 2){
+        setFieldError("store_name", "Nome da banca muito curto.");
+        ok = false;
+      }
+      if (store_name && store_name.length > 60){
+        setFieldError("store_name", "Máximo 60 caracteres.");
+        ok = false;
+      }
+
+      const phone = qs("phone").value.trim();
+      if (!isValidBRPhone(phone)){
+        setFieldError("phone", "Celular inválido. Use DDD + número (10 ou 11 dígitos).");
+        ok = false;
+      }
+
+      const email = qs("email").value.trim().toLowerCase();
+      if (!isValidEmail(email)){
+        setFieldError("email", "Digite um e-mail válido (ex: maria@gmail.com).");
+        ok = false;
+      }
+
+      const cep = qs("cep").value.trim();
+      if (onlyDigits(cep).length !== 8){
+        setFieldError("cep", "CEP inválido. Use 8 dígitos (00000-000).");
+        ok = false;
+      }
+
+      const numero = qs("numero").value.trim();
+      if (!isValidNumero(numero)){
+        setFieldError("numero", "Número inválido. Use apenas números ou selecione “Sem número” (vira “-”).");
+        ok = false;
+      }
+
+      const rua = qs("rua").value.trim();
+      const bairro = qs("bairro").value.trim();
+      const cidade = qs("cidade").value.trim();
+      const uf = qs("uf").value.trim().toUpperCase();
+
+      if (!rua){ setFieldError("rua", "Preencha a rua."); ok = false; }
+      if (!bairro){ setFieldError("bairro", "Preencha o bairro."); ok = false; }
+      if (!cidade){ setFieldError("cidade", "Preencha a cidade."); ok = false; }
+
+      if (!UF_ALLOWED.has(uf)){
+        setFieldError("uf", "Selecione PI ou PE.");
+        ok = false;
+      }
+
+      const password = qs("password").value;
+      const password2 = qs("password2").value;
+
+      if (!password || password.length < 6){
+        setFieldError("password", "Senha inválida. Use no mínimo 6 caracteres.");
+        ok = false;
+      }
+      if (!password2){
+        setFieldError("password2", "Confirme sua senha.");
+        ok = false;
+      }
+      if (password && password2 && password !== password2){
+        setFieldError("password2", "As senhas não conferem.");
+        ok = false;
+      }
+
+      return ok;
+    }
+
     qs("form").addEventListener("submit", async (ev)=>{
       ev.preventDefault();
-      clearMsg();
+
+      const ok = validateAll();
+      if (!ok) return;
+
       setLoading(true);
 
       const first_name = qs("first_name").value.trim().slice(0,30);
       const last_name  = qs("last_name").value.trim().slice(0,30);
       const full_name  = (first_name + " " + last_name).trim();
 
+      const store_name = qs("store_name").value.trim().slice(0,60);
+
       const phone = qs("phone").value.trim();
       const email = qs("email").value.trim().toLowerCase();
 
-      if (!isValidEmail(email)) { setLoading(false); return showMsg("Digite um e-mail válido (ex: marina@gmail.com).", true); }
-      if (!isValidBRPhone(phone)) { setLoading(false); return showMsg("Celular inválido. Use DDD + número (10 ou 11 dígitos).", true); }
-
       const cep = qs("cep").value.trim();
       const rua = qs("rua").value.trim();
-      const numero = qs("numero").value.trim();
+      const numero = qs("numero").value.trim(); // pode ser "-"
       const bairro = qs("bairro").value.trim();
       const cidade = qs("cidade").value.trim();
       const uf = qs("uf").value.trim().toUpperCase();
       const complemento = qs("complemento").value.trim();
 
-      if (!cep || !rua || !numero || !bairro || !cidade) { setLoading(false); return showMsg("Preencha CEP, rua, número, bairro e cidade. (Somente complemento é opcional)", true); }
-      if (!UF_ALLOWED.has(uf)) { setLoading(false); return showMsg("UF inválida. Somente PI ou PE.", true); }
-
       const password = qs("password").value;
-      const password2 = qs("password2").value;
-      if (password !== password2) { setLoading(false); return showMsg("As senhas não conferem.", true); }
 
-      const address_text = [
-        rua && (rua + (numero ? ", " + numero : "")),
-        bairro,
-        cidade && (cidade + (uf ? " - " + uf : "")),
-        cep && ("CEP " + cep),
-        complemento
-      ].filter(Boolean).join(" • ");
+      const address_text = buildAddressText({rua, numero, bairro, cidade, uf, cep, complemento});
 
       try{
         const { data, error } = await sb.auth.signUp({
@@ -612,12 +880,14 @@
               phone,
               city: cidade || null,
               location_text: address_text,
-              address_text
+              address_text,
+              store_name: store_name || null
             }
           }
         });
         if (error) throw error;
 
+        // se entrou direto (sem confirmação de email)
         if (data?.session?.user) {
           location.replace("vend-onboarding.html");
           return;
@@ -626,7 +896,21 @@
         showMsg("Conta criada! Agora confirme seu e-mail para entrar. Depois volte e faça login.", false);
 
       }catch(e){
-        showMsg(e?.message || "Erro ao criar conta.", true);
+        const nice = normalizeSupabaseErrorMessage(e);
+
+        // tenta mapear erros comuns pra campos
+        const ml = String(e?.message || "").toLowerCase();
+        if (ml.includes("email") && (ml.includes("invalid") || ml.includes("email address"))) {
+          setFieldError("email", "E-mail inválido.");
+        } else if (ml.includes("already") || ml.includes("exists") || ml.includes("registered")) {
+          setFieldError("email", "Esse e-mail já está cadastrado.");
+        } else if (ml.includes("password") && (ml.includes("short") || ml.includes("6"))) {
+          setFieldError("password", "Senha muito curta (mínimo 6).");
+        } else {
+          // erro geral (rls, rede, etc)
+          showMsg(nice, true);
+        }
+
       }finally{
         setLoading(false);
       }
@@ -636,4 +920,3 @@
   </script>
 </body>
 </html>
-
