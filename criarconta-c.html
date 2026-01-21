@@ -20,9 +20,7 @@
       --shadow-soft: 0 10px 26px rgba(0,0,0,.12);
 
       --radius-xl: 30px;
-      --radius-lg: 20px;
-
-      --ring: 0 0 0 4px rgba(58,168,107,.14);
+      --ring: 0 0 0 4px rgba(0,240,175,.14);
 
       --ok-bg:#e9ffe9;
       --ok-br:#b7f0b7;
@@ -33,6 +31,8 @@
       --white: rgba(255,255,255,.92);
 
       --page-pad: clamp(14px, 2.6vh, 28px);
+
+      --err:#c0392b;
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -41,12 +41,11 @@
     button,input,select{font-family:inherit;}
     html,body{height:100%;}
 
-    /* ✅ FIX: não centraliza verticalmente no desktop (evita cortar conteúdo) */
     body{
       min-height:100svh;
       min-height:100dvh;
       overflow-x:hidden;
-      overflow-y:auto; /* ✅ rola se precisar */
+      overflow-y:auto;
 
       background:
         radial-gradient(1100px 520px at 15% 10%, rgba(255,255,255,.16), rgba(255,255,255,0) 56%),
@@ -60,7 +59,7 @@
         calc(var(--page-pad) + env(safe-area-inset-left));
 
       display:flex;
-      align-items:flex-start;   /* ✅ topo */
+      align-items:flex-start;
       justify-content:center;
       color: var(--txt);
     }
@@ -70,8 +69,6 @@
       display:grid;
       grid-template-columns: 1fr;
       gap:16px;
-
-      /* ✅ espaço pra não “colar” no topo */
       margin: 16px 0 24px;
     }
 
@@ -103,16 +100,11 @@
       margin-bottom:10px;
     }
 
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-
+    .logo{display:flex;align-items:center;gap:10px;}
     .logo img{
-      height:34px;
-      width:auto;
-      filter: drop-shadow(0 12px 20px rgba(0,0,0,.18));
+      height:34px;width:auto;
+      filter: drop-shadow(0 14px 22px rgba(0,0,0,.26)) brightness(1.22) contrast(1.18) saturate(1.06);
+      opacity:.98;
     }
 
     .head h1{
@@ -121,7 +113,6 @@
       letter-spacing:-.2px;
       line-height:1.08;
     }
-
     .head p{
       margin-top:6px;
       color: rgba(255,255,255,.86);
@@ -200,25 +191,44 @@
       margin-bottom:8px;
     }
     .section .stitle i{color:#7bffcf;}
-    .section .sdesc{
-      font-size:13.2px;font-weight:850;opacity:.90;line-height:1.55;
-    }
+    .section .sdesc{font-size:13.2px;font-weight:850;opacity:.90;line-height:1.55;}
 
+    /* ✅ erro dentro do label */
     label{
-      display:flex;align-items:center;gap:8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
       font-size: 13.3px;
       font-weight: 950;
       color: rgba(255,255,255,.90);
       margin-top: 2px;
     }
+    .lleft{display:inline-flex;align-items:center;gap:8px;min-width:0;}
     label i{color:#7bffcf;}
+
+    .lerr{
+      display:none;
+      font-size:12.6px;
+      font-weight:1000;
+      color:#ffe1e1;
+      background: rgba(192,57,43,.22);
+      border:1px solid rgba(240,183,183,.55);
+      padding:4px 8px;
+      border-radius:999px;
+      white-space:nowrap;
+      max-width: 52%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .lerr.show{display:inline-flex;}
 
     .input, select{
       width:100%;
       margin-top:6px;
       padding:12px 14px;
       border-radius:16px;
-      border: 1px solid rgba(255,255,255,.22);
+      border: 2px solid transparent;
       background: var(--white);
       color: var(--txt);
       font-weight: 850;
@@ -227,9 +237,11 @@
       box-shadow: var(--shadow-soft);
       transition:.18s;
     }
+    .input:focus, select:focus{ box-shadow: var(--shadow-soft), var(--ring); }
 
-    .input:focus, select:focus{
-      box-shadow: var(--shadow-soft), var(--ring);
+    .invalid{
+      border-color: var(--err) !important;
+      box-shadow: var(--shadow-soft), 0 0 0 4px rgba(192,57,43,.16) !important;
     }
 
     .muted{
@@ -238,6 +250,23 @@
       font-weight: 850;
       opacity:.86;
       color: rgba(255,255,255,.86);
+    }
+
+    /* ✅ "Sem número" */
+    .checkrow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:8px;
+      color: rgba(255,255,255,.92);
+      font-weight:900;
+      font-size:13px;
+      user-select:none;
+    }
+    .checkrow input{
+      width:18px;height:18px;
+      accent-color:#00f0af;
+      cursor:pointer;
     }
 
     .pwrow{position:relative;}
@@ -257,7 +286,6 @@
       transition:.16s;
     }
     .pwbtn:hover{filter:brightness(1.02); transform:translateY(calc(-50% + 2px)) translateY(-1px);}
-    .pwbtn:focus{outline:none; box-shadow: 0 10px 18px rgba(0,0,0,.08), var(--ring);}
 
     .btn-row{
       grid-column: 1 / -1;
@@ -299,11 +327,14 @@
     }
     .btn-soft:hover{background: rgba(255,255,255,.16); transform: translateY(-1px);}
 
+    button:disabled{opacity:.7; cursor:not-allowed; transform:none!important;}
+
     @media (max-width: 760px){
       .grid{grid-template-columns: 1fr;}
       .span2{grid-column:auto;}
       .body{padding:16px;}
       .head{padding:16px;}
+      .lerr{max-width: 62%;}
     }
   </style>
 </head>
@@ -336,24 +367,36 @@
           </div>
 
           <div>
-            <label for="first_name"><i class="fa-solid fa-id-card"></i> Nome</label>
+            <label for="first_name">
+              <span class="lleft"><i class="fa-solid fa-id-card"></i> Nome</span>
+              <span class="lerr" id="err_first_name"></span>
+            </label>
             <input class="input" id="first_name" required maxlength="30" autocomplete="given-name"/>
-            <div class="muted">Máx 30 caracteres.</div>
+            <div class="muted">Sem números. Aceita hífen (ex: Ana-Maria).</div>
           </div>
 
           <div>
-            <label for="last_name"><i class="fa-solid fa-id-card-clip"></i> Sobrenome</label>
+            <label for="last_name">
+              <span class="lleft"><i class="fa-solid fa-id-card-clip"></i> Sobrenome</span>
+              <span class="lerr" id="err_last_name"></span>
+            </label>
             <input class="input" id="last_name" required maxlength="30" autocomplete="family-name"/>
-            <div class="muted">Máx 30 caracteres.</div>
+            <div class="muted">Sem números. Aceita hífen (ex: Silva-Santos).</div>
           </div>
 
           <div>
-            <label for="phone"><i class="fa-solid fa-phone"></i> Celular</label>
+            <label for="phone">
+              <span class="lleft"><i class="fa-solid fa-phone"></i> Celular</span>
+              <span class="lerr" id="err_phone"></span>
+            </label>
             <input class="input" id="phone" required inputmode="tel" placeholder="(89) 91234-5678"/>
           </div>
 
           <div>
-            <label for="email"><i class="fa-solid fa-envelope"></i> Email</label>
+            <label for="email">
+              <span class="lleft"><i class="fa-solid fa-envelope"></i> Email</span>
+              <span class="lerr" id="err_email"></span>
+            </label>
             <input class="input" id="email" required type="email" placeholder="voce@email.com" maxlength="254"/>
           </div>
 
@@ -363,33 +406,61 @@
           </div>
 
           <div>
-            <label for="cep"><i class="fa-solid fa-map-pin"></i> CEP</label>
+            <label for="cep">
+              <span class="lleft"><i class="fa-solid fa-map-pin"></i> CEP</span>
+              <span class="lerr" id="err_cep"></span>
+            </label>
             <input class="input" id="cep" required inputmode="numeric" placeholder="00000-000" maxlength="9"/>
-            <div class="muted">Somente PI/PE.</div>
+            <div class="muted">Somente números. Somente PI/PE.</div>
           </div>
 
           <div>
-            <label for="numero"><i class="fa-solid fa-hashtag"></i> Número</label>
-            <input class="input" id="numero" required placeholder="Ex: 123"/>
+            <label for="numero">
+              <span class="lleft"><i class="fa-solid fa-hashtag"></i> Número</span>
+              <span class="lerr" id="err_numero"></span>
+            </label>
+            <input class="input" id="numero" required inputmode="numeric" placeholder="Ex: 123"/>
+            <div class="checkrow">
+              <input id="sem_numero" type="checkbox" />
+              <label for="sem_numero" style="margin:0; justify-content:flex-start; gap:10px;">
+                <span class="lleft"><i class="fa-solid fa-ban"></i> Sem número</span>
+              </label>
+            </div>
+            <div class="muted">Se marcar “Sem número”, não precisa preencher.</div>
           </div>
 
           <div class="span2">
-            <label for="rua"><i class="fa-solid fa-road"></i> Rua</label>
+            <label for="rua">
+              <span class="lleft"><i class="fa-solid fa-road"></i> Rua</span>
+              <span class="lerr" id="err_rua"></span>
+            </label>
             <input class="input" id="rua" required placeholder="Preenchido pelo CEP"/>
+            <div class="muted">Sem números. Hífen permitido (sem repetir).</div>
           </div>
 
           <div>
-            <label for="bairro"><i class="fa-solid fa-signs-post"></i> Bairro</label>
+            <label for="bairro">
+              <span class="lleft"><i class="fa-solid fa-signs-post"></i> Bairro</span>
+              <span class="lerr" id="err_bairro"></span>
+            </label>
             <input class="input" id="bairro" required placeholder="Preenchido pelo CEP"/>
+            <div class="muted">Sem números. Hífen permitido (sem repetir).</div>
           </div>
 
           <div>
-            <label for="cidade"><i class="fa-solid fa-city"></i> Cidade</label>
+            <label for="cidade">
+              <span class="lleft"><i class="fa-solid fa-city"></i> Cidade</span>
+              <span class="lerr" id="err_cidade"></span>
+            </label>
             <input class="input" id="cidade" required placeholder="Preenchido pelo CEP"/>
+            <div class="muted">Sem números. Hífen permitido (sem repetir).</div>
           </div>
 
           <div>
-            <label for="uf"><i class="fa-solid fa-flag"></i> UF (PI/PE)</label>
+            <label for="uf">
+              <span class="lleft"><i class="fa-solid fa-flag"></i> UF (PI/PE)</span>
+              <span class="lerr" id="err_uf"></span>
+            </label>
             <select id="uf" required>
               <option value="">Selecione...</option>
               <option value="PI">PI</option>
@@ -398,7 +469,10 @@
           </div>
 
           <div>
-            <label for="complemento"><i class="fa-solid fa-circle-plus"></i> Complemento (opcional)</label>
+            <label for="complemento">
+              <span class="lleft"><i class="fa-solid fa-circle-plus"></i> Complemento (opcional)</span>
+              <span class="lerr" id="err_complemento"></span>
+            </label>
             <input class="input" id="complemento" placeholder="Apto, bloco, referência..."/>
           </div>
 
@@ -408,7 +482,10 @@
           </div>
 
           <div class="span2">
-            <label for="password"><i class="fa-solid fa-key"></i> Senha</label>
+            <label for="password">
+              <span class="lleft"><i class="fa-solid fa-key"></i> Senha</span>
+              <span class="lerr" id="err_password"></span>
+            </label>
             <div class="pwrow">
               <input class="input" id="password" type="password" minlength="6" required autocomplete="new-password"/>
               <button class="pwbtn" type="button" data-toggle="password" aria-label="Mostrar senha">
@@ -418,7 +495,10 @@
           </div>
 
           <div class="span2">
-            <label for="password2"><i class="fa-solid fa-key"></i> Confirmar senha</label>
+            <label for="password2">
+              <span class="lleft"><i class="fa-solid fa-key"></i> Confirmar senha</span>
+              <span class="lerr" id="err_password2"></span>
+            </label>
             <div class="pwrow">
               <input class="input" id="password2" type="password" minlength="6" required autocomplete="new-password"/>
               <button class="pwbtn" type="button" data-toggle="password2" aria-label="Mostrar confirmação">
@@ -452,17 +532,45 @@
     const msgEl = qs("msg");
     const submitBtn = qs("submitBtn");
 
-    function showMsg(text, isErr=false){
+    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
+
+    // ===== mensagens topo (mantém pra viaCEP e erros “globais”) =====
+    function showTopMsg(text, isErr=false){
       msgEl.classList.add("show");
       msgEl.classList.toggle("err", !!isErr);
       msgEl.textContent = text;
     }
-    function clearMsg(){
+    function clearTopMsg(){
       msgEl.classList.remove("show","err");
       msgEl.textContent = "";
     }
-    function onlyDigits(s){ return (s||"").replace(/\D/g,""); }
 
+    // ===== erro por campo no label =====
+    function setFieldError(id, message){
+      const input = qs(id);
+      const err = qs("err_" + id);
+      if (!input || !err) return;
+
+      if (message){
+        err.textContent = message;
+        err.classList.add("show");
+        input.classList.add("invalid");
+      }else{
+        err.textContent = "";
+        err.classList.remove("show");
+        input.classList.remove("invalid");
+      }
+    }
+
+    function clearAllFieldErrors(){
+      [
+        "first_name","last_name","phone","email",
+        "cep","numero","rua","bairro","cidade","uf",
+        "password","password2"
+      ].forEach(id => setFieldError(id, ""));
+    }
+
+    // ===== validações =====
     function isValidEmail(email){
       const e = (email || "").trim();
       if (!e) return false;
@@ -473,6 +581,37 @@
       if (!local || !domain) return false;
       if (!domain.includes(".")) return false;
       return true;
+    }
+
+    // ✅ letras + acentos + espaço + hífen (hífen único; sem --/---)
+    function sanitizeLettersHyphenSpace(value){
+      let v = String(value || "");
+
+      // remove números e símbolos que não sejam hífen/espaço
+      v = v.replace(/[0-9]/g, "");
+      v = v.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s-]/g, "");
+
+      // sem hífen repetido
+      v = v.replace(/-+/g, "-");
+
+      // sem espaços repetidos
+      v = v.replace(/\s+/g, " ");
+
+      // remove hífen no início/fim
+      v = v.replace(/^-+/, "").replace(/-+$/, "");
+
+      return v;
+    }
+
+    function bindLettersOnly(id){
+      const el = qs(id);
+      el.addEventListener("input", ()=>{
+        el.value = sanitizeLettersHyphenSpace(el.value);
+        setFieldError(id, "");
+      });
+      el.addEventListener("blur", ()=>{
+        el.value = sanitizeLettersHyphenSpace(el.value).trim();
+      });
     }
 
     function maskPhone(v){
@@ -487,9 +626,41 @@
       if (d.length <= 5) return d;
       return `${d.slice(0,5)}-${d.slice(5,8)}`;
     }
-    qs("phone").addEventListener("input", e=> e.target.value = maskPhone(e.target.value));
-    qs("cep").addEventListener("input", e=> e.target.value = maskCEP(e.target.value));
 
+    // binds “sem números”
+    bindLettersOnly("first_name");
+    bindLettersOnly("last_name");
+    bindLettersOnly("rua");
+    bindLettersOnly("bairro");
+    bindLettersOnly("cidade");
+
+    // phone (limpa letras e mascara)
+    qs("phone").addEventListener("input", (e)=>{
+      e.target.value = maskPhone(e.target.value);
+      setFieldError("phone", "");
+    });
+
+    // cep (somente números e mascara)
+    qs("cep").addEventListener("input", (e)=>{
+      const d = onlyDigits(e.target.value).slice(0,8);
+      e.target.value = maskCEP(d);
+      setFieldError("cep", "");
+    });
+
+    // numero (somente números)
+    qs("numero").addEventListener("input", (e)=>{
+      // não aceita letras, limpa tudo que não for dígito
+      const d = onlyDigits(e.target.value).slice(0,6);
+      e.target.value = d;
+      setFieldError("numero", "");
+    });
+
+    // email/senhas limpam erro ao digitar
+    qs("email").addEventListener("input", ()=> setFieldError("email",""));
+    qs("password").addEventListener("input", ()=> setFieldError("password",""));
+    qs("password2").addEventListener("input", ()=> setFieldError("password2",""));
+
+    // botões olho
     document.querySelectorAll("button[data-toggle]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const id = btn.getAttribute("data-toggle");
@@ -505,6 +676,19 @@
       });
     });
 
+    // ✅ sem número
+    const semNumero = qs("sem_numero");
+    semNumero.addEventListener("change", ()=>{
+      if (semNumero.checked){
+        qs("numero").value = "";
+        qs("numero").disabled = true;
+        qs("numero").classList.remove("invalid");
+        setFieldError("numero", "");
+      } else {
+        qs("numero").disabled = false;
+      }
+    });
+
     async function fetchCEP(cep){
       const c = onlyDigits(cep);
       if (c.length !== 8) return null;
@@ -513,26 +697,36 @@
       if (data.erro) return null;
       return data;
     }
+
     async function fillAddressByCEP(){
       const data = await fetchCEP(qs("cep").value);
       if (!data) return;
 
       const uf = (data.uf || "").toUpperCase();
       if (!UF_ALLOWED.has(uf)) {
-        showMsg("CEP fora da área atendida (somente PI/PE – Vale do Itaim).", true);
+        setFieldError("cep", "Fora da área (PI/PE)");
+        showTopMsg("CEP fora da área atendida (somente PI/PE – Vale do Itaim).", true);
         qs("rua").value = ""; qs("bairro").value = ""; qs("cidade").value = "";
         qs("uf").value = "";
         return;
       }
 
-      qs("rua").value = data.logradouro || "";
-      qs("bairro").value = data.bairro || "";
-      qs("cidade").value = data.localidade || "";
+      qs("rua").value = sanitizeLettersHyphenSpace(data.logradouro || "");
+      qs("bairro").value = sanitizeLettersHyphenSpace(data.bairro || "");
+      qs("cidade").value = sanitizeLettersHyphenSpace(data.localidade || "");
       qs("uf").value = uf;
+
+      // limpa erros desses campos
+      setFieldError("cep", "");
+      setFieldError("rua", "");
+      setFieldError("bairro", "");
+      setFieldError("cidade", "");
+      setFieldError("uf", "");
     }
+
     qs("cep").addEventListener("blur", async ()=>{
       try { await fillAddressByCEP(); }
-      catch(e){ showMsg("Não consegui buscar o CEP.", true); }
+      catch(e){ showTopMsg("Não consegui buscar o CEP.", true); }
     });
 
     function setLoading(on){
@@ -542,52 +736,126 @@
         : '<i class="fa-solid fa-user-plus"></i> Criar conta';
     }
 
+    function focusFirstInvalid(){
+      const first = document.querySelector(".invalid");
+      if (first) first.focus();
+    }
+
+    // ✅ valida tudo e mostra tudo
+    function validateAll(){
+      clearTopMsg();
+      clearAllFieldErrors();
+
+      let ok = true;
+
+      // dados pessoais
+      const first_name = qs("first_name").value.trim();
+      const last_name  = qs("last_name").value.trim();
+      const phone = qs("phone").value.trim();
+      const email = qs("email").value.trim().toLowerCase();
+
+      if (!first_name){ setFieldError("first_name", "Obrigatório"); ok = false; }
+      if (!last_name){ setFieldError("last_name", "Obrigatório"); ok = false; }
+
+      const phoneDigits = onlyDigits(phone);
+      if (!phoneDigits || phoneDigits.length < 10){
+        setFieldError("phone", "Celular inválido");
+        ok = false;
+      }
+
+      if (!email){
+        setFieldError("email", "Obrigatório");
+        ok = false;
+      } else if (!isValidEmail(email)){
+        setFieldError("email", "E-mail inválido");
+        ok = false;
+      }
+
+      // endereço
+      const cepMasked = qs("cep").value.trim();
+      const cepDigits = onlyDigits(cepMasked);
+      const rua = qs("rua").value.trim();
+      const bairro = qs("bairro").value.trim();
+      const cidade = qs("cidade").value.trim();
+      const uf = qs("uf").value.trim().toUpperCase();
+
+      // número: obrigatório a menos que “sem número”
+      const semNum = semNumero.checked;
+      const numeroDigits = onlyDigits(qs("numero").value.trim());
+
+      if (cepDigits.length !== 8){
+        setFieldError("cep", "CEP inválido");
+        ok = false;
+      }
+
+      if (!semNum && !numeroDigits){
+        setFieldError("numero", "Obrigatório");
+        ok = false;
+      }
+
+      if (!rua){ setFieldError("rua", "Obrigatório"); ok = false; }
+      if (!bairro){ setFieldError("bairro", "Obrigatório"); ok = false; }
+      if (!cidade){ setFieldError("cidade", "Obrigatório"); ok = false; }
+
+      if (!UF_ALLOWED.has(uf)){
+        setFieldError("uf", "PI/PE");
+        ok = false;
+      }
+
+      // senha
+      const password = qs("password").value;
+      const password2 = qs("password2").value;
+
+      if (!password){
+        setFieldError("password", "Obrigatória");
+        ok = false;
+      } else if (password.length < 6){
+        setFieldError("password", "Mín 6 caracteres");
+        ok = false;
+      }
+
+      if (!password2){
+        setFieldError("password2", "Obrigatória");
+        ok = false;
+      } else if (password && password2 && password !== password2){
+        setFieldError("password2", "Não confere");
+        ok = false;
+      }
+
+      if (!ok) focusFirstInvalid();
+      return ok;
+    }
+
     qs("form").addEventListener("submit", async (ev)=>{
       ev.preventDefault();
-      clearMsg();
+
+      // ✅ valida tudo e mostra tudo
+      if (!validateAll()) return;
+
       setLoading(true);
 
       const first_name = qs("first_name").value.trim();
       const last_name  = qs("last_name").value.trim();
       const full_name  = (first_name + " " + last_name).trim();
-
       const phone = qs("phone").value.trim();
       const email = qs("email").value.trim().toLowerCase();
 
-      if (!isValidEmail(email)) {
-        setLoading(false);
-        return showMsg("Digite um e-mail válido (ex: nome@email.com).", true);
-      }
-
-      const cep = qs("cep").value.trim();
+      const cepMasked = qs("cep").value.trim();
       const rua = qs("rua").value.trim();
-      const numero = qs("numero").value.trim();
       const bairro = qs("bairro").value.trim();
       const cidade = qs("cidade").value.trim();
       const uf = qs("uf").value.trim().toUpperCase();
       const complemento = qs("complemento").value.trim();
 
-      if (!cep || !rua || !numero || !bairro || !cidade) {
-        setLoading(false);
-        return showMsg("Preencha CEP, rua, número, bairro e cidade. (Somente complemento é opcional)", true);
-      }
-      if (!UF_ALLOWED.has(uf)) {
-        setLoading(false);
-        return showMsg("UF inválida. Somente PI ou PE.", true);
-      }
+      const numeroFinal = semNumero.checked ? "s/n" : onlyDigits(qs("numero").value.trim());
 
       const password = qs("password").value;
-      const password2 = qs("password2").value;
-      if (password !== password2) {
-        setLoading(false);
-        return showMsg("As senhas não conferem.", true);
-      }
 
       const address_text = [
-        rua && (rua + (numero ? ", " + numero : "")),
+        rua && (rua + (numeroFinal ? ", " + numeroFinal : "")),
         bairro,
         cidade && (cidade + (uf ? " - " + uf : "")),
-        cep && ("CEP " + cep),
+        cepMasked && ("CEP " + cepMasked),
         complemento
       ].filter(Boolean).join(" • ");
 
@@ -615,10 +883,28 @@
           return;
         }
 
-        showMsg("Conta criada! Agora confirme seu e-mail para entrar. Depois volte e faça login.", false);
+        showTopMsg("Conta criada! Agora confirme seu e-mail para entrar. Depois volte e faça login.", false);
 
       }catch(e){
-        showMsg(e.message || "Erro ao criar conta.", true);
+        const msg = String(e?.message || "Erro ao criar conta.");
+
+        // tenta mapear erros comuns do Supabase para o campo
+        const low = msg.toLowerCase();
+
+        // ex: email inválido / já cadastrado
+        if (low.includes("email") && low.includes("invalid")){
+          setFieldError("email", "E-mail inválido");
+          focusFirstInvalid();
+        } else if (low.includes("already") || low.includes("registered")){
+          setFieldError("email", "Já cadastrado");
+          focusFirstInvalid();
+        } else if (low.includes("password")){
+          setFieldError("password", "Senha inválida");
+          focusFirstInvalid();
+        } else {
+          showTopMsg(msg, true);
+        }
+
       }finally{
         setLoading(false);
       }
@@ -628,4 +914,3 @@
   </script>
 </body>
 </html>
-
