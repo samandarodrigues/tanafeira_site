@@ -14,6 +14,7 @@
       --shadow:0 18px 55px rgba(0,0,0,.2);
       --radius:28px;
       --err:#c0392b;
+      --ok:#2ecc71;
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,system-ui,Arial}
@@ -77,8 +78,30 @@
       margin-top:6px;
       padding:12px 14px;
       border-radius:14px;
-      border:none;
+      border:2px solid transparent; /* pra poder “acender” a borda */
+      outline:none;
       font-size:15px;
+      background:#fff;
+    }
+
+    input:focus{
+      border-color: rgba(0, 240, 175, .55);
+      box-shadow: 0 0 0 4px rgba(0,240,175,.12);
+    }
+
+    /* ✅ erro no campo */
+    .field-error{
+      display:none;
+      margin-top:6px;
+      font-size:12.5px;
+      font-weight:800;
+      color:#ffe1e1;
+    }
+    .field-error.show{display:block;}
+
+    .invalid{
+      border-color: var(--err) !important;
+      box-shadow: 0 0 0 4px rgba(192,57,43,.18) !important;
     }
 
     .pwwrap{position:relative}
@@ -157,7 +180,6 @@
 <div class="card">
 
   <div class="head">
-    <!-- LOGO EM UM SÓ LUGAR -->
     <img src="LogoTaNaFeira.png" alt="TaNaFeira">
     <h1>Entrar</h1>
     <p>Acesse sua conta para continuar</p>
@@ -167,17 +189,19 @@
 
     <div id="alert" class="alert"></div>
 
-    <form id="loginForm">
+    <form id="loginForm" novalidate>
       <label for="email">E-mail</label>
-      <input id="email" type="email" required>
+      <input id="email" type="email" autocomplete="email" required />
+      <div id="emailErr" class="field-error">E-mail inválido.</div>
 
       <label for="password">Senha</label>
       <div class="pwwrap">
-        <input id="password" type="password" required>
+        <input id="password" type="password" autocomplete="current-password" required />
         <button type="button" class="pwbtn" id="togglePw" aria-label="Mostrar senha">
           <i class="fa-solid fa-eye"></i>
         </button>
       </div>
+      <div id="pwErr" class="field-error">Senha inválida.</div>
 
       <button class="btn primary" type="submit" id="btnLogin">
         Entrar
@@ -205,34 +229,114 @@
 
   const alertBox = document.getElementById("alert");
   const btnLogin = document.getElementById("btnLogin");
+
+  const emailEl = document.getElementById("email");
+  const pwEl = document.getElementById("password");
+
+  const emailErr = document.getElementById("emailErr");
+  const pwErr = document.getElementById("pwErr");
+
   const pwBtn = document.getElementById("togglePw");
   const pwIcon = pwBtn.querySelector("i");
 
-  function showError(msg){
+  function isValidEmail(v){
+    const s = String(v || "").trim();
+    // simples e suficiente pro login
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
+  }
+
+  function setFieldInvalid(inputEl, errEl, msg){
+    inputEl.classList.add("invalid");
+    errEl.textContent = msg;
+    errEl.classList.add("show");
+  }
+
+  function clearFieldInvalid(inputEl, errEl){
+    inputEl.classList.remove("invalid");
+    errEl.classList.remove("show");
+    errEl.textContent = "";
+  }
+
+  function showAlert(msg){
     alertBox.textContent = msg;
     alertBox.classList.add("show");
-    pwBtn.classList.add("error"); // 🚨 linha aparece
   }
 
-  function clearError(){
+  function clearAlert(){
     alertBox.classList.remove("show");
-    pwBtn.classList.remove("error"); // 🚨 linha some
+    alertBox.textContent = "";
   }
 
-  // 👁 alterna olho / olho com linha
-  pwBtn.onclick = () => {
-    const pw = document.getElementById("password");
-    const visible = pw.type === "text";
+  function clearAllErrors(){
+    clearAlert();
+    clearFieldInvalid(emailEl, emailErr);
+    clearFieldInvalid(pwEl, pwErr);
+    pwBtn.classList.remove("error");
+  }
 
-    pw.type = visible ? "password" : "text";
+  function validateLocal(){
+    let ok = true;
+
+    // email
+    const email = emailEl.value.trim();
+    if (!email){
+      setFieldInvalid(emailEl, emailErr, "Informe seu e-mail.");
+      ok = false;
+    } else if (!isValidEmail(email)){
+      setFieldInvalid(emailEl, emailErr, "E-mail inválido. Ex: nome@dominio.com");
+      ok = false;
+    } else {
+      clearFieldInvalid(emailEl, emailErr);
+    }
+
+    // senha
+    const pw = pwEl.value;
+    if (!pw){
+      setFieldInvalid(pwEl, pwErr, "Informe sua senha.");
+      pwBtn.classList.add("error");
+      ok = false;
+    } else if (pw.length < 6){
+      setFieldInvalid(pwEl, pwErr, "Senha inválida (mínimo 6 caracteres).");
+      pwBtn.classList.add("error");
+      ok = false;
+    } else {
+      clearFieldInvalid(pwEl, pwErr);
+      pwBtn.classList.remove("error");
+    }
+
+    return ok;
+  }
+
+  // valida “ao digitar”
+  emailEl.addEventListener("input", ()=>{
+    if (!emailEl.value.trim()){
+      clearFieldInvalid(emailEl, emailErr);
+      return;
+    }
+    if (isValidEmail(emailEl.value)) clearFieldInvalid(emailEl, emailErr);
+  });
+
+  pwEl.addEventListener("input", ()=>{
+    if (!pwEl.value){
+      clearFieldInvalid(pwEl, pwErr);
+      pwBtn.classList.remove("error");
+      return;
+    }
+    if (pwEl.value.length >= 6){
+      clearFieldInvalid(pwEl, pwErr);
+      pwBtn.classList.remove("error");
+    }
+  });
+
+  // 👁 alterna olho
+  pwBtn.onclick = () => {
+    const visible = pwEl.type === "text";
+    pwEl.type = visible ? "password" : "text";
 
     pwIcon.classList.toggle("fa-eye", visible);
     pwIcon.classList.toggle("fa-eye-slash", !visible);
 
-    pwBtn.setAttribute(
-      "aria-label",
-      visible ? "Mostrar senha" : "Ocultar senha"
-    );
+    pwBtn.setAttribute("aria-label", visible ? "Mostrar senha" : "Ocultar senha");
   };
 
   async function redirectByRole(user){
@@ -248,17 +352,44 @@
 
   document.getElementById("loginForm").onsubmit = async (e)=>{
     e.preventDefault();
-    clearError();
+    clearAllErrors();
+
+    // ✅ validação local antes de chamar supabase
+    const ok = validateLocal();
+    if (!ok){
+      // foca no primeiro inválido
+      if (emailEl.classList.contains("invalid")) emailEl.focus();
+      else if (pwEl.classList.contains("invalid")) pwEl.focus();
+      return;
+    }
+
     btnLogin.disabled = true;
     btnLogin.textContent = "Entrando...";
 
-    const { data, error } = await sb.auth.signInWithPassword({
-      email: email.value.trim(),
-      password: password.value
-    });
+    const email = emailEl.value.trim();
+    const password = pwEl.value;
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
     if (error){
-      showError("E-mail ou senha inválidos");
+      // tenta “entender” o tipo de erro pra marcar o campo certo
+      const msg = String(error.message || "").toLowerCase();
+
+      // supabase geralmente devolve “Invalid login credentials”
+      if (msg.includes("invalid login") || msg.includes("invalid credentials") || msg.includes("invalid email or password")){
+        // não dá pra saber qual dos dois, então marca os dois
+        setFieldInvalid(emailEl, emailErr, "E-mail ou senha incorretos.");
+        setFieldInvalid(pwEl, pwErr, "E-mail ou senha incorretos.");
+        pwBtn.classList.add("error");
+      } else if (msg.includes("email") && msg.includes("invalid")){
+        setFieldInvalid(emailEl, emailErr, "E-mail inválido.");
+      } else if (msg.includes("password")){
+        setFieldInvalid(pwEl, pwErr, "Senha inválida.");
+        pwBtn.classList.add("error");
+      } else {
+        showAlert(error.message || "Erro ao entrar.");
+      }
+
       btnLogin.disabled = false;
       btnLogin.textContent = "Entrar";
       return;
