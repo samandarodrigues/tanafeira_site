@@ -3,67 +3,64 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TaNaFeira • Vendedor</title>
+  <title>Vendedor • Painel — TaNaFeira</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
   <style>
     :root{
       --verde:#3aa86b;
-      --verde-hover:#2f8a59;
+      --verde2:#2f8a59;
 
       --teal-1:#005a63;
       --teal-2:#007b72;
 
       --text:#0f2f2b;
-      --muted:rgba(16,49,44,.72);
+      --muted: rgba(16,49,44,.72);
 
       --bg:#f5fbf8;
-      --surface:rgba(255,255,255,.92);
-      --border:rgba(0,0,0,.08);
+      --surface: rgba(255,255,255,.92);
+      --surface2: rgba(255,255,255,.72);
 
-      --shadow:0 14px 36px rgba(0,0,0,.14);
-      --shadow-soft:0 10px 26px rgba(0,0,0,.10);
-
-      --radius-xl: 26px;
-      --radius-lg: 18px;
+      --shadow: 0 18px 55px rgba(0,0,0,.16);
+      --shadow-soft: 0 10px 26px rgba(0,0,0,.10);
 
       --ring: 0 0 0 4px rgba(58,168,107,.14);
 
-      --header-h: 78px;
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+
+      --header-h: 74px;
+      --sidebar-w: 280px;
+
+      --ok-bg:#e9ffe9;
+      --ok-br:#b7f0b7;
+      --err-bg:#ffe9e9;
+      --err-br:#f0b7b7;
+
       --page-pad: clamp(14px, 2.5vw, 24px);
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-    html{scroll-behavior:smooth;}
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    button,input{font-family:inherit;}
     body{
+      min-height:100svh;
       background:
         radial-gradient(1200px 520px at 15% 10%, rgba(58,168,107,.08), rgba(0,0,0,0) 55%),
         radial-gradient(900px 520px at 95% 90%, rgba(0,90,99,.10), rgba(0,0,0,0) 60%),
         var(--bg);
       color:var(--text);
-      line-height:1.45;
       overflow-x:hidden;
-      min-height:100svh;
     }
 
-    a{color:inherit;text-decoration:none;}
-    img{max-width:100%;display:block;}
-    button{font-family:inherit;}
-
-    .container{
-      width:min(1240px, 100%);
-      margin:0 auto;
-      padding: 0 var(--page-pad);
-    }
-
-    /* ===== HEADER FIXO (não tampa) ===== */
+    /* ===== HEADER FIXO ===== */
     header{
-      position:fixed;
-      top:0; left:0; right:0;
-      z-index:9999;
+      position:fixed; top:0; left:0; right:0;
       height: var(--header-h);
-
+      z-index:9999;
       background: rgba(255,255,255,.78);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
@@ -72,58 +69,67 @@
 
     .header-inner{
       height:100%;
+      width:min(1320px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:14px;
+      gap:12px;
     }
 
     .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width: 0;
+      display:flex; align-items:center; gap:12px;
+      min-width:0;
     }
-
     .brand img{
-      width:138px;
-      height:auto;
+      width:138px; height:auto;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.06));
     }
 
-    .greet{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
+    .headmeta{
+      display:flex; flex-direction:column; gap:2px;
       min-width:0;
     }
     .hello{
       font-weight:1100;
-      font-size:14.5px;
+      font-size:14.4px;
       color:#0f4b45;
       line-height:1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 42ch;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      max-width: 44ch;
     }
     .subtitle{
       font-weight:850;
       font-size:12.8px;
       color:rgba(16,49,44,.70);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 60ch;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      max-width: 56ch;
     }
 
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
+    .header-actions{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;
     }
+
+    .search{
+      display:flex; align-items:center; gap:10px;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:999px;
+      padding:10px 12px;
+      box-shadow: var(--shadow-soft);
+      min-width: 320px;
+    }
+    .search i{color: rgba(16,49,44,.55);}
+    .search input{
+      border:none; outline:none; background:transparent;
+      width: 100%;
+      font-weight:900;
+      color:#0f2f2b;
+      font-size:14px;
+    }
+    .search input::placeholder{color: rgba(16,49,44,.55); font-weight:850;}
 
     .btn{
       border:none;
@@ -139,81 +145,245 @@
       white-space:nowrap;
       user-select:none;
     }
-    .btn i{opacity:.95;}
-
-    .btn-outline{
+    .btn i{opacity:.95}
+    .btn-primary{
+      background: linear-gradient(180deg, var(--verde), var(--verde2));
+      color:#fff;
+      box-shadow: 0 12px 24px rgba(58,168,107,.22);
+    }
+    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
+    .btn-soft{
       background:#fff;
       color:#0f4b45;
       border:1px solid rgba(0,0,0,.10);
       box-shadow: 0 10px 18px rgba(0,0,0,.04);
     }
-    .btn-outline:hover{transform: translateY(-1px); background:#f7fbf9;}
-
-    .btn-primary{
-      background: linear-gradient(180deg, var(--verde), var(--verde-hover));
-      color:#fff;
-      box-shadow: 0 12px 24px rgba(58,168,107,.22);
-    }
-    .btn-primary:hover{transform: translateY(-1px); filter:brightness(1.02);}
-
+    .btn-soft:hover{transform: translateY(-1px); background:#f7fbf9;}
     .btn-danger{
       background: rgba(0,0,0,.08);
       color:#0f2f2b;
       border:1px solid rgba(0,0,0,.10);
     }
     .btn-danger:hover{background: rgba(0,0,0,.10); transform: translateY(-1px);}
-
     button:disabled{opacity:.6;cursor:not-allowed;transform:none!important;}
 
-    @media (max-width: 520px){
-      :root{ --header-h: 72px; }
-      .brand img{width:124px;}
-      .greet{display:none;}
-      .actions .btn span{display:none;}
-      .actions .btn{gap:0;}
+    .hamb{display:none;}
+    .avatar{
+      width:38px;height:38px;border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+      overflow:hidden;
+      display:grid; place-items:center;
+      color: rgba(16,49,44,.70);
+      flex:0 0 auto;
     }
+    .avatar img{width:100%;height:100%;object-fit:cover;}
+    .avatar .fa-user{font-size:15px;}
+
+    /* ===== LAYOUT ===== */
+    .app{
+      width:min(1320px, 100%);
+      margin:0 auto;
+      padding: 0 var(--page-pad);
+      padding-top: calc(var(--header-h) + 18px);
+      padding-bottom: 36px;
+
+      display:grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      gap:14px;
+      align-items:start;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar{
+      position:sticky;
+      top: calc(var(--header-h) + 18px);
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.88);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+
+    .shead{
+      padding:14px 14px 12px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(0,0,0,.06);
+    }
+
+    .vendorcard{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+    }
+    .vendorcard .avlg{
+      width:54px;height:54px;border-radius:18px;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+      overflow:hidden;
+      display:grid; place-items:center;
+      flex:0 0 auto;
+      color: rgba(16,49,44,.72);
+    }
+    .vendorcard .avlg img{width:100%;height:100%;object-fit:cover;}
+    .vendorcard .avlg i{font-size:18px;}
+
+    .vendorname{
+      min-width:0;
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .vendorname b{
+      font-weight:1200;
+      color:#10312c;
+      letter-spacing:-.2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .vendorname small{
+      font-weight:900;
+      color: rgba(16,49,44,.70);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .menu{
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .item{
+      display:flex; align-items:center; gap:10px;
+      padding:11px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+      transition:.18s;
+      cursor:pointer;
+      user-select:none;
+    }
+    .item:hover{transform: translateY(-1px); box-shadow: var(--shadow-soft);}
+    .item i{width:20px;text-align:center;color: rgba(16,49,44,.70);}
+    .item b{font-weight:1100;color:#10312c;font-size:13.8px;}
+    .item small{display:block;color: rgba(16,49,44,.68); font-weight:850; font-size:12.4px; margin-top:2px;}
+    .item .txt{min-width:0;}
+    .item .badge{
+      margin-left:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 30px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:1100;
+      font-size:12px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(58,168,107,.10);
+      color:#0f4b45;
+    }
+    .item .badge.muted{
+      background: rgba(0,0,0,.06);
+      color: rgba(16,49,44,.72);
+    }
+
+    .sfoot{
+      padding:10px;
+      border-top:1px solid rgba(0,0,0,.06);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .sfoot .btn{border-radius:16px; padding:10px 12px; font-size:13.4px; justify-content:center; flex:1;}
+    .sfoot .btn i{font-size:14px;}
 
     /* ===== MAIN ===== */
-    main{
-      padding-top: calc(var(--header-h) + 18px);
-      padding-bottom: 40px;
+    .main{
+      display:grid;
+      gap:14px;
     }
 
-    .page-head{
+    .panel{
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,.88);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+
+    .phead{
+      padding:16px 16px 12px;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(0,0,0,.06);
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
-      gap:14px;
+      gap:12px;
       flex-wrap:wrap;
-      margin-top: 10px;
     }
-
-    .page-title{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .page-title h1{
-      font-size:28px;
-      font-weight:1100;
+    .phead h1{
+      font-size:18px;
+      font-weight:1200;
+      color:#10312c;
       letter-spacing:-.2px;
-      color:#102d2a;
-      line-height:1.1;
+      line-height:1.15;
     }
-    .page-title p{
-      color:rgba(16,49,44,.72);
+    .phead p{
+      margin-top:6px;
+      color: rgba(16,49,44,.72);
       font-weight:850;
-      max-width: 86ch;
-      line-height:1.6;
-      font-size:14.4px;
+      font-size:13.4px;
+      line-height:1.55;
+      max-width: 80ch;
+    }
+    .phead .right{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
     }
 
-    /* ===== ALERT ===== */
+    .stats{
+      padding:14px 16px 0;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:10px;
+    }
+    .stat{
+      border-radius: 18px;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 18px rgba(0,0,0,.04);
+      padding:12px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .stat .ico{
+      width:42px;height:42px;border-radius:16px;
+      background: rgba(58,168,107,.14);
+      border:1px solid rgba(58,168,107,.18);
+      display:flex; align-items:center; justify-content:center;
+      color: #1e5c3a;
+      flex:0 0 auto;
+    }
+    .stat b{display:block;font-weight:1200;color:#10312c;}
+    .stat span{display:block;margin-top:4px;color: rgba(16,49,44,.72); font-weight:850; font-size:12.8px;}
+    .stat .num{font-size:22px; font-weight:1300; letter-spacing:-.3px; margin-top:6px; color:#0f2f2b;}
+
+    .content{
+      padding:16px;
+      display:grid;
+      gap:12px;
+    }
+
     .alert{
       display:none;
       align-items:flex-start;
       gap:10px;
-      margin-top:14px;
       padding:12px 12px;
       border-radius:16px;
       background: rgba(255,255,255,.92);
@@ -226,176 +396,434 @@
     }
     .alert.show{display:flex;}
     .alert i{margin-top:2px;color: rgba(30,92,58,.85);}
+    .alert.err{border-color:var(--err-br); background:var(--err-bg); color:#5a0000;}
+    .alert.ok{border-color:var(--ok-br); background:var(--ok-bg);}
 
-    .alert.err{border-color:#f0b7b7;background:#ffe9e9;}
-    .alert.ok{border-color:#b7f0b7;background:#e9ffe9;}
-
-    /* ===== GRID CARDS ===== */
     .grid{
-      margin-top:16px;
       display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
     }
-    @media (max-width: 860px){ .grid{grid-template-columns:1fr;} }
 
     .card{
-      background: var(--surface);
-      border:1px solid rgba(0,0,0,.08);
       border-radius: 22px;
-      box-shadow: var(--shadow-soft);
-      padding:16px;
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
+      background: rgba(255,255,255,.94);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 26px rgba(0,0,0,.08);
+      overflow:hidden;
       transition:.18s;
+      display:flex;
+      flex-direction:column;
+      min-height: 100%;
     }
-    .card:hover{transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.12);}
-    .ico{
-      width:44px;height:44px;border-radius:16px;
-      display:grid;place-items:center;
-      background: rgba(58,168,107,.10);
-      border:1px solid rgba(58,168,107,.18);
-      color:#0f4b45;
-      flex:0 0 auto;
+    .card:hover{transform: translateY(-2px); box-shadow: 0 18px 40px rgba(0,0,0,.12);}
+    .thumb{
+      width:100%;
+      aspect-ratio: 16/10;
+      background:
+        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.18), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,90,99,.08), rgba(255,255,255,.02));
+      border-bottom:1px solid rgba(0,0,0,.06);
+      display:grid; place-items:center;
+      overflow:hidden;
+      position:relative;
     }
-    .card h3{
-      margin:0;
-      font-size:15.5px;
+    .thumb img{width:100%;height:100%;object-fit:cover;}
+    .thumb .ph{
+      width:60px;height:60px;border-radius:22px;
+      background: rgba(255,255,255,.88);
+      border:1px solid rgba(0,0,0,.10);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      color: rgba(16,49,44,.62);
+    }
+    .thumb .ph i{font-size:22px;}
+
+    .body{
+      padding:12px 12px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      flex:1;
+    }
+    .title{
       font-weight:1200;
       color:#10312c;
-      line-height:1.2;
+      letter-spacing:-.15px;
+      line-height:1.15;
+      display:-webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow:hidden;
+      min-height: 2.3em;
     }
-    .card p{
-      margin-top:6px;
-      color:rgba(16,49,44,.72);
-      font-weight:850;
-      font-size:13.6px;
-      line-height:1.55;
-      max-width: 70ch;
+    .meta{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      color: rgba(16,49,44,.72);
+      font-weight:900;
+      font-size:12.6px;
     }
-    .arrow{
-      margin-left:auto;
-      color:rgba(16,49,44,.55);
-      padding-top:2px;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(0,0,0,.03);
+      color: rgba(16,49,44,.78);
+      font-weight:1000;
+      font-size:12px;
+    }
+    .pill.ok{background: rgba(58,168,107,.10); color:#0f4b45; border-color: rgba(58,168,107,.18);}
+    .pill.warn{background: rgba(255,183,74,.16); color:#5a3a00; border-color: rgba(255,183,74,.26);}
+    .pill.off{background: rgba(0,0,0,.06); color: rgba(16,49,44,.72);}
+
+    .row{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto;
+      padding-top:8px;
+      border-top:1px solid rgba(0,0,0,.06);
+    }
+    .price{
+      font-weight:1300;
+      letter-spacing:-.2px;
+      color:#0f2f2b;
+    }
+    .small{
+      font-size:12.5px;
+      color: rgba(16,49,44,.72);
+      font-weight:900;
     }
 
-    /* ===== CTA (top) ===== */
-    .cta{
-      margin-top:14px;
-      background:
-        radial-gradient(900px 320px at 18% 0%, rgba(58,168,107,.14), rgba(255,255,255,0) 60%),
-        linear-gradient(180deg, rgba(0,90,99,.06), rgba(255,255,255,.02));
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:22px;
-      box-shadow: var(--shadow-soft);
-      padding:16px;
+    .actionsRow{
       display:flex;
-      gap:14px;
-      align-items:flex-start;
-      justify-content:space-between;
+      gap:10px;
       flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
     }
-    .cta strong{font-weight:1200;color:#10312c;}
-    .cta span{display:block;margin-top:6px;color:rgba(16,49,44,.72);font-weight:850;font-size:13.6px;line-height:1.55;max-width:90ch;}
+    .actionsRow .btn{border-radius:16px;padding:10px 12px;font-size:13.4px;}
+
+    .empty{
+      border-radius: 22px;
+      border:1px dashed rgba(0,0,0,.14);
+      background: rgba(255,255,255,.72);
+      padding:18px;
+      color: rgba(16,49,44,.72);
+      font-weight:900;
+      box-shadow: 0 10px 26px rgba(0,0,0,.06);
+    }
+
+    /* ===== DRAWER MOBILE ===== */
+    .drawer{
+      position:fixed;
+      top:0; bottom:0; left:0;
+      width: min(92vw, 340px);
+      background: rgba(255,255,255,.96);
+      border-right:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 18px 55px rgba(0,0,0,.18);
+      transform: translateX(-110%);
+      transition: .22s;
+      z-index:99999;
+      padding-top: calc(var(--header-h) + 10px);
+    }
+    .drawer.open{transform: translateX(0);}
+    .backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.40);
+      backdrop-filter: blur(2px);
+      opacity:0; pointer-events:none;
+      transition:.22s;
+      z-index:99998;
+    }
+    .backdrop.show{opacity:1; pointer-events:auto;}
+
+    /* ===== RESPONSIVO ===== */
+    @media (max-width: 980px){
+      .app{grid-template-columns: 1fr;}
+      .sidebar{display:none;}
+      .hamb{display:inline-flex;}
+      .search{min-width: 240px;}
+      .grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
+      .stats{grid-template-columns: repeat(2, minmax(0, 1fr));}
+    }
+    @media (max-width: 620px){
+      :root{--header-h: 70px;}
+      .headmeta{display:none;}
+      .search{display:none;}
+      .grid{grid-template-columns: 1fr;}
+      .stats{grid-template-columns: 1fr;}
+      .brand img{width:124px;}
+      .header-actions .btn span{display:none;}
+      .header-actions .btn{gap:0;}
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <div class="container header-inner">
+    <div class="header-inner">
       <div class="brand">
         <img src="LogoTaNaFeira.png" alt="TaNaFeira" />
-        <div class="greet">
-          <div id="hello" class="hello">Carregando...</div>
-          <div class="subtitle">Painel do vendedor</div>
+        <div class="headmeta">
+          <div id="hello" class="hello">Olá!</div>
+          <div id="subtitle" class="subtitle">Painel do vendedor</div>
         </div>
       </div>
 
-      <div class="actions">
-        <button class="btn btn-outline" id="logout" type="button" title="Sair">
+      <div class="header-actions">
+        <div class="search" title="Buscar produto pelo nome">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="q" type="text" placeholder="Buscar no seu feed..." />
+        </div>
+
+        <button class="btn btn-soft hamb" id="openMenu" type="button" title="Menu">
+          <i class="fa-solid fa-bars"></i> <span>Menu</span>
+        </button>
+
+        <button class="btn btn-primary" id="newProduct" type="button" title="Abrir vitrine / adicionar produto">
+          <i class="fa-solid fa-plus"></i> <span>Novo produto</span>
+        </button>
+
+        <button class="btn btn-danger" id="logout" type="button" title="Sair">
           <i class="fa-solid fa-right-from-bracket"></i> <span>Sair</span>
         </button>
+
+        <div class="avatar" title="Perfil">
+          <img id="avatarTopImg" alt="" style="display:none" />
+          <i id="avatarTopIcon" class="fa-solid fa-user"></i>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <div class="page-head">
-      <div class="page-title">
-        <h1>Painel do vendedor</h1>
-        <p>Gerencie produtos, confirme reservas e mantenha seu perfil atualizado — tudo em um só lugar.</p>
+  <!-- drawer mobile -->
+  <div id="backdrop" class="backdrop"></div>
+  <aside id="drawer" class="drawer" aria-label="Menu do vendedor">
+    <div style="padding:10px;">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+        <div class="avatar" style="width:48px;height:48px;border-radius:18px;">
+          <img id="avatarDrawerImg" alt="" style="display:none" />
+          <i id="avatarDrawerIcon" class="fa-solid fa-user"></i>
+        </div>
+        <div style="min-width:0">
+          <div id="drawerName" style="font-weight:1200;color:#10312c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+          <div id="drawerSub" style="font-weight:900;color:rgba(16,49,44,.70);font-size:12.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+        </div>
+        <button class="btn btn-soft" id="closeMenu" type="button" style="margin-left:auto;border-radius:14px;padding:10px 12px;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
     </div>
 
-    <div id="msg" class="alert"></div>
-
-    <section class="cta" aria-label="Resumo do painel">
-      <div>
-        <strong id="ctaTitle">Pronto para vender hoje?</strong>
-        <span id="ctaText">Atualize sua vitrine e confira as reservas pendentes antes de sair para a feira.</span>
+    <div class="menu" style="padding:10px;">
+      <div class="item" data-go="vend-produtos.html">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <div class="txt">
+          <b>Vitrine</b>
+          <small>Criar / editar produtos</small>
+        </div>
       </div>
-      <button class="btn btn-primary" type="button" onclick="location.href='vend-reservas.html'">
-        <i class="fa-solid fa-bell"></i> Ver reservas
+
+      <div class="item" data-go="vend-reservas.html">
+        <i class="fa-solid fa-box"></i>
+        <div class="txt">
+          <b>Reservas recebidas</b>
+          <small>Confirmar / cancelar</small>
+        </div>
+        <span id="badgePending2" class="badge muted">0</span>
+      </div>
+
+      <div class="item" data-go="vend-nots.html">
+        <i class="fa-solid fa-bell"></i>
+        <div class="txt">
+          <b>Notificações</b>
+          <small>Alertas e atualizações</small>
+        </div>
+      </div>
+
+      <div class="item" data-go="vend-perfil.html">
+        <i class="fa-solid fa-id-card"></i>
+        <div class="txt">
+          <b>Meu perfil</b>
+          <small>Editar dados</small>
+        </div>
+      </div>
+
+      <div class="item" data-go="vend-telainicial.html">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <div class="txt">
+          <b>Comprar (modo vendedor)</b>
+          <small>Feed de compras</small>
+        </div>
+      </div>
+
+      <div class="item" data-go="vend-minhas-reservas.html">
+        <i class="fa-solid fa-receipt"></i>
+        <div class="txt">
+          <b>Minhas reservas</b>
+          <small>Reservas que você fez</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="sfoot" style="padding:10px;border-top:1px solid rgba(0,0,0,.06);">
+      <button class="btn btn-soft" id="drawerRefresh" type="button">
+        <i class="fa-solid fa-rotate"></i> Atualizar
       </button>
-    </section>
+      <button class="btn btn-danger" id="drawerLogout" type="button">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair
+      </button>
+    </div>
+  </aside>
 
-    <section class="grid" aria-label="Atalhos do vendedor">
-      <a class="card" href="vend-produtos.html">
-        <div class="ico"><i class="fa-solid fa-basket-shopping"></i></div>
-        <div style="min-width:0">
-          <h3>Vitrine (Produtos)</h3>
-          <p>Criar, editar, ativar/desativar e enviar mídia (imagem/áudio) para cada produto.</p>
+  <div class="app">
+    <!-- sidebar desktop -->
+    <aside class="sidebar" aria-label="Menu do vendedor (desktop)">
+      <div class="shead">
+        <div class="vendorcard">
+          <div class="avlg">
+            <img id="avatarSideImg" alt="" style="display:none" />
+            <i id="avatarSideIcon" class="fa-solid fa-user"></i>
+          </div>
+          <div class="vendorname">
+            <b id="sideName">Vendedor</b>
+            <small id="sideHint">Painel do vendedor</small>
+          </div>
         </div>
-        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
-      </a>
+      </div>
 
-      <a class="card" href="vend-reservas.html">
-        <div class="ico"><i class="fa-solid fa-box"></i></div>
-        <div style="min-width:0">
-          <h3>Reservas recebidas</h3>
-          <p>Veja pendentes, confirme para baixar estoque automaticamente ou cancele quando precisar.</p>
+      <nav class="menu">
+        <div class="item" data-go="vend-produtos.html">
+          <i class="fa-solid fa-basket-shopping"></i>
+          <div class="txt">
+            <b>Vitrine</b>
+            <small>Criar / editar produtos</small>
+          </div>
         </div>
-        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
-      </a>
 
-      <a class="card" href="vend-nots.html">
-        <div class="ico"><i class="fa-solid fa-bell"></i></div>
-        <div style="min-width:0">
-          <h3>Notificações</h3>
-          <p>Alertas de novas reservas e mudanças de status (MVP). Se não usar agora, pode ocultar depois.</p>
+        <div class="item" data-go="vend-reservas.html">
+          <i class="fa-solid fa-box"></i>
+          <div class="txt">
+            <b>Reservas recebidas</b>
+            <small>Confirmar / cancelar</small>
+          </div>
+          <span id="badgePending" class="badge muted">0</span>
         </div>
-        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
-      </a>
 
-      <a class="card" href="vend-perfil.html">
-        <div class="ico"><i class="fa-solid fa-user"></i></div>
-        <div style="min-width:0">
-          <h3>Meu perfil</h3>
-          <p>Edite nome, celular, bio e categorias para compradores saberem quem você é.</p>
+        <div class="item" data-go="vend-nots.html">
+          <i class="fa-solid fa-bell"></i>
+          <div class="txt">
+            <b>Notificações</b>
+            <small>Alertas e atualizações</small>
+          </div>
         </div>
-        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
-      </a>
 
-      <a class="card" href="vend-telainicial.html">
-        <div class="ico"><i class="fa-solid fa-cart-shopping"></i></div>
-        <div style="min-width:0">
-          <h3>Comprar (como vendedor)</h3>
-          <p>Precisa reservar de outro feirante? Pesquise, filtre e envie a reserva (sem misturar telas).</p>
+        <div class="item" data-go="vend-perfil.html">
+          <i class="fa-solid fa-id-card"></i>
+          <div class="txt">
+            <b>Meu perfil</b>
+            <small>Editar dados</small>
+          </div>
         </div>
-        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
-      </a>
 
-      <a class="card" href="vend-minhas-reservas.html">
-        <div class="ico"><i class="fa-solid fa-receipt"></i></div>
-        <div style="min-width:0">
-          <h3>Minhas reservas</h3>
-          <p>As reservas que você fez em outros vendedores. Acompanhe pendentes e confirmadas.</p>
+        <div class="item" data-go="vend-telainicial.html">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <div class="txt">
+            <b>Comprar (modo vendedor)</b>
+            <small>Feed de compras</small>
+          </div>
         </div>
-        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
-      </a>
-    </section>
-  </main>
+
+        <div class="item" data-go="vend-minhas-reservas.html">
+          <i class="fa-solid fa-receipt"></i>
+          <div class="txt">
+            <b>Minhas reservas</b>
+            <small>Reservas que você fez</small>
+          </div>
+        </div>
+      </nav>
+
+      <div class="sfoot">
+        <button class="btn btn-soft" id="refresh" type="button">
+          <i class="fa-solid fa-rotate"></i> Atualizar
+        </button>
+        <button class="btn btn-danger" id="sideLogout" type="button">
+          <i class="fa-solid fa-right-from-bracket"></i> Sair
+        </button>
+      </div>
+    </aside>
+
+    <!-- main -->
+    <main class="main">
+      <section class="panel">
+        <div class="phead">
+          <div>
+            <h1>Seu feed de produtos</h1>
+            <p id="desc">Aqui aparece sua vitrine (produtos). Use a busca para filtrar pelo nome.</p>
+          </div>
+          <div class="right">
+            <button class="btn btn-soft" id="goVitrine" type="button">
+              <i class="fa-solid fa-basket-shopping"></i> <span>Abrir vitrine</span>
+            </button>
+            <button class="btn btn-primary" id="goReservas" type="button">
+              <i class="fa-solid fa-box"></i> <span>Ver reservas</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="ico"><i class="fa-solid fa-basket-shopping"></i></div>
+            <div>
+              <b>Produtos</b>
+              <span>Total na vitrine</span>
+              <div id="statProducts" class="num">0</div>
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+              <b>Estoque baixo</b>
+              <span>Menor que 5 unidades</span>
+              <div id="statLow" class="num">0</div>
+            </div>
+          </div>
+
+          <div class="stat">
+            <div class="ico"><i class="fa-solid fa-box"></i></div>
+            <div>
+              <b>Pendentes</b>
+              <span>Reservas para confirmar</span>
+              <div id="statPending" class="num">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content">
+          <div id="msg" class="alert"></div>
+
+          <div class="actionsRow">
+            <button class="btn btn-soft" id="toggleOnlyActive" type="button">
+              <i class="fa-solid fa-filter"></i> <span id="filterLabel">Mostrar: todos</span>
+            </button>
+
+            <button class="btn btn-soft" id="sortBtn" type="button">
+              <i class="fa-solid fa-arrow-down-wide-short"></i> <span id="sortLabel">Ordenar: recentes</span>
+            </button>
+          </div>
+
+          <div id="grid" class="grid">
+            <div class="empty">Carregando...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script>
@@ -417,99 +845,427 @@
 
     function showMsg(text, isErr=false){
       msgEl.className = "alert show " + (isErr ? "err" : "ok");
-      msgEl.innerHTML =
-        `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>` +
-        `<div>${escapeHtml(text)}</div>`;
+      msgEl.innerHTML = `<i class="fa-solid ${isErr ? "fa-triangle-exclamation" : "fa-circle-check"}"></i><div>${escapeHtml(text)}</div>`;
     }
-    function clearMsg(){ msgEl.className="alert"; msgEl.innerHTML=""; }
+    function clearMsg(){
+      msgEl.className = "alert";
+      msgEl.innerHTML = "";
+    }
 
-    async function requireAuth(){
+    function bestNameFromUser(user){
+      const md = user?.user_metadata || {};
+      const full = String(md.full_name || "").trim();
+      if (full) return full;
+      const first = String(md.first_name || "").trim();
+      const last  = String(md.last_name || "").trim();
+      const join = (first + " " + last).trim();
+      if (join) return join;
+      const email = String(user?.email || "");
+      const beforeAt = email.includes("@") ? email.split("@")[0] : email;
+      return beforeAt ? beforeAt : "Vendedor";
+    }
+
+    function pick(obj, keys){
+      for (const k of keys){
+        if (obj && obj[k] != null && String(obj[k]).trim() !== "") return obj[k];
+      }
+      return null;
+    }
+
+    function moneyBR(v){
+      const n = Number(v);
+      if (!Number.isFinite(n)) return null;
+      return n.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+    }
+
+    function isActive(p){
+      const v = pick(p, ["is_active","active","enabled","isEnabled"]);
+      if (typeof v === "boolean") return v;
+      const s = String(v ?? "").toLowerCase();
+      if (["true","1","yes","y","on","ativo","ativa"].includes(s)) return true;
+      if (["false","0","no","n","off","inativo","inativa"].includes(s)) return false;
+      // se não existir coluna, assume ativo
+      return true;
+    }
+
+    function productTitle(p){
+      return (String(pick(p, ["name","title","product_name","nome"]) || "Produto").trim()) || "Produto";
+    }
+
+    function productUnit(p){
+      const u = pick(p, ["unit","unidade","measure_unit"]);
+      return u ? String(u) : "";
+    }
+
+    function productStock(p){
+      const s = pick(p, ["stock","estoque","qty_stock","quantity_stock"]);
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function productPrice(p){
+      // tenta vários nomes comuns
+      const v = pick(p, ["price","preco","valor","value","unit_price"]);
+      return moneyBR(v);
+    }
+
+    function productImage(p){
+      // aqui você pode salvar a URL pública do storage no seu campo (ex: image_url)
+      return pick(p, ["image_url","image","photo_url","media_url","url","cover_url"]);
+    }
+
+    // ===== auth + profile guard =====
+    let ME_USER = null;
+    let ME_PROFILE = null;
+
+    async function requireVendor(){
       const { data:{ user }, error } = await sb.auth.getUser();
       if (error) throw error;
       if (!user){ location.href="login.html"; return null; }
-      return user;
-    }
+      ME_USER = user;
 
-    async function getOrCreateProfile(user){
-      const meta = user.user_metadata || {};
-      const roleFromMeta = meta.role || user.app_metadata?.role || "buyer";
-
-      const { data, error } = await sb
+      // ✅ pega profile sem arriscar coluna inexistente (select *)
+      const { data: prof, error: e2 } = await sb
         .from("profiles")
-        .select("id, role, full_name, vendor_onboarding_done")
+        .select("*")
         .eq("id", user.id)
         .maybeSingle();
 
-      if (error) throw error;
+      if (e2) throw e2;
+      if (!prof) throw new Error("Seu perfil não foi encontrado. Faça logout/login ou recrie a conta.");
+      if (String(prof.role || "").toLowerCase() !== "vendor"){ location.href="telainicial-comp.html"; return null; }
 
-      if (!data){
-        const payload = {
-          id: user.id,
-          role: roleFromMeta,
-          full_name: meta.full_name || [meta.first_name, meta.last_name].filter(Boolean).join(" ") || null,
-          vendor_onboarding_done: false
-        };
-
-        const { error: insErr } = await sb.from("profiles").insert(payload);
-        if (insErr) throw insErr;
-
-        const { data: data2, error: e2 } = await sb
-          .from("profiles")
-          .select("id, role, full_name, vendor_onboarding_done")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (e2) throw e2;
-        return data2;
-      }
-
-      return data;
-    }
-
-    async function requireVendor(){
-      const user = await requireAuth();
-      if (!user) return null;
-
-      const prof = await getOrCreateProfile(user);
-      if (!prof) throw new Error("Não consegui carregar seu perfil.");
-
-      if (prof.role !== "vendor"){
-        location.href = "telainicial-comp.html";
-        return null;
-      }
-
+      // se onboarding ainda não feito
       if (prof.vendor_onboarding_done === false){
         location.href = "vend-onboarding.html";
         return null;
       }
 
-      return { user, prof };
+      ME_PROFILE = prof;
+
+      const fullName = String(prof.full_name || "").trim() || bestNameFromUser(user);
+      const stallName = String(pick(prof, ["stall_name","nome_banca","banca_name"]) || "").trim();
+      const sub = stallName ? ("Banca: " + stallName) : "Painel do vendedor";
+
+      el("hello").textContent = "Olá, " + fullName + "!";
+      el("subtitle").textContent = sub;
+
+      el("sideName").textContent = fullName;
+      el("sideHint").textContent = sub;
+
+      el("drawerName").textContent = fullName;
+      el("drawerSub").textContent = sub;
+
+      // avatar (se tiver salvo no profile)
+      const avatarUrl = pick(prof, ["avatar_url","photo_url","profile_photo_url","avatar"]);
+      setAvatarEverywhere(avatarUrl);
+
+      return prof;
     }
 
-    (async()=>{
+    function setAvatar(imgUrl){
+      // topo
+      if (imgUrl){
+        el("avatarTopImg").src = imgUrl;
+        el("avatarTopImg").style.display = "block";
+        el("avatarTopIcon").style.display = "none";
+      } else {
+        el("avatarTopImg").style.display = "none";
+        el("avatarTopIcon").style.display = "block";
+      }
+    }
+    function setAvatarEverywhere(imgUrl){
+      setAvatar(imgUrl);
+
+      const sets = [
+        ["avatarSideImg","avatarSideIcon"],
+        ["avatarDrawerImg","avatarDrawerIcon"]
+      ];
+      for (const [imgId, iconId] of sets){
+        const img = el(imgId), ic = el(iconId);
+        if (!img || !ic) continue;
+        if (imgUrl){
+          img.src = imgUrl;
+          img.style.display="block";
+          ic.style.display="none";
+        } else {
+          img.style.display="none";
+          ic.style.display="block";
+        }
+      }
+    }
+
+    // ===== menu nav =====
+    document.querySelectorAll("[data-go]").forEach(x=>{
+      x.addEventListener("click", ()=> location.href = x.getAttribute("data-go"));
+    });
+
+    // drawer control
+    const drawer = el("drawer");
+    const backdrop = el("backdrop");
+    function openDrawer(){ drawer.classList.add("open"); backdrop.classList.add("show"); }
+    function closeDrawer(){ drawer.classList.remove("open"); backdrop.classList.remove("show"); }
+
+    el("openMenu").onclick = openDrawer;
+    el("closeMenu").onclick = closeDrawer;
+    backdrop.onclick = closeDrawer;
+
+    // header buttons
+    el("newProduct").onclick = ()=> location.href="vend-produtos.html";
+    el("goVitrine").onclick = ()=> location.href="vend-produtos.html";
+    el("goReservas").onclick = ()=> location.href="vend-reservas.html";
+
+    // logout buttons
+    async function doLogout(){
+      try{ await sb.auth.signOut(); }
+      finally{ location.href="login.html"; }
+    }
+    el("logout").onclick = doLogout;
+    el("sideLogout").onclick = doLogout;
+    el("drawerLogout").onclick = doLogout;
+
+    // ===== data =====
+    let PRODUCTS = [];
+    let RESERVATIONS = [];
+    let onlyActive = false;
+    let sortMode = "recent"; // recent | name | stock
+
+    function sortProducts(list){
+      const arr = list.slice();
+      if (sortMode === "name"){
+        arr.sort((a,b)=> productTitle(a).localeCompare(productTitle(b), "pt-BR"));
+        return arr;
+      }
+      if (sortMode === "stock"){
+        arr.sort((a,b)=>{
+          const sa = productStock(a); const sb = productStock(b);
+          return (sb ?? -1) - (sa ?? -1);
+        });
+        return arr;
+      }
+      // recent
+      arr.sort((a,b)=>{
+        const ta = new Date(pick(a, ["updated_at","created_at"]) || 0).getTime();
+        const tb = new Date(pick(b, ["updated_at","created_at"]) || 0).getTime();
+        return tb - ta;
+      });
+      return arr;
+    }
+
+    function render(){
+      const q = (el("q").value || "").trim().toLowerCase();
+      let rows = PRODUCTS.slice();
+
+      if (onlyActive){
+        rows = rows.filter(p => isActive(p) === true);
+      }
+      if (q){
+        rows = rows.filter(p => productTitle(p).toLowerCase().includes(q));
+      }
+
+      rows = sortProducts(rows);
+
+      // stats
+      el("statProducts").textContent = String(PRODUCTS.length);
+      const low = PRODUCTS.filter(p => {
+        const s = productStock(p);
+        return Number.isFinite(s) && s >= 0 && s < 5;
+      }).length;
+      el("statLow").textContent = String(low);
+
+      const pending = RESERVATIONS.filter(r => String(r.status || "").toLowerCase().trim() === "pending").length;
+      el("statPending").textContent = String(pending);
+
+      // badges menu
+      const badgeCls = pending ? "badge" : "badge muted";
+      el("badgePending").className = badgeCls;
+      el("badgePending2").className = badgeCls;
+      el("badgePending").textContent = String(pending);
+      el("badgePending2").textContent = String(pending);
+
+      const grid = el("grid");
+
+      if (!rows.length){
+        grid.innerHTML = `
+          <div class="empty">
+            <b style="display:block;color:#10312c;font-weight:1200;margin-bottom:6px;">Nada por aqui ainda</b>
+            <div>Crie produtos na <a href="vend-produtos.html" style="text-decoration:underline;font-weight:1100;">Vitrine</a> para eles aparecerem no seu feed.</div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = rows.map(p=>{
+        const title = productTitle(p);
+        const unit = productUnit(p);
+        const price = productPrice(p);
+        const stock = productStock(p);
+        const active = isActive(p);
+        const img = productImage(p);
+
+        const stockPill = (stock == null)
+          ? `<span class="pill off"><i class="fa-solid fa-box"></i> estoque: —</span>`
+          : (stock < 5
+              ? `<span class="pill warn"><i class="fa-solid fa-triangle-exclamation"></i> estoque: ${stock}</span>`
+              : `<span class="pill ok"><i class="fa-solid fa-box"></i> estoque: ${stock}</span>`);
+
+        const activePill = active
+          ? `<span class="pill ok"><i class="fa-solid fa-circle-check"></i> ativo</span>`
+          : `<span class="pill off"><i class="fa-solid fa-circle-xmark"></i> inativo</span>`;
+
+        const when = pick(p, ["updated_at","created_at"]);
+        const whenTxt = when ? new Date(when).toLocaleString("pt-BR") : "";
+
+        return `
+          <article class="card">
+            <div class="thumb">
+              ${img
+                ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(title)}" loading="lazy" />`
+                : `<div class="ph" aria-hidden="true"><i class="fa-solid fa-image"></i></div>`
+              }
+            </div>
+
+            <div class="body">
+              <div class="title">${escapeHtml(title)}</div>
+
+              <div class="meta">
+                ${unit ? `<span class="pill off"><i class="fa-solid fa-scale-balanced"></i> ${escapeHtml(unit)}</span>` : ``}
+                ${stockPill}
+                ${activePill}
+              </div>
+
+              <div class="row">
+                <div>
+                  <div class="price">${price ? escapeHtml(price) : "—"}</div>
+                  <div class="small">${whenTxt ? ("Atualizado: " + escapeHtml(whenTxt)) : ""}</div>
+                </div>
+
+                <button class="btn btn-soft" type="button" onclick="location.href='vend-produtos.html'">
+                  <i class="fa-solid fa-pen"></i> <span>Editar</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadMyProducts(){
+      const { data, error } = await sb
+        .from("products")
+        .select("*")
+        .eq("vendor_id", ME_PROFILE.id)
+        .order("created_at", { ascending:false });
+
+      if (error) throw error;
+      PRODUCTS = data || [];
+    }
+
+    async function loadPendingReservations(){
+      // tenta por vendor_id (se existir na tabela). fallback por product_id IN.
       try{
-        clearMsg();
-        const pack = await requireVendor();
-        if (!pack) return;
+        const { data, error } = await sb
+          .from("reservations")
+          .select("*")
+          .eq("vendor_id", ME_PROFILE.id)
+          .order("created_at", { ascending:false })
+          .limit(200);
 
-        const { user, prof } = pack;
+        if (error) throw error;
+        RESERVATIONS = data || [];
+        return;
+      }catch(_e){
+        const ids = PRODUCTS.map(p => p.id).filter(Boolean);
+        if (!ids.length){ RESERVATIONS = []; return; }
 
-        const displayName =
-          (prof.full_name || "").trim() ||
-          (user.user_metadata?.full_name || "").trim() ||
-          (user.email || "Vendedor");
+        const { data, error } = await sb
+          .from("reservations")
+          .select("*")
+          .in("product_id", ids)
+          .order("created_at", { ascending:false })
+          .limit(200);
 
-        el("hello").textContent = "Olá, " + displayName + "!";
+        if (error) throw error;
+        RESERVATIONS = data || [];
+      }
+    }
+
+    async function refreshAll(){
+      clearMsg();
+      await loadMyProducts();
+      await loadPendingReservations();
+      render();
+    }
+
+    // filter/sort
+    el("toggleOnlyActive").onclick = ()=>{
+      onlyActive = !onlyActive;
+      el("filterLabel").textContent = onlyActive ? "Mostrar: só ativos" : "Mostrar: todos";
+      render();
+    };
+
+    el("sortBtn").onclick = ()=>{
+      if (sortMode === "recent") sortMode = "name";
+      else if (sortMode === "name") sortMode = "stock";
+      else sortMode = "recent";
+
+      el("sortLabel").textContent =
+        (sortMode === "recent") ? "Ordenar: recentes" :
+        (sortMode === "name") ? "Ordenar: nome" :
+        "Ordenar: estoque";
+
+      render();
+    };
+
+    // refresh buttons
+    el("refresh").onclick = async ()=>{
+      try{
+        await refreshAll();
+        showMsg("Atualizado ✅", false);
       }catch(e){
         console.error(e);
-        showMsg(e.message || "Erro ao carregar painel do vendedor.", true);
+        showMsg(e?.message || "Erro ao atualizar.", true);
+      }
+    };
+    el("drawerRefresh").onclick = async ()=>{
+      closeDrawer();
+      try{
+        await refreshAll();
+        showMsg("Atualizado ✅", false);
+      }catch(e){
+        console.error(e);
+        showMsg(e?.message || "Erro ao atualizar.", true);
+      }
+    };
+
+    // search
+    el("q").addEventListener("input", render);
+
+    // sessão
+    sb.auth.onAuthStateChange((_event, session)=>{
+      if (!session?.user){
+        location.href="login.html";
+        return;
+      }
+      // atualiza nome do topo se mudar
+      if (ME_PROFILE){
+        const fullName = String(ME_PROFILE.full_name || "").trim() || bestNameFromUser(session.user);
+        el("hello").textContent = "Olá, " + fullName + "!";
+      }
+    });
+
+    // init
+    (async ()=>{
+      try{
+        await requireVendor();
+        await refreshAll();
+      }catch(e){
+        console.error(e);
+        // se for RLS, avisar melhor
+        const msg = String(e?.message || "Erro ao carregar painel.");
+        showMsg(msg, true);
       }
     })();
-
-    el("logout").onclick = async()=>{
-      await sb.auth.signOut();
-      location.href="login.html";
-    };
   </script>
 </body>
 </html>
